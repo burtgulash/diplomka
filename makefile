@@ -1,8 +1,12 @@
-sources = dip.tex
+source = dip.tex
+out = dip.pdf
+.phony: clean view pdf
 
-all: $(sources)
+all: pdf view
+pdf: clean $(out)
+$(out): $(source)
 	pdflatex $^
-
-.phony
+view: $(out)
+	evince $(out) 2>/dev/null
 clean:
-	rm *.aux *.out *.log
+	rm -f *.aux *.out *.log $(out)
