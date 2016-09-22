@@ -1,0 +1,83 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[czech]{babel}
+\usepackage{a4wide}
+\usepackage[numbers]{natbib}
+\usepackage[pdfborder={0 0 0}]{hyperref}
+%\usepackage[bottom=2.5cm]{geometry}
+
+\linespread{1.25}
+
+
+\begin{document}
+\subsection{Prefixový a fuzzy invertovaný index}
+Ačkoliv se jedná o dva různé požadavky, prefixové a fuzzy invertované indexy
+mají ve výsledku podobné vlastnosti a tudíž jsou pro ně vhodné stejné datové
+struktury. Pokud na chvíli necháme fuzzy požavky stranou, nastíním, jak lze
+jednoduše rozšířit klasický invertovaný index o podporu prefixového
+vyhledávání.
+
+Invertovaný index má dvě hlavní části - slovník a tzv. invertovaný soubor.
+Slovník obsahuje všechna slova nalezená ve zdrojovém textu a odkazy na
+korespondující invertované seznamy v invertovaném souboru. Pro slovníky se
+používají buď hashovací tabulky nebo je lze kompaktně uložit jako seřazený
+seznam slov. V téhle struktuře se pak pomocí binárního vyhledávání najde
+dotazované slovo a zaznamená se jeho pořadí v tomhle seznamu. Odkaz na
+invertovaný seznam a další pomocná data pro tohle slovo se naleznou v jiném
+seznamu tak, že zaznamenané pořadí se použije jako index do tohohle seznamu.
+
+%\vspace{1cm}
+%Příklad:
+%
+%\begin{center}
+%\begin{tabular}{lr}
+%\textbf{slovo}   & \textbf{ukazatel} \\
+%\hline
+%anderson          & 3  \\
+%andrea            & 4  \\
+%andulka           & 1  \\
+%andy              & 2  \\
+%kajak             & 13 \\ 
+%kamna             & 14 \\
+%karafiol          & 6  \\
+%karate            & 12 \\ 
+%karburátor        & 7  \\
+%karel             & 11 \\
+%karkulka          & 5  \\
+%karma             & 8  \\
+%karta             & 9  \\
+%karty             & 10 \\ 
+%\end{tabular}
+%\end{center}
+
+Pro ještě kompaktnější uložení se používá kompresní technika Front-Coding,
+která využívá toho, že po sobě následující slova sdílí prefixy. Slovník se
+rozdělí na bloky o konstantním počtu slov a prefix se pro tento blok uloží
+zvlášť. Například při použití velikosti bloku 4 by slovník se slovy
+\textbf{anderson, andrea, andulka, andy, kajak, kamna, karafiol, karate,
+karburátor, karel, karkulka, karma, karta, karty} vypadal:
+\textbf{\{and\}erson, rea, ulka, y | \{ka\}jak, mna, rafiol, rate | \{kar\}burátor, el, kulka, ma | \{kart\}a, y}
+
+Reprezentace seřazeným seznamem slov je obzvlášť vhodná pro prefixové
+vyhledávání, protože v takovém případě stačí nalézt první a poslední slovo ve
+slovníku, které odpovídají dotazovanému prefixu. Všechna slova mezi těmito
+dvěma odpovídají na prefixový dotaz.
+
+Přibližné vyhledávání slov je s prefixovým podobné, protože většina podobných
+slov bude v seřazeném slovníku blízko u sebe. Pokud vyhledáváme přibližná slova
+do vzdálenosti 1, pak několik slov se bude lišit v prvním písmenu od
+dotazovaného, ale většina rozdílů bude v pozdějších částech slova, a tedy ve
+výsledku budou relativně blízko u sebe.
+
+Pro rychlý průchod slovníkem s přibližným prohledáváním se hodí datová
+struktura \textbf{kompaktní trie}. Je to prakticky sežarezný seznam slov s tím,
+že všechny společné prefixy pro všechny skupiny slov jsou uloženy jako
+rodičovské uzly stromu. Tohle rozložení nám umožní rychle dohledat prefix a
+všechny jeho potomci ve stromu jsou odpovědí na prefixový dotaz. Přibližné
+vyhledávání je efektivní, protože výpočet vzdálenostní funkce se opětovně
+použije u všech slov, které sdílí prefix.
+
+
+
+\end{document}
