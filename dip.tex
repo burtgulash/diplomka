@@ -2,15 +2,100 @@
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[czech]{babel}
-\usepackage{a4wide}
+%\usepackage{a4wide}
 \usepackage[numbers]{natbib}
-\usepackage[pdfborder={0 0 0}]{hyperref}
+\usepackage[pdfborder={0 0 0},colorlinks=true,linkcolor=green]{hyperref}
 %\usepackage[bottom=2.5cm]{geometry}
 
-\linespread{1.25}
+\linespread{1.15}
 
 
 \begin{document}
+\section{Datové struktury pro vyhledávání v textu}
+\subsection{Invertovaný index}
+% nějaká historija atd.
+Invertovaný index jednoduše řečeno vytvoří seznam dokumentů pro každé slovo,
+pokud se v daném dokumentu slovo vyskytuje. Seznamu dokumentů pak říkáme
+invertovaný seznam a všechny invertované seznamy jsou uloženy v paměti v tzv.
+invertovaném souboru.
+
+Slovem může být slovo lidské řeči, nebo jiné uspořádání po sobě jdoucích znaků.
+Často se používají alternativní n-gramové invertované indexy, kde n-gramem
+rozumíme posloupnost n po sobě jdoucích znaků.
+
+Při použití klasických slov by se pro dokument s obsahem "máma mele maso"
+vytvořily tři invertované seznamy pro každé vyskytující se slovo "máma", "mele"
+a "maso".
+
+\subsection{N-gramový invertovaný index}
+Alternativně při použití trigramů (n-gramy, kde n = 3), by "slova" byla
+\textbf{\_\_m, \_má, \_mám, áma, ma\_, a\_m, \_me, mel, ele, le\_, e\_m, \_ma,
+mas, aso, so\_, o\_\_}. Ngramové indexy mají tu výhodu, že bez jakýchkoliv
+dalších úprav s nimi lze vyhledávat přibližně. 
+
+\url{https://swtch.com/~rsc/regexp/regexp4.html}
+
+
+
+
+% word based vs ngram based
+\subsection{Alternativní datové struktury}
+Invertovaný index je doposud vítězem v rychlosti vyhledávání v textu, ale pro
+některé speciální případy byly navrženy i jiné datové struktury, které dokáží
+být kompaktnější než invertovaný index po kompresi, nebo umožňují vícero
+seřazení při jednom uložení v paměti. Klasický invertovaný index má právě jedno
+seřazení - nejčastěji podle vzrůstajícího id dokumentů nebo podle klesající
+zvolené business metriky.
+
+Waweletové stromy - dual sorted Index
+Treap Index
+
+Obě tyto alternativní datové struktury dosahují obrovských úspor díky své
+kompresibilitě, čehož bychom využili, pokud bychom uvažovali rozsáhlá vstupní
+data. Ale protože se zaměřuji na relativně malé objemy dat, avšak s vysokou
+redundancí při prohledávání, nevyužiji tyto datové struktury. Dalším velkým
+důvodem je, že jsem nenašel žádný výzkum, který by je aplikoval na prefixové,
+natož přibližné vyhledávání. Na druhou stranu existuje více výzkumných týmů,
+kteří se zabývají přibližným (fuzzy) prohledáváním na modifikovaném invertovaném
+indexu.
+
+\subsection{Hledání v invertovaném indexu}
+Vstupním dotazem se rozumí posloupnost slov (dotazovaná slova) a speciálních
+operátorů. Pro každé vstupní dotazované slovo se provede dotaz na první část
+indexu - slovník. Ten vrátí všechny údaje nezbytné k tomu, abychom získali
+odpovídající invertovaný seznam dokumentů. V případě prefixového a přibližného
+dotazu slovník vrátí celou množinu odpovídajících slov.  V druhé fázi
+vyhledávání se použijí nalezené invertované seznamy a provedou se s nimi
+operace dle operátorů v dotazu uživatele. Třetí fází je seřazení výsledků podle
+zvolené hodnotící funkce a sesbírání důkazů pro ty výsledky, které budou
+zobrareny uživateli.
+
+Invertované indexy podporují několik operací, se kterými může uživatel měnit
+povahu svého dotazu. Nejčastěji jsou implementovány booleovské operátory AND,
+OR, NOT a frázové vyhledávání - tedy omezení jen na ty výsledky, kde se slova
+vyskytují těsně u sebe.
+
+Apache Lucene operátory - fuzzy (nízká účinnost), změna ranku, ...
+
+Pro naše požadavky, především kvůli jednoduchosti, bude postačovat operátor
+AND, který navíc bude implicitní v dotazu. Tedy vstupním dotazem bude
+posloupnost slov a výsledkem bude konjunkce výsledků nalezených pro každé z
+nich. Funkcionalita disjunktivních dotazů (operátor OR) bude implicitní v tom,
+že vyhledání slova ve slovníku vrátí disjunkci více přibližných slov nebo
+prefixů v případě prefixového dotazu.  Operátoru NOT je občas potřeba, pokud
+dojde k nejednoznačnostem ve výsledcích.  Uživatel může nejednoznačnost
+identifikovat a zadat další dotaz, kde ji vyfiltruje právě pomocí operátoru
+NOT. Otázkou je, zda-li by se mělo použítí operátoru NOT řídit stejnými
+pravidly jako u běžného dotazovaného slova. Pokud by se použila množina slov v
+blízkosti negovaného slova, mohlo by dojít k nežádoucímu přílišnému filtrování.
+
+Poté, co v první části indexu - slovníku - nalezneme slova odpovídající
+dotazovaným slovům a jejich invertované seznamy, přichází část, kdy se provedou
+zadané operace s invertovanými seznamy.  Existují dvě hlavní možnosti - 1.
+zpracovat nejprve každé slovo zvlášť a sloučit výsledek (Term At A Time - TAAT)
+nebo 2. postupovat dokument po dokumentu napříč všemi slovy (Document At A Time
+- DAAT).
+
 \subsection{Prefixový a fuzzy invertovaný index}
 Ačkoliv se jedná o dva různé požadavky, prefixové a fuzzy invertované indexy
 mají ve výsledku podobné vlastnosti a tudíž jsou pro ně vhodné stejné datové
@@ -71,12 +156,24 @@ dotazovaného, ale většina rozdílů bude v pozdějších částech slova, a t
 výsledku budou relativně blízko u sebe.
 
 Pro rychlý průchod slovníkem s přibližným prohledáváním se hodí datová
-struktura \textbf{kompaktní trie}. Je to prakticky sežarezný seznam slov s tím,
-že všechny společné prefixy pro všechny skupiny slov jsou uloženy jako
-rodičovské uzly stromu. Tohle rozložení nám umožní rychle dohledat prefix a
-všechny jeho potomci ve stromu jsou odpovědí na prefixový dotaz. Přibližné
+struktura \textbf{kompaktní trie}. Je to vlastně seřazený seznam slov s tím, že
+všechny společné prefixy pro všechny skupiny slov jsou uloženy jako rodičovské
+uzly stromu n-árního stromu. Tohle rozložení nám umožní rychle dohledat prefix
+a všechny jeho potomci ve stromu jsou odpovědí na prefixový dotaz. Přibližné
 vyhledávání je efektivní, protože výpočet vzdálenostní funkce se opětovně
 použije u všech slov, které sdílí prefix.
+
+Kompaktní trie (ve skutečnosti jakákoliv trie) nám umožní nejen rychlé
+vyhledání všech slov odpovídajících prefixu, ale zároveň i rychlé přibližné
+vyhledání všech podobných slov podle zvolené distanční metriky.
+
+
+\section{Odkazy}
+\url{http://www.dcs.gla.ac.uk/~craigm/publications/lacour08efficiency.pdf}
+
+
+% \section{Otevřené problémy}
+% \subsection{Příliš krátký vstupní řetězec}
 
 
 
