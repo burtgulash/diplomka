@@ -36,6 +36,8 @@ si drží svůj nikým nerušený monopol. Ve webovém vyhledávání to byl Goo
 který přežil svou konkurenci na domácím trhu a postupně začal dominovat i
 zahraniční trhy (s několika výjimkami - Čína, Korea, ČR?, Rusko?).
 
+\section{Současný stav}
+% Google + statistical bias + big data
 % stuck at google's dominance
 % bias toward statistical approaches and clever scraping
 % some commercial systems and research is catching up
@@ -54,6 +56,9 @@ Povaha textových dat. Neseřaditelnost. Redundance v lidském jazyce (DEFLATE, 
 
 \subsection{Databáze a fulltext}
 % 2 paralelní systémy - db + index
+\subsection{Open Source a komerční systémy}
+% lucene, elastic, solr, algolia, xapian, mnogosearch, postgres
+
 \subsection{Datové struktury pro fulltext}
 % popiš online processing (agrep), like operátor v databázi?
 % regex search. Těžký pro uživatele. Nebere v potaz překlepy
@@ -131,10 +136,6 @@ natož přibližné vyhledávání. Na druhou stranu existuje více výzkumných
 kteří se zabývají přibližným (fuzzy) prohledáváním na modifikovaném invertovaném
 indexu.
 
-\subsection{Databáze a fulltext}
-\subsection{Open Source a komerční systémy}
-% lucene, elastic, solr, algolia, xapian, mnogosearch, postgres
-
 \section{Změny a nové potřeby}
 \subsection{Změny v architekturách počítačů a počítačových systémů}
 % Stonebraker o databázích
@@ -160,6 +161,8 @@ má více dat.
 \subsection{Linked data}
 \subsection{Mobilní zařízení}
 
+\subsection{Big data vs Small data}
+
 \subsection{Ohodnocení výsledků dotazu}
 \subsection{tf-idf}
 % SEO - exploit of google's algorithms. Více vyhledávačů ztěžuje SEO
@@ -175,19 +178,19 @@ má více dat.
 
 \subsection{Type-ahead search, search as you go}
 
-\subsection{N-gramový invertovaný index}
-% word based vs ngram based
-Alternativně při použití trigramů (n-gramy, kde n = 3), by "slova" byla
-\textbf{\_\_m, \_má, \_mám, áma, ma\_, a\_m, \_me, mel, ele, le\_, e\_m, \_ma,
-mas, aso, so\_, o\_\_}. Ngramové indexy mají tu výhodu, že bez jakýchkoliv
-dalších úprav s nimi lze vyhledávat přibližně. 
-
 \url{https://swtch.com/~rsc/regexp/regexp4.html}
 \subsection{Prefixové indexy}
 % completesearch
 
 \subsection{Lematizace, Stematizace}
 Problémy vícejazyčných textů. Detekce jazyka.
+
+\subsection{N-gramový invertovaný index}
+% word based vs ngram based
+Alternativně při použití trigramů (n-gramy, kde n = 3), by "slova" byla
+\textbf{\_\_m, \_má, \_mám, áma, ma\_, a\_m, \_me, mel, ele, le\_, e\_m, \_ma,
+mas, aso, so\_, o\_\_}. Ngramové indexy mají tu výhodu, že bez jakýchkoliv
+dalších úprav s nimi lze vyhledávat přibližně. 
 
 \subsection{Indexy založené na editovací vzdálenosti}
 % tastier
