@@ -11,7 +11,53 @@
 
 
 \begin{document}
-\section{Datové struktury pro vyhledávání v textu}
+\section{Úvod}
+Vyhledávání v textu je v dnešní době alfou a omegou v interakci člověka s
+počítačem. 
+
+\subsection{Historie vyhledávání}
+Obor, který se zabývá vyhledáváním informací v textu , se v angličtině nazývá
+Information Retrieval (IR), nebo specifičtěji Text Retrieval. 
+
+První zmínka o vyhledávání v textu pomocí počítače pochází už ze 40. let 20.
+století [1]. Velký rozmach zažil později v 90. letech s popularizací Internetu
+a nástupem World Wide Webu (WWW), kdy začalo být možné otevřeně prozkoumávat
+obrovské množství informací, pokud měl člověk přístup. Brzy se objevily první
+webové vyhledávače, které zautomatizovaly sběr webových dokumentů pomocí
+pavouků (crawler, spider) prolézajících celou síť po hypertextových odkazech
+mezi dokumenty, které v první řadě umožnily otevřenost dat.
+
+Na přelomu tisíciletí došlo ke krachu na akciových trzích po splasknutí tzv.
+dotcom bubliny, ve které se projevil až přehnaný optimismus v nové firmy
+podnikající ve virtuálním prostoru internetu. Ty firmy, které krach přežily
+zažily období velmi slabé konkurence, což byl jeden z hlavních důvodů, proč
+tyto firmy dnes patří mezi největší (dle tržní kapitalizace) na světě a stále
+si drží svůj nikým nerušený monopol. Ve webovém vyhledávání to byl Google,
+který přežil svou konkurenci na domácím trhu a postupně začal dominovat i
+zahraniční trhy (s několika výjimkami - Čína, Korea, ČR?, Rusko?).
+
+% stuck at google's dominance
+% bias toward statistical approaches and clever scraping
+% some commercial systems and research is catching up
+% open source is lagging behind
+% what can be done
+
+[1] \url{https://en.wikipedia.org/wiki/Information_retrieval#History}
+
+
+[1] \url{https://www.theguardian.com/commentisfree/2015/apr/18/google-eu-monopoly-inquiry-too-late-to-stop}
+
+\section{Background}
+
+\section{Algoritmy v textovém vyhledávání}
+Povaha textových dat. Neseřaditelnost. Redundance v lidském jazyce (DEFLATE, inverted index).
+
+\subsection{Databáze a fulltext}
+% 2 paralelní systémy - db + index
+\subsection{Datové struktury pro fulltext}
+% popiš online processing (agrep), like operátor v databázi?
+% regex search. Těžký pro uživatele. Nebere v potaz překlepy
+
 \subsection{Invertovaný index}
 % nějaká historija atd.
 Invertovaný index jednoduše řečeno vytvoří seznam dokumentů pro každé slovo,
@@ -27,39 +73,8 @@ Při použití klasických slov by se pro dokument s obsahem "máma mele maso"
 vytvořily tři invertované seznamy pro každé vyskytující se slovo "máma", "mele"
 a "maso".
 
-\subsection{N-gramový invertovaný index}
-Alternativně při použití trigramů (n-gramy, kde n = 3), by "slova" byla
-\textbf{\_\_m, \_má, \_mám, áma, ma\_, a\_m, \_me, mel, ele, le\_, e\_m, \_ma,
-mas, aso, so\_, o\_\_}. Ngramové indexy mají tu výhodu, že bez jakýchkoliv
-dalších úprav s nimi lze vyhledávat přibližně. 
-
-\url{https://swtch.com/~rsc/regexp/regexp4.html}
-
-
-
-
-% word based vs ngram based
-\subsection{Alternativní datové struktury}
-Invertovaný index je doposud vítězem v rychlosti vyhledávání v textu, ale pro
-některé speciální případy byly navrženy i jiné datové struktury, které dokáží
-být kompaktnější než invertovaný index po kompresi, nebo umožňují vícero
-seřazení při jednom uložení v paměti. Klasický invertovaný index má právě jedno
-seřazení - nejčastěji podle vzrůstajícího id dokumentů nebo podle klesající
-zvolené business metriky.
-
-Waweletové stromy - dual sorted Index
-Treap Index
-
-Obě tyto alternativní datové struktury dosahují obrovských úspor díky své
-kompresibilitě, čehož bychom využili, pokud bychom uvažovali rozsáhlá vstupní
-data. Ale protože se zaměřuji na relativně malé objemy dat, avšak s vysokou
-redundancí při prohledávání, nevyužiji tyto datové struktury. Dalším velkým
-důvodem je, že jsem nenašel žádný výzkum, který by je aplikoval na prefixové,
-natož přibližné vyhledávání. Na druhou stranu existuje více výzkumných týmů,
-kteří se zabývají přibližným (fuzzy) prohledáváním na modifikovaném invertovaném
-indexu.
-
 \subsection{Hledání v invertovaném indexu}
+% implicitní vs explicitní operátory
 Vstupním dotazem se rozumí posloupnost slov (dotazovaná slova) a speciálních
 operátorů. Pro každé vstupní dotazované slovo se provede dotaz na první část
 indexu - slovník. Ten vrátí všechny údaje nezbytné k tomu, abychom získali
@@ -96,7 +111,89 @@ zpracovat nejprve každé slovo zvlášť a sloučit výsledek (Term At A Time -
 nebo 2. postupovat dokument po dokumentu napříč všemi slovy (Document At A Time
 - DAAT).
 
-\subsection{Prefixový a fuzzy invertovaný index}
+\subsection{Alternativní datové struktury}
+Invertovaný index je doposud vítězem v rychlosti vyhledávání v textu, ale pro
+některé speciální případy byly navrženy i jiné datové struktury, které dokáží
+být kompaktnější než invertovaný index po kompresi, nebo umožňují vícero
+seřazení při jednom uložení v paměti. Klasický invertovaný index má právě jedno
+seřazení - nejčastěji podle vzrůstajícího id dokumentů nebo podle klesající
+zvolené business metriky.
+
+Waweletové stromy - dual sorted Index
+Treap Index
+
+Obě tyto alternativní datové struktury dosahují obrovských úspor díky své
+kompresibilitě, čehož bychom využili, pokud bychom uvažovali rozsáhlá vstupní
+data. Ale protože se zaměřuji na relativně malé objemy dat, avšak s vysokou
+redundancí při prohledávání, nevyužiji tyto datové struktury. Dalším velkým
+důvodem je, že jsem nenašel žádný výzkum, který by je aplikoval na prefixové,
+natož přibližné vyhledávání. Na druhou stranu existuje více výzkumných týmů,
+kteří se zabývají přibližným (fuzzy) prohledáváním na modifikovaném invertovaném
+indexu.
+
+\subsection{Databáze a fulltext}
+\subsection{Open Source a komerční systémy}
+% lucene, elastic, solr, algolia, xapian, mnogosearch, postgres
+
+\section{Změny a nové potřeby}
+\subsection{Změny v architekturách počítačů a počítačových systémů}
+% Stonebraker o databázích
+% sloupcové a in-memory db
+% něco o nosql
+% hierarchie paměti
+% ssd
+% nvram
+
+% konvergence db a fulltextu. Podobnost se sloupcovými db. Not yet because of
+% reasons below. Columnar dbs for analytical slow access. tens of thousands
+% columns needed for each word. If some words have short inverted list, then
+% waste,because blocks have minimum size.
+
+\subsection{Nové potřeby ve vyhledávání}
+\subsection{Vertikální vyhledávání}
+Dle hlavního vedoucího výzkumu v Googlu, Petera Norviga, je úspěch Googlu
+založen ne na lepších algoritmech, než by měli ostatní, ale jednoduše tím, že
+má více dat.
+% přístup googlu - chytré scrapování. Přitom data existují ve zpracované formě.
+% Nedostatek vertikálního a site search? Špatné nebo obtížné open source
+% řešení? 
+\subsection{Linked data}
+\subsection{Mobilní zařízení}
+
+\subsection{Ohodnocení výsledků dotazu}
+\subsection{tf-idf}
+% SEO - exploit of google's algorithms. Více vyhledávačů ztěžuje SEO
+\subsection{Proximity}
+% kritika tf-idf
+% alternativa proximity
+
+\section{Přibližné vyhledávání}
+% Návrh 
+
+\subsection{Autocompletion}
+% query logs
+
+\subsection{Type-ahead search, search as you go}
+
+\subsection{N-gramový invertovaný index}
+% word based vs ngram based
+Alternativně při použití trigramů (n-gramy, kde n = 3), by "slova" byla
+\textbf{\_\_m, \_má, \_mám, áma, ma\_, a\_m, \_me, mel, ele, le\_, e\_m, \_ma,
+mas, aso, so\_, o\_\_}. Ngramové indexy mají tu výhodu, že bez jakýchkoliv
+dalších úprav s nimi lze vyhledávat přibližně. 
+
+\url{https://swtch.com/~rsc/regexp/regexp4.html}
+\subsection{Prefixové indexy}
+% completesearch
+
+\subsection{Lematizace, Stematizace}
+Problémy vícejazyčných textů. Detekce jazyka.
+
+\subsection{Indexy založené na editovací vzdálenosti}
+% tastier
+
+\section{Návrh implementace vyhledávacího systému}
+\subsection{Prefixové a fuzzy požadavky}
 Ačkoliv se jedná o dva různé požadavky, prefixové a fuzzy invertované indexy
 mají ve výsledku podobné vlastnosti a tudíž jsou pro ně vhodné stejné datové
 struktury. Pokud na chvíli necháme fuzzy požavky stranou, nastíním, jak lze
@@ -167,6 +264,24 @@ Kompaktní trie (ve skutečnosti jakákoliv trie) nám umožní nejen rychlé
 vyhledání všech slov odpovídajících prefixu, ale zároveň i rychlé přibližné
 vyhledání všech podobných slov podle zvolené distanční metriky.
 
+\subsection{Disjunkce invertovaných seznamů}
+\subsection{Hybridní indexy}
+\subsection{Indexace}
+% 2-pass hybrid
+\subsection{Statické a dynamické indexy}
+% static: no locks and latches, compact data structures, cache efficient
+% 2 level data structure + bulk updates
+\subsection{Škálovatelnost}
+% document or term based
+% share nothing
+
+\section{Ukázka implementace}
+\subsection{Použité datové soubory}
+\subsection{Demonstrace hybridního indexu}
+\subsection{Ukázka vyhledávání}
+
+
+\section{Závěr}
 
 \section{Odkazy}
 \url{http://www.dcs.gla.ac.uk/~craigm/publications/lacour08efficiency.pdf}
