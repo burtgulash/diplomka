@@ -2,41 +2,180 @@
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[czech]{babel}
-%\usepackage{a4wide}
+\usepackage{a4wide}
 \usepackage[numbers]{natbib}
 \usepackage[pdfborder={0 0 0},colorlinks=true,linkcolor=green]{hyperref}
-%\usepackage[bottom=2.5cm]{geometry}
+\usepackage[bottom=2.5cm]{geometry}
 
 \linespread{1.15}
 
 
 \begin{document}
 \section{Úvod}
-Vyhledávání v textu je v dnešní době alfou a omegou v interakci člověka s
-počítačem. 
+Díky vzestupu počítačů a především internetu došlo k dramatickému
+nárustu objemu textových informací ve formě snadno přístupné lidem i pro
+počítačové zpracování. Textová data jsou specifická v tom, že jejími
+tvůrci jsou lidé a ne počítačové systémy nebo měřící čidla. 
 
-\subsection{Historie vyhledávání}
-Obor, který se zabývá vyhledáváním informací v textu , se v angličtině nazývá
-Information Retrieval (IR), nebo specifičtěji Text Retrieval. 
+\section{Východiska}
+V této práci se snažím najít alternativní způsoby v širokém oboru vyhledávání
+informací, které nejsou velmi známé, ale osobně si myslím, že na některé
+problémy v dnešní době jsou vhodnější než běžně známé metody dostupné v
+populární literatuře na webu v článcích a blogových příspěvcích. V této části
+se pokusím v krátkosti přiblížit tento základ, na který bude navazovat jádro mé
+práce.
 
-První zmínka o vyhledávání v textu pomocí počítače pochází už ze 40. let 20.
-století [1]. Velký rozmach zažil později v 90. letech s popularizací Internetu
-a nástupem World Wide Webu (WWW), kdy začalo být možné otevřeně prozkoumávat
-obrovské množství informací, pokud měl člověk přístup. Brzy se objevily první
-webové vyhledávače, které zautomatizovaly sběr webových dokumentů pomocí
-pavouků (crawler, spider) prolézajících celou síť po hypertextových odkazech
-mezi dokumenty, které v první řadě umožnily otevřenost dat.
+\subsection{Databáze a textové vyhledávání}
+Textové vyhledávání se často uvádí odděleně od databázových systémů, přestože
+by v ideálním případě mělo být součástí databází. Důvodem je silně různorodá
+povaha textových dat s nejednoznačným způsobem zacházení. Pokud v databázích
+pracujeme například s čísly, pak je situace celkem snadná, protože čísla jsou
+snadno a jednoznačně porovnatelná, ať už to jsou floating nebo celá čísla. Jiné
+datové typy jako třeba intervaly jsou složitější, ale přesto existují pevně
+definovatelné způsoby pro jejich seřazení a tedy snadné vyhledávání.
+Intervalovými daty mohou být jednorozměrné časové rozmezí, dvourozměrná
+geografická data, nebo vícerozměrná data často používaná v počítačové grafice.
+Existuje pro ně velké množství relativně efektivních algoritmů a aktivní
+výzkum. Časová data jsou na první pohled lehce seřaditelná, jenže kvůli lidským
+"obohacením", jako jsou časové zóny, letní čas, nebo více dimenzí času (čas
+platnosti, čas záznamu) se jejich zacházení v databázích komplikuje. Textová
+data generovaná lidskou řečí jsou ještě komplikovanější a často se řeší mimo
+databázové systémy. Ve výsledku používá spousta uživatelských aplikací s
+databázovou podporou ve skutečnosti dva systémy - kromě klasické databáze ještě
+speciální systém pro relevantní a efektivní textové vyhledávání.
 
-Na přelomu tisíciletí došlo ke krachu na akciových trzích po splasknutí tzv.
-dotcom bubliny, ve které se projevil až přehnaný optimismus v nové firmy
-podnikající ve virtuálním prostoru internetu. Ty firmy, které krach přežily
-zažily období velmi slabé konkurence, což byl jeden z hlavních důvodů, proč
-tyto firmy dnes patří mezi největší (dle tržní kapitalizace) na světě a stále
-si drží svůj nikým nerušený monopol. Ve webovém vyhledávání to byl Google,
-který přežil svou konkurenci na domácím trhu a postupně začal dominovat i
-zahraniční trhy (s několika výjimkami - Čína, Korea, ČR?, Rusko?).
+Problém s textem, který nás zajímá, je jeho nejednoznačná seřaditelnost.
+Představme si databázi lidských jmen a aplikaci určenou pro vyhledávání v nich.
+Počítá se s tím, že pokud vyhledáváme konkrétní osobu, nevíme přesně jak je
+její jméno v databázi uloženo. Kdybychom věděli, že se Jaromír Kobliha v
+databázi vyskytuje v konkrétním tvaru Jaromír Kobliha nebo Kobliha, Jaromír
+nebo Dr. Jarda Kobliha, pak jednoduše zadáme dotaz na přesnou shodu a máme
+vyřešeno. Jenže naše očekávání jsou jiná. Člověk by všechny tyto tvary jména
+vyhodnotil ekvivalentně, a tím pádem je naším úkolem vytvořit podobně chytrý
+systém anebo alespoň iluzi takového systému. 
 
-\section{Současný stav}
+Jména mohou být jednoduše rozdělena na více sloupců - křestní jméno, prostřední
+jméno, příjmení, titul(y), tak jak to známe, pokud vyplňujeme kdejaké
+formuláře. To umožní systému provést oddělený dotaz v každém tomto sloupci a
+sloučit výsledky. Nebo jména seřadit nejprve podle příjmení, pak podle jména a
+titulů naposled (Kobliha, Jaromír, Dr.), protože předpokládáme, že existuje
+méně příjmení než křestních jmen a ještě méně titulů. Tohle je ovšem jenom
+heuristika, kterou nelze aplikovat např. ve Vietnamu (Nguyen a Tran tvoří 50\%
+všech příjmení) nebo v Jižní Korey (Kim, Lee, Park a Choi tvoří 50\% všech
+příjmení). Jiné kultury nemají ani koncept příjmení, proto je takový systém
+obecně nedostatečný.
+
+Pro větší záznamy - celé dokumenty o několika stovkách až tisících slov - nelze
+ani uvažovat seřaditelnost podobně naivním způsobem. Přestože je vyhledávání v
+textu obtížné, existují možnosti, jak povahu lidského textu využít a vytvořit
+algoritmy umožňující efektivní vyhledávání.
+
+Statisticky můžeme pozorovat unikátní povahu lidského jazyka v několika statistických pozorováních.
+% Frekvenční analýza - codebreaking
+% 1, 2,3 - více jedničěk distribuce
+% zipf distribuce slov
+% redundance - deflate a jiný textový komprese
+
+\subsection{Algoritmy a datové struktury pro textové vyhledávání}
+Algoritmy pro vyhledávání využívají právě této redundance v textu a díky tomu
+dosahují daleko větší efektivity než o kdybychom textu uvažovali jako o
+rovnoměrně rozložených datech.
+
+\subsection{Invertovaný index}
+Centrální datovou strukturou, která využívá Zipfovy distribuce slov je tzv.
+invertovaný index, nebo také invertovaný soubor.
+
+\subsection{Hledání v invertovaném indexu}
+% implicitní vs explicitní operátory
+Vstupním dotazem se rozumí posloupnost slov (dotazovaná slova) a
+speciálních operátorů. Pro každé vstupní dotazované slovo se provede
+dotaz na první část indexu - slovník. Ten vrátí všechny údaje nezbytné k
+tomu, abychom získali odpovídající invertovaný seznam dokumentů. V
+případě prefixového a přibližného dotazu slovník vrátí celou množinu
+odpovídajících slov.  V druhé fázi vyhledávání se použijí nalezené
+invertované seznamy a provedou se s nimi operace dle operátorů v dotazu
+uživatele. Třetí fází je seřazení výsledků podle zvolené hodnotící
+funkce a sesbírání důkazů pro ty výsledky, které budou zobrareny
+uživateli.
+
+Invertované indexy podporují několik operací, se kterými může uživatel
+měnit povahu svého dotazu. Nejčastěji jsou implementovány booleovské
+operátory AND, OR, NOT a frázové vyhledávání - tedy omezení jen na ty
+výsledky, kde se slova vyskytují těsně u sebe.
+
+Apache Lucene operátory - fuzzy (nízká účinnost), změna ranku, ...
+
+Pro naše požadavky, především kvůli jednoduchosti, bude postačovat
+operátor AND, který navíc bude implicitní v dotazu. Tedy vstupním
+dotazem bude posloupnost slov a výsledkem bude konjunkce výsledků
+nalezených pro každé z nich. Funkcionalita disjunktivních dotazů
+(operátor OR) bude implicitní v tom, že vyhledání slova ve slovníku
+vrátí disjunkci více přibližných slov nebo prefixů v případě prefixového
+dotazu.  Operátoru NOT je občas potřeba, pokud dojde k nejednoznačnostem
+ve výsledcích.  Uživatel může nejednoznačnost identifikovat a zadat
+další dotaz, kde ji vyfiltruje právě pomocí operátoru NOT. Otázkou je,
+zda-li by se mělo použítí operátoru NOT řídit stejnými pravidly jako u
+běžného dotazovaného slova. Pokud by se použila množina slov v blízkosti
+negovaného slova, mohlo by dojít k nežádoucímu přílišnému filtrování.
+
+Poté, co v první části indexu - slovníku - nalezneme slova odpovídající
+dotazovaným slovům a jejich invertované seznamy, přichází část, kdy se
+provedou zadané operace s invertovanými seznamy.  Existují dvě hlavní
+možnosti - 1.  zpracovat nejprve každé slovo zvlášť a sloučit výsledek
+(Term At A Time - TAAT) nebo 2. postupovat dokument po dokumentu napříč
+všemi slovy (Document At A Time
+- DAAT).
+
+\subsection{Alternativní datové struktury}
+Invertovaný index je doposud vítězem v rychlosti vyhledávání v textu,
+ale pro některé speciální případy byly navrženy i jiné datové struktury,
+které dokáží být kompaktnější než invertovaný index po kompresi, nebo
+umožňují vícero seřazení při jednom uložení v paměti. Klasický
+invertovaný index má právě jedno seřazení - nejčastěji podle
+vzrůstajícího id dokumentů nebo podle klesající zvolené business
+metriky.
+
+Waweletové stromy - dual sorted Index Treap Index
+
+Obě tyto alternativní datové struktury dosahují obrovských úspor díky
+své kompresibilitě, čehož bychom využili, pokud bychom uvažovali
+rozsáhlá vstupní data. Ale protože se zaměřuji na relativně malé objemy
+dat, avšak s vysokou redundancí při prohledávání, nevyužiji tyto datové
+struktury. Dalším velkým důvodem je, že jsem nenašel žádný výzkum, který
+by je aplikoval na prefixové, natož přibližné vyhledávání. Na druhou
+stranu existuje více výzkumných týmů, kteří se zabývají přibližným
+(fuzzy) prohledáváním na modifikovaném invertovaném indexu.
+
+\section{Motivace}
+Od dotcom bubliny v roce 2000 uplynulo už šestnáct let, Google nedávno
+osmnácté narozeniny a od spuštění World Wide Webu uplynuly již téměř tři
+desetiletí. V této kapitole nastíním situaci v textovém vyhledávání za
+posledních zhruba dvacet let, některé nové trendy a subjektivní
+zhodnocení současného stavu, které mě vedlo k této práci.
+
+% Historie 90. - dnes
+\subsection{Historie}
+
+\subsection{Folklórní povědomí; Google, Stanford bias; nedostupnost populárních zdrojů (coursera, youtube)}
+Právě populární folklórní povědomí o vyhledávání čerpá ze stejných , které čerpají
+z běžně dostupných zdrojů.
+
+\subsection{Situace v Open Source}
+\subsection{Optimismus v Big Data}
+
+% popiš online processing (agrep), like operátor v databázi?
+% regex search. Těžký pro uživatele. Nebere v potaz překlepy
+
+
+\subsection{Optimismus v umělou inteligenci}
+V dnešní době panuje velký optimismus z umělé inteligence a mnozí
+předpovídají počítačové systémy schopné porozumět lidské řeči v
+nejbližších letech až desetiletích. Nicméně při pohledu do historie
+oboru umělé inteligence si můžeme povšimnout více podobných
+optimistických období, které ale očekávání nenaplnily a po opadnutí
+nadšení přišla tzv. zima v umělé inteligenci (AI winter). 
+
+
 % Google + statistical bias + big data
 % stuck at google's dominance
 % bias toward statistical approaches and clever scraping
@@ -49,92 +188,11 @@ zahraniční trhy (s několika výjimkami - Čína, Korea, ČR?, Rusko?).
 
 [1] \url{https://www.theguardian.com/commentisfree/2015/apr/18/google-eu-monopoly-inquiry-too-late-to-stop}
 
-\section{Background}
-
-\section{Algoritmy v textovém vyhledávání}
-Povaha textových dat. Neseřaditelnost. Redundance v lidském jazyce (DEFLATE, inverted index).
-
 \subsection{Databáze a fulltext}
 % 2 paralelní systémy - db + index
 \subsection{Open Source a komerční systémy}
 % lucene, elastic, solr, algolia, xapian, mnogosearch, postgres
 
-\subsection{Datové struktury pro fulltext}
-% popiš online processing (agrep), like operátor v databázi?
-% regex search. Těžký pro uživatele. Nebere v potaz překlepy
-
-\subsection{Invertovaný index}
-% nějaká historija atd.
-Invertovaný index jednoduše řečeno vytvoří seznam dokumentů pro každé slovo,
-pokud se v daném dokumentu slovo vyskytuje. Seznamu dokumentů pak říkáme
-invertovaný seznam a všechny invertované seznamy jsou uloženy v paměti v tzv.
-invertovaném souboru.
-
-Slovem může být slovo lidské řeči, nebo jiné uspořádání po sobě jdoucích znaků.
-Často se používají alternativní n-gramové invertované indexy, kde n-gramem
-rozumíme posloupnost n po sobě jdoucích znaků.
-
-Při použití klasických slov by se pro dokument s obsahem "máma mele maso"
-vytvořily tři invertované seznamy pro každé vyskytující se slovo "máma", "mele"
-a "maso".
-
-\subsection{Hledání v invertovaném indexu}
-% implicitní vs explicitní operátory
-Vstupním dotazem se rozumí posloupnost slov (dotazovaná slova) a speciálních
-operátorů. Pro každé vstupní dotazované slovo se provede dotaz na první část
-indexu - slovník. Ten vrátí všechny údaje nezbytné k tomu, abychom získali
-odpovídající invertovaný seznam dokumentů. V případě prefixového a přibližného
-dotazu slovník vrátí celou množinu odpovídajících slov.  V druhé fázi
-vyhledávání se použijí nalezené invertované seznamy a provedou se s nimi
-operace dle operátorů v dotazu uživatele. Třetí fází je seřazení výsledků podle
-zvolené hodnotící funkce a sesbírání důkazů pro ty výsledky, které budou
-zobrareny uživateli.
-
-Invertované indexy podporují několik operací, se kterými může uživatel měnit
-povahu svého dotazu. Nejčastěji jsou implementovány booleovské operátory AND,
-OR, NOT a frázové vyhledávání - tedy omezení jen na ty výsledky, kde se slova
-vyskytují těsně u sebe.
-
-Apache Lucene operátory - fuzzy (nízká účinnost), změna ranku, ...
-
-Pro naše požadavky, především kvůli jednoduchosti, bude postačovat operátor
-AND, který navíc bude implicitní v dotazu. Tedy vstupním dotazem bude
-posloupnost slov a výsledkem bude konjunkce výsledků nalezených pro každé z
-nich. Funkcionalita disjunktivních dotazů (operátor OR) bude implicitní v tom,
-že vyhledání slova ve slovníku vrátí disjunkci více přibližných slov nebo
-prefixů v případě prefixového dotazu.  Operátoru NOT je občas potřeba, pokud
-dojde k nejednoznačnostem ve výsledcích.  Uživatel může nejednoznačnost
-identifikovat a zadat další dotaz, kde ji vyfiltruje právě pomocí operátoru
-NOT. Otázkou je, zda-li by se mělo použítí operátoru NOT řídit stejnými
-pravidly jako u běžného dotazovaného slova. Pokud by se použila množina slov v
-blízkosti negovaného slova, mohlo by dojít k nežádoucímu přílišnému filtrování.
-
-Poté, co v první části indexu - slovníku - nalezneme slova odpovídající
-dotazovaným slovům a jejich invertované seznamy, přichází část, kdy se provedou
-zadané operace s invertovanými seznamy.  Existují dvě hlavní možnosti - 1.
-zpracovat nejprve každé slovo zvlášť a sloučit výsledek (Term At A Time - TAAT)
-nebo 2. postupovat dokument po dokumentu napříč všemi slovy (Document At A Time
-- DAAT).
-
-\subsection{Alternativní datové struktury}
-Invertovaný index je doposud vítězem v rychlosti vyhledávání v textu, ale pro
-některé speciální případy byly navrženy i jiné datové struktury, které dokáží
-být kompaktnější než invertovaný index po kompresi, nebo umožňují vícero
-seřazení při jednom uložení v paměti. Klasický invertovaný index má právě jedno
-seřazení - nejčastěji podle vzrůstajícího id dokumentů nebo podle klesající
-zvolené business metriky.
-
-Waweletové stromy - dual sorted Index
-Treap Index
-
-Obě tyto alternativní datové struktury dosahují obrovských úspor díky své
-kompresibilitě, čehož bychom využili, pokud bychom uvažovali rozsáhlá vstupní
-data. Ale protože se zaměřuji na relativně malé objemy dat, avšak s vysokou
-redundancí při prohledávání, nevyužiji tyto datové struktury. Dalším velkým
-důvodem je, že jsem nenašel žádný výzkum, který by je aplikoval na prefixové,
-natož přibližné vyhledávání. Na druhou stranu existuje více výzkumných týmů,
-kteří se zabývají přibližným (fuzzy) prohledáváním na modifikovaném invertovaném
-indexu.
 
 \section{Změny a nové potřeby}
 \subsection{Změny v architekturách počítačů a počítačových systémů}
