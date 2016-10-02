@@ -1,8 +1,8 @@
-\documentclass[12pt]{article}
+\documentclass[11pt]{article}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[czech]{babel}
-%\usepackage{a4wide}
+\usepackage{a4wide}
 \usepackage[numbers]{natbib}
 \usepackage[pdfborder={0 0 0},colorlinks=true,linkcolor=green]{hyperref}
 \usepackage[bottom=2.8cm]{geometry}
@@ -22,14 +22,37 @@ zpracování. Textová data jsou specifická v tom, že jejími tvůrci jsou lid
 počítačové systémy nebo měřící čidla. Při vyhledávání v takovýchto datech máme
 jako lidé silná očekávání na relevanci výsledků vyhledávání, nicméně kvůli
 charakteristice textových dat je vyhledávání v nich obtížné. Tím, že je úkol
-obtížný, existuje více specifických zaměření, než jedno obecné a perfektní.
+obtížný, existuje více specifických zaměření, než jedno obecné a použitelné pro
+všechny případy.
 
-V této práci se snažím najít alternativní způsoby v tomto širokém oboru , které
+S nástupem World Wide Webu v 90. letech došlo k vzestupu Webových vyhledávačů,
+které dnes slouží jako vstupní brána do světa informací.
+...
+
+V této práci se snažím najít alternativní způsoby v tomto širokém oboru, které
 nejsou velmi známé, a zaměřím se na oblast, která je dle mého názoru jednou z
 nejžádanějších v praktických aplikacích. V současné době se pro ni ale
-používají techniky navrhované pro příliš obecné a zdrojově náročné prohledávání
-Webu a nedosahují takových výsledků, jakých by mohly, nebo za příliš vysokou
-cenu komplikovaných řešení. 
+používají techniky pro příliš obecné a zdrojově náročné prohledávání Webu a
+nedosahují takových výsledků, jakých by mohly, nebo za příliš vysokou cenu
+komplikovaných řešení. 
+
+Velkým důvodem proč převažují techniky pro Webové vyhledávání je psychologický
+- většina problémů, se kterými se potýkají firmy i nekomerční projekty, zdaleka
+nepracuje s takovými objemy dat, se kterým se musí potýkat rozsáhlé webové
+vyhledávače nebo světové sociální sítě. V praxi jsou tyto problémy často
+řešitelné s použitím pouze jednoho počítače. Nicméně lidé přehnaně věří, že
+jejich projekty budou jednou dosahovat obdobných závratných velikostí, a proto
+volí řešení nevhodné pro jejich problémy.
+
+V ideálním případě by měla být podpora pro efektivní textové vyhledávání
+zabudována přímo do databázových systémů, ale v současné době není jejich
+podpora ideální, a proto aplikace s podporou textového vyhledávání používají
+kromě databáze ještě paralelní systém specializovaný pro text. Důvod je ten, že
+je obtížné vytvořit vyhledávač v takové formě, aby vyhovoval obecným
+požadavkům, na které se databáze používají. Techniky představené v této práci
+by měly být vhodnější pro generické účely, než ty, které používají Webové
+vyhledávače a ze kterých se čerpá inspirace pro textové indexy vestavěné do
+databází.
 
 ...
 
@@ -110,15 +133,13 @@ desetiletí. V této kapitole nastíním situaci v textovém vyhledávání za
 posledních zhruba dvacet let, některé nové trendy a subjektivní
 zhodnocení současného stavu, které mě vedlo k této práci.
 
-% Historie 90. - dnes
-\subsection{Historie}
-
 \subsection{Folklórní povědomí; Google, Stanford bias; nedostupnost populárních zdrojů (coursera, youtube)}
 Právě populární folklórní povědomí o vyhledávání čerpá ze stejných , které čerpají
 z běžně dostupných zdrojů.
 
 \subsection{Situace v Open Source}
 \subsection{Optimismus v Big Data}
+S nástupem World 
 
 \subsection{Big data vs Small data}
 % popiš online processing (agrep), like operátor v databázi?
@@ -262,9 +283,60 @@ stranu existuje více výzkumných týmů, kteří se zabývají přibližným
 Rozdělení textu na slova a vytvoření datové struktury nad nimi je velkým
 pokrokem od uvažování textu jako posloupnost znaků. Je to ale pouze první krok
 k relevantním výsledkům. V této sekci poukáži na problémy invertovaného indexu
-v základní formě a několik způsobů, které řeší tyto problémy.
+v jeho základní formě a několik způsobů, které řeší tyto problémy.
 
-\subsection{Prefixové a fuzzy indexy}
+\paragraph{Jazyková morfologie}\mbox{}\\
+Přestože podle jazykovědců mají všechny lidské jazyky společného předka
+(Chomsky), historicky každý prošel svým unikátním vývojem a dnes má každý své
+charakteristické rysy. Pro potřeby vyhledávání nás nezajímá jazykový syntax.
+Strojové porozumění textu patří do kategorie problémů AI-Complete, tedy
+potřebovali bychom k tomu obecnou umělou inteligenci. Více nás zajímají
+problémy morfologie. Například morfologicky bohatá čeština je obtížná pro
+algoritmické zpracování textu kvůli koncovkám slov. Například při dotazování
+vyhledávače na výraz \textbf{motorová pila} nás jistě budou zajímat i výsledky,
+které obsahují \textbf{motorové pile} nebo \textbf{motorových pilách}. Nelze po
+uživateli požadovat, aby vyjmenoval všechny tvary slov, které zadává. Klasickým
+řešením je před indexováním dat provést jazykovou analýzu a převést slova na
+kořenový tvar. Ve výsledku se místo slova \textbf{motovorých} zaindexuje slovo
+\textbf{motor} a poté při vyhledávání se provede tatáž konverze dotazovaných
+slov. Vyhledávač by tedy původní výraz \textbf{motorová pila} nejprve převedl
+na \textbf{motor pila} a vykonal dotaz s tímto modifikovaným výrazem.
+
+Existuje mnoho obtíží s jazykovou analýzou. Jednak je závislá na konkrétním
+jazyce. Může se stát, že některé datové kolekce obsahují záznamy ve více
+jazycích. Pokud je text dostatečně dlouhý, lze to detekcí jazyka záznamu
+frekvenční analýzou přes morfologickým rozborem. V jiném případě může datová
+sada obsahovat záznamy v jednom jazyce, ale jednotlivá slova mohou být v jiném.
+Pak jednoduchá frekvenční analýza nebude dostačovat a musíme zvolit složitější
+techniky pro jazykový rozbor, které jsou mimo rozsah této práce.
+
+Samotné převedení slov na kořenový tvar (lematizace, stematizace?) je velmi
+náchylné k chybám a není stoprocentní. Například slovo \textbf{tancích} může
+mít kořen \textbf{tank} nebo \textbf{tanec} podle významu slova, který by
+člověk určil z kontextu věty. Tento problém naznačuje, že v úplnosti tento
+problém opět patří do kategorie problémů vyžadujících obecnou umělou
+inteligenci.
+
+% Aglutinativní jazyky
+\paragraph{N-gramové indexy}\mbox{}\\
+Alternativou k invertovaným indexům, kde invertovaný seznam odpovídá jednomu
+lidskému slovu, jsou tzv. n-gramové (q-gram?) invertované indexy. N-gramem je
+posloupnost několika po sobě jdoucích písmen o konstantní velikosti $n$.
+Například rozdělení výrazu \textbf{motor z hor} na trigramy (n-gram, kde $n =
+3$) by bylo \textbf{\_\_m, \_mo, mot, oto, tor, or\_, r\_z, \_z\_, z\_h, \_ho,
+hor, or\_, r\_\_}. V n-gramovém invertovaném indexu tedy vytvoříme invertovaný
+seznam pro každý vyskytující se n-gram. N-gramy mají podobně jako slova zipfovo
+rozdělení, proto je pro ně invertovaný index vhodnou datovou strukturou.
+Velikou výhodu oproti slovnímu indexu je naprostá jazyková nezávislost a
+podpora pro fuzzy vyhledávání.
+
+Nezbytnou otázkou je, jak velké $n$ zvolit. % TODO
+
+Databázový systém postgres podporuje trigramový index díky jeho univerzálnosti.
+
+\subsection{Editovací vzdálenost}
+
+\subsection{Prefixové indexy}
 Ačkoliv se jedná o dva různé požadavky, prefixové a fuzzy invertované indexy
 mají ve výsledku podobné vlastnosti a tudíž jsou pro ně vhodné stejné datové
 struktury. Pokud na chvíli necháme fuzzy požavky stranou, nastíním, jak lze
@@ -295,28 +367,15 @@ vyhledání všech slov odpovídajících prefixu, ale zároveň i rychlé přib
 vyhledání všech podobných slov podle zvolené distanční metriky.
 
 
+\subsection{Jiné techniky pro efektivnější vyhledávání}
 \subsection{Autocompletion}
 % query logs
 
 \subsection{Type-ahead search, search as you go}
 
 \url{https://swtch.com/~rsc/regexp/regexp4.html}
-\subsection{Prefixové indexy}
-% completesearch
 
-\subsection{Lematizace, Stematizace}
-Problémy vícejazyčných textů. Detekce jazyka.
-
-\subsection{N-gramový invertovaný index}
-% word based vs ngram based
-Alternativně při použití trigramů (n-gramy, kde n = 3), by "slova" byla
-\textbf{\_\_m, \_má, \_mám, áma, ma\_, a\_m, \_me, mel, ele, le\_, e\_m, \_ma,
-mas, aso, so\_, o\_\_}. Ngramové indexy mají tu výhodu, že bez jakýchkoliv
-dalších úprav s nimi lze vyhledávat přibližně. 
-
-\subsection{Indexy založené na editovací vzdálenosti}
-% tastier
-
+\section{Návrh implementace}
 \subsection{Disjunkce invertovaných seznamů}
 \subsection{Hybridní indexy}
 \subsection{Indexace}
