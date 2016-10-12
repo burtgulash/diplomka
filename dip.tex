@@ -6,10 +6,10 @@
 \usepackage[numbers]{natbib}
 \usepackage[pdfborder={0 0 0},colorlinks=true,linkcolor=green]{hyperref}
 \usepackage[bottom=2.8cm]{geometry}
-%\usepackage{sectsty}
+\usepackage{sectsty}
 
-%\sectionfont{\fontsize{22}{22}\selectfont}
-%\subsectionfont{\fontsize{14}{20}\selectfont}
+\sectionfont{\fontsize{21}{20}\selectfont}
+\subsectionfont{\fontsize{14}{16}\selectfont}
 
 \linespread{1.15}
 
@@ -71,8 +71,82 @@ problémy implementace takového systému. Na závěr představím možná budou
 řešení a další kroky k vylepšení, aby bylo možné vyhledávací systém nasadit v
 praxi.
 
+\section{Motivace}
+[1] \url{https://en.wikipedia.org/wiki/Information_retrieval#History}
+[1] \url{https://www.theguardian.com/commentisfree/2015/apr/18/google-eu-monopoly-inquiry-too-late-to-stop}
 
-\section{Databáze a textové vyhledávání}
+\subsection{Open Source a komerční systémy}
+% lucene, elastic, solr, algolia, xapian, mnogosearch, postgres
+
+\subsection{Změny v architekturách počítačů a počítačových systémů}
+% Stonebraker o databázích
+% sloupcové a in-memory db
+% něco o nosql
+% hierarchie paměti
+% ssd
+% nvram
+
+% konvergence db a fulltextu. Podobnost se sloupcovými db. Not yet because of
+% reasons below. Columnar dbs for analytical slow access. tens of thousands
+% columns needed for each word. If some words have short inverted list, then
+% waste,because blocks have minimum size.
+
+\subsection{Nové potřeby ve vyhledávání}
+\subsection{Vertikální vyhledávání}
+Dle hlavního vedoucího výzkumu v Googlu, Petera Norviga, je úspěch Googlu
+založen ne na lepších algoritmech, než by měli ostatní, ale jednoduše tím, že
+má více dat.
+% přístup googlu - chytré scrapování. Přitom data existují ve zpracované formě.
+% Nedostatek vertikálního a site search? Špatné nebo obtížné open source
+% řešení? 
+\subsection{Linked data}
+\subsection{Mobilní zařízení}
+
+
+
+\section{Textové vyhledávání}
+Vstupem v úloze vyhledávání je \textbf{dotaz} (query), tedy vstupní textový
+řetězec. Výstupem je seznam odpovídajících záznamů (dokumentů) z databáze
+seřazený podle ohodnocení, kterou vyhledávací systém přiřadí dle shody
+(relevance) dotazu s nalezeným záznamem.
+
+Pokud by dotazem bylo například jediné slovo \textbf{Petr}, mohl by výsledek
+vyhledávání v databázi jmen vrátit jména \textbf{Petr Novák, Petr Novotný, Petr
+Klíč, Petr Žel, ...}. Dotazem je povětšinou posloupnost jednoho nebo více slov,
+ale může obsahovat i různé operátory, které upravují povahu dotazu. Například
+booleovské operátory AND, OR a NOT mohou určit zda se musí shodovat všechna
+slova, nebo pouze jedno, nebo se slovo vyskytovat nesmí. Např. dotaz
+\textbf{Pavel OR Petr AND NOT Novák}. Každý vyhledavač implementuje různé
+operátory a kromě těch základních booleovských nejsou jejich funkce nijak
+sjednoceny.
+
+Uživatelsky jsou nejpřívětivější vyhledávače, u kterých není třeba speciální
+operátory vůbec používat. Vyhledávač si je buďto sami doplní do čistě textového
+dotazu, nebo se o vysokou přesnost postarají jejich hodnotící funkce.
+
+\subsection{Relevance}
+Pro měření relevance existují dvě základní metriky - přesnost (precision) a
+výtěžnost (recall) \url{https://wiki.korpus.cz/doku.php/pojmy:precision}.
+
+Přesnost je poměr počtu relevantních nalezených výsledků ku počtu všech
+nalezených výsledků. Tedy vyhledávač bude vyhledávat přesně, pokud bude
+obsahovat malé množství výsledků¸ které s dotazem nemají nic společného.
+Vyhledávače cílící na přesnost ale mohou trpět tím, že některé záznamy, které
+jsou pro uživatele relevantní, nejsou vůbec nalezeny. To měří právě výtěžnost -
+tedy poměr počtu relevantních nalezených výsledků ku počtu všech relevantních
+záznamů v databázi. Pro relevantní vyhledávání jsou důležité obě hodnoty. Při
+malé výtěžnosti bude uživatel cítit frustraci z toho, že musí hloupému
+vyhledávači podstrčit více podobných dotazů a stále bude mít pocit, že
+vyhledávač nenalezl všechno. Při malé přesnosti bude mít uživatel pocit, že si
+vyhledávač vyhledává, co se mu zlíbí.
+
+U relativně malých datových sad, kterými se tato práce zabývá, je narozdíl od
+webových vyhledávačů velmi důležitá výtěžnost. Při velkém množství výsledků se
+ztratí, že některé dokumenty nebudou nalezeny. V databázi jmen by ale bylo
+velmi frustrující, kdyby při dotazu \textbf{Jan Voštěp} nebylo nic nalezeno,
+přitom by v databázi existoval záznam \textbf{Dr. Voštěp, Jan}.
+
+\subsection{Databáze a textové vyhledávání}
 Textové vyhledávání se často uvádí odděleně od databázových systémů, přestože
 by v ideálním případě mělo být součástí databází. Důvodem je silně různorodá
 povaha textových dat s nejednoznačným způsobem zacházení. Pokud v databázích
@@ -126,88 +200,16 @@ Statisticky můžeme pozorovat unikátní povahu lidského jazyka v několika st
 % zipf distribuce slov
 % redundance - deflate a jiný textový komprese
 
-\section{Současný stav a motivace ke změně}
-Od dotcom bubliny v roce 2000 uplynulo už šestnáct let, Google nedávno
-osmnácté narozeniny a od spuštění World Wide Webu uplynuly již téměř tři
-desetiletí. V této kapitole nastíním situaci v textovém vyhledávání za
-posledních zhruba dvacet let, některé nové trendy a subjektivní
-zhodnocení současného stavu, které mě vedlo k této práci.
-
-\subsection{Folklórní povědomí; Google, Stanford bias; nedostupnost populárních zdrojů (coursera, youtube)}
-Právě populární folklórní povědomí o vyhledávání čerpá ze stejných , které čerpají
-z běžně dostupných zdrojů.
-
-\subsection{Situace v Open Source}
-\subsection{Optimismus v Big Data}
-S nástupem World 
-
-\subsection{Big data vs Small data}
-% popiš online processing (agrep), like operátor v databázi?
-% regex search. Těžký pro uživatele. Nebere v potaz překlepy
-
-
-\subsection{Optimismus v umělou inteligenci}
-V dnešní době panuje velký optimismus z umělé inteligence a mnozí
-předpovídají počítačové systémy schopné porozumět lidské řeči v
-nejbližších letech až desetiletích. Nicméně při pohledu do historie
-oboru umělé inteligence si můžeme povšimnout více podobných
-optimistických období, které ale očekávání nenaplnily a po opadnutí
-nadšení přišla tzv. zima v umělé inteligenci (AI winter). 
-
-
-% Google + statistical bias + big data
-% stuck at google's dominance
-% bias toward statistical approaches and clever scraping
-% some commercial systems and research is catching up
-% open source is lagging behind
-% what can be done
-
-[1] \url{https://en.wikipedia.org/wiki/Information_retrieval#History}
-
-
-[1] \url{https://www.theguardian.com/commentisfree/2015/apr/18/google-eu-monopoly-inquiry-too-late-to-stop}
-
-\subsection{Open Source a komerční systémy}
-% lucene, elastic, solr, algolia, xapian, mnogosearch, postgres
-
-\subsection{Změny v architekturách počítačů a počítačových systémů}
-% Stonebraker o databázích
-% sloupcové a in-memory db
-% něco o nosql
-% hierarchie paměti
-% ssd
-% nvram
-
-% konvergence db a fulltextu. Podobnost se sloupcovými db. Not yet because of
-% reasons below. Columnar dbs for analytical slow access. tens of thousands
-% columns needed for each word. If some words have short inverted list, then
-% waste,because blocks have minimum size.
-
-\subsection{Nové potřeby ve vyhledávání}
-\subsection{Vertikální vyhledávání}
-Dle hlavního vedoucího výzkumu v Googlu, Petera Norviga, je úspěch Googlu
-založen ne na lepších algoritmech, než by měli ostatní, ale jednoduše tím, že
-má více dat.
-% přístup googlu - chytré scrapování. Přitom data existují ve zpracované formě.
-% Nedostatek vertikálního a site search? Špatné nebo obtížné open source
-% řešení? 
-\subsection{Linked data}
-\subsection{Mobilní zařízení}
-
 
 \subsection{Algoritmy a datové struktury pro textové vyhledávání}
-Algoritmy pro vyhledávání využívají právě této redundance v textu a díky tomu
-dosahují daleko větší efektivity než o kdybychom u textu uvažovali rozvoměrné
-rozložení.
-
-\paragraph{Invertovaný index} \mbox{}\\
-Centrální datovou strukturou, která využívá Zipfovy distribuce slov je datová
-struktura invertovaný index (nebo také invertovaný soubor). Princip datové
-struktury je ten, že pro každé slovo, které se vyskytuje v databázi, si uložíme
-seznam odkazů na všechny záznamy (dokumenty), na kterých se slovo nachází.
-Invertovaný index by měl být znám všem, kdo čtou knihy, protože rejstřík na
-posledních stránkách není ničím jiným než právě invertovaným indexem, kde
-jedním záznamem je stránka knihy a odkazem je číslo stránky. 
+Centrální datovou strukturou, která navíc využívá ve svůj prospěch Zipfovy
+distribuce slov, je datová struktura \textbf{invertovaný index} (nebo také
+invertovaný soubor). Princip datové struktury je ten, že pro každé slovo, které
+se vyskytuje v databázi, si uložíme seznam odkazů na všechny záznamy
+(dokumenty), na kterých se slovo nachází.  Invertovaný index by měl být znám
+všem, kdo čtou knihy, protože rejstřík na posledních stránkách není ničím jiným
+než právě invertovaným indexem, kde jedním záznamem je stránka knihy a odkazem
+je číslo stránky. 
 
 Invertovaný index jsou ve skutečnosti dvě datové struktury. Tou první je
 takzvaný slovník - tedy seznam všech vyskytujících se slov s odkazem na svůj
@@ -224,6 +226,12 @@ binární vyhledávání. Odpadne nutnost ukládat pomocná data hashovací tabu
 navíc lze použít jednoduchou kompresní metodu - tzv. front coding. Pořadí slova
 v seřazeném seznamu lze použít jako odkaz pro nalezení odpovídajícího
 invertovaného seznamu.
+
+Invertovaný index je datová struktura obzvlášť obtížná na úpravy, protože je v
+paměti počítače uchována ve velmi kompaktní formě - často s použitím dalších
+kompresních algoritmů. Právě díky tomu na druhou stranu dosahuje vyšší
+rychlosti čtení oproti obecným vyhledávacím stromům. Index se proto často
+nejprve vytvoří (\textbf{indexování}) a pak se používá jen pro čtení.
 
 %\vspace{1cm}
 %Příklad:
@@ -260,13 +268,11 @@ karburátor, karel, karkulka, karma, karta, karty} vypadal:
 % TODO ukázka invertovaného indexu
 
 \subsection{Alternativní datové struktury}
-Invertovaný index je doposud vítězem v rychlosti vyhledávání v textu,
-ale pro některé speciální případy byly navrženy i jiné datové struktury,
-které dokáží být kompaktnější než invertovaný index po kompresi, nebo
-umožňují vícero seřazení při jednom uložení v paměti. Klasický
-invertovaný index má právě jedno seřazení - nejčastěji podle
-vzrůstajícího id dokumentů nebo podle klesající zvolené business
-metriky.
+Invertovaný index je stále nejefektivnější datovou strukturou pro vyhledávání v
+textu, ale pro některé speciální případy byly navrženy i jiné datové struktury,
+které dokáží být kompaktnější než invertovaný index po kompresi, nebo umožňují
+vícero seřazení při jednom uložení v paměti. Klasický invertovaný index má
+právě jedno seřazení dokumentů - nejčastěji podle vzrůstajícího id dokumentu.
 
 Waweletové stromy - dual sorted Index Treap Index
 
@@ -279,64 +285,81 @@ by je aplikoval na prefixové, natož přibližné vyhledávání. Na druhou
 stranu existuje více výzkumných týmů, kteří se zabývají přibližným
 (fuzzy) prohledáváním na modifikovaném invertovaném indexu.
 
-\section{Přibližné vyhledávání}
-Rozdělení textu na slova a vytvoření datové struktury nad nimi je velkým
-pokrokem od uvažování textu jako posloupnost znaků. Je to ale pouze první krok
-k relevantním výsledkům. V této sekci poukáži na problémy invertovaného indexu
-v jeho základní formě a několik způsobů, které řeší tyto problémy.
+\section{Techniky pro zvýšení výtěžnosti}
+Vyhledávání v invertovaném indexu je náchylné na nízkou výtěžnost. Velkou
+příčinou ve webových vyhledávačích vždy byla morfologie jazyka textu (různé
+tvary slov, např. dobrý, dobrou, dobrému, dobrých). V dnešní době to mohou být
+s převahou mobilních zařízení (a obtížnějším zadáváním textu) překlepy v
+dotazu. Záznamy mohou obsahovat slova jiného jazyka, který uživatel příliš
+neovládá, nebo pouze neví, jak se slovo píše. V případě češtiny to není takový
+problém díky podobnosti psaní a výslovnosti (vysoká fonémická ortografie), ale
+např. v angličtině se mohou různá slova psát při stejné výslovnosti různě (red
+- read, clothes - close, steal - steel) nebo naopak vyslovovat různě při
+stejném zápisu (lead - olovo nebo vést). Problémem mohou být i technické pojmy
+nebo názvy ( ASUS GTX950-2G, 2GB GDDR5 (grafická karta); ADATA XPG Z1 8GB
+(2x4GB) DDR4 2133 CL13 (paměť DRAM); ETA 0028 90040 Gratus Max (Kuchyňský
+robot)).
 
-\paragraph{Jazyková morfologie}\mbox{}\\
-Přestože podle jazykovědců mají všechny lidské jazyky společného předka
-(Chomsky), historicky každý prošel svým unikátním vývojem a dnes má každý své
-charakteristické rysy. Pro potřeby vyhledávání nás nezajímá jazykový syntax.
-Strojové porozumění textu patří do kategorie problémů AI-Complete, tedy
-potřebovali bychom k tomu obecnou umělou inteligenci. Více nás zajímají
-problémy morfologie. Například morfologicky bohatá čeština je obtížná pro
-algoritmické zpracování textu kvůli koncovkám slov. Například při dotazování
-vyhledávače na výraz \textbf{motorová pila} nás jistě budou zajímat i výsledky,
-které obsahují \textbf{motorové pile} nebo \textbf{motorových pilách}. Nelze po
-uživateli požadovat, aby vyjmenoval všechny tvary slov, které zadává. Klasickým
-řešením je před indexováním dat provést jazykovou analýzu a převést slova na
-kořenový tvar. Ve výsledku se místo slova \textbf{motovorých} zaindexuje slovo
-\textbf{motor} a poté při vyhledávání se provede tatáž konverze dotazovaných
-slov. Vyhledávač by tedy původní výraz \textbf{motorová pila} nejprve převedl
-na \textbf{motor pila} a vykonal dotaz s tímto modifikovaným výrazem.
+Existují různé techniky zaměřené na zvýšení výtěžnosti, kterými lze rozšířit
+vyhledávání v invertovaném indexu.
 
-Existuje mnoho obtíží s jazykovou analýzou. Jednak je závislá na konkrétním
+\subsection{Jazyková analýza}
+Díky obtížnosti morfologie češtiny si držel český webový vyhledávač Seznam.cz
+silnou pozici, než ji obsadil Google.com, který se původně tolik nemusel
+zabývat jednoduchou morfologií angličtiny.
+
+Nejvíce morfologických změn dochází v češtině na koncích slov. Například při
+dotazování vyhledávače na výraz \textbf{motorová pila} nás jistě budou zajímat
+i výsledky, které obsahují text \textbf{motorové pile} nebo \textbf{motorových
+pilách}. Nelze po uživateli požadovat, aby vyjmenoval všechny tvary slov, které
+zadává. Klasickým řešením je před indexováním dat provést jazykovou analýzu a
+převést slova na kmenový tvar (stematizace). Ve výsledku se místo slova
+\textbf{motovorých} zaindexuje slovo \textbf{motor} a poté při vyhledávání se
+provede tatáž konverze dotazovaných slov. Vyhledávač by tedy původní výraz
+\textbf{motorová pila} nejprve převedl na \textbf{motor pil} a vykonal dotaz s
+tímto modifikovaným výrazem. Co se považuje za kmen slova je určeno vybraným
+algoritmem. Kromě stematizace existuje ještě technika lemmatizace, která místo
+kmenu slova hledá jeho základní (slovníkový) tvar. 
+
+V jazykové analýze existuje mnoho problémů. Především je závislá na konkrétním
 jazyce. Může se stát, že některé datové kolekce obsahují záznamy ve více
-jazycích. Pokud je text dostatečně dlouhý, lze to detekcí jazyka záznamu
-frekvenční analýzou přes morfologickým rozborem. V jiném případě může datová
-sada obsahovat záznamy v jednom jazyce, ale jednotlivá slova mohou být v jiném.
-Pak jednoduchá frekvenční analýza nebude dostačovat a musíme zvolit složitější
-techniky pro jazykový rozbor, které jsou mimo rozsah této práce.
+jazycích. Pokud je text dostatečně dlouhý nebo obsahuje znaky specifické jen
+pro daný jazyk, lze jazyk záznamu detekovat frekvenční analýzou přes
+morfologickým rozborem. V jiném případě může datová sada obsahovat záznamy v
+jednom jazyce, ale jednotlivá slova mohou být v jiném. Pak jednoduchá
+frekvenční analýza nebude dostačovat a museli bychom zvolit složitější techniky
+pro jazykový rozbor, které jsou ale mimo rozsah této práce.
 
-Samotné převedení slov na kořenový tvar (lematizace, stematizace?) je velmi
-náchylné k chybám a není stoprocentní. Například slovo \textbf{tancích} může
-mít kořen \textbf{tank} nebo \textbf{tanec} podle významu slova, který by
-člověk určil z kontextu věty. Tento problém naznačuje, že v úplnosti tento
-problém opět patří do kategorie problémů vyžadujících obecnou umělou
-inteligenci.
+Problém s lemmatizací je nejednoznačnost základního tvaru. Například slovo
+\textbf{tancích} může mít základní tvar \textbf{tank} nebo \textbf{tanec} podle
+významu slova, který by člověk určil z kontextu věty. 
+
+\url{https://is.muni.cz/th/256499/fi_m/thesis_sikora.txt}
 
 % Aglutinativní jazyky
-\paragraph{N-gramové indexy}\mbox{}\\
+\subsection{N-gramové indexy}
 Alternativou k invertovaným indexům, kde invertovaný seznam odpovídá jednomu
 lidskému slovu, jsou tzv. n-gramové (q-gram?) invertované indexy. N-gramem je
-posloupnost několika po sobě jdoucích písmen o konstantní velikosti $n$.
-Například rozdělení výrazu \textbf{motor z hor} na trigramy (n-gram, kde $n =
-3$) by bylo \textbf{\_\_m, \_mo, mot, oto, tor, or\_, r\_z, \_z\_, z\_h, \_ho,
-hor, or\_, r\_\_}. V n-gramovém invertovaném indexu tedy vytvoříme invertovaný
-seznam pro každý vyskytující se n-gram. N-gramy mají podobně jako slova zipfovo
-rozdělení, proto je pro ně invertovaný index vhodnou datovou strukturou.
-Velikou výhodu oproti slovnímu indexu je naprostá jazyková nezávislost a
-podpora pro fuzzy vyhledávání.
+posloupnost několika po sobě jdoucích písmen o konstantní velikosti $n$.  Slovo
+\textbf{motorka} obsahuje trigramy (ngram, kde $n = 3$) \textbf{mot, oto, tor,
+ork, rka}.  Ngramový invertovaný index by pak měl invertovaný seznam pro každý
+nalezený ngram.  Velikou výhodu oproti slovnímu indexu je naprostá jazyková
+nezávislost a podpora pro fuzzy vyhledávání.
 
 Nezbytnou otázkou je, jak velké $n$ zvolit. % TODO
 
 Databázový systém postgres podporuje trigramový index díky jeho univerzálnosti.
+\url{https://swtch.com/~rsc/regexp/regexp4.html}
 
 \subsection{Editovací vzdálenost}
+\subsection{Prefixové vyhledávání}
 
-\subsection{Prefixové indexy}
+\subsection{Autocompletion}
+% query logs
+
+\subsection{Type-ahead search, search as you type}
+
+\section{Návrh nového systému}
 Ačkoliv se jedná o dva různé požadavky, prefixové a fuzzy invertované indexy
 mají ve výsledku podobné vlastnosti a tudíž jsou pro ně vhodné stejné datové
 struktury. Pokud na chvíli necháme fuzzy požavky stranou, nastíním, jak lze
@@ -367,24 +390,15 @@ vyhledání všech slov odpovídajících prefixu, ale zároveň i rychlé přib
 vyhledání všech podobných slov podle zvolené distanční metriky.
 
 
-\subsection{Jiné techniky pro efektivnější vyhledávání}
-\subsection{Autocompletion}
-% query logs
-
-\subsection{Type-ahead search, search as you go}
-
-\url{https://swtch.com/~rsc/regexp/regexp4.html}
-
-\section{Návrh implementace}
 \subsection{Disjunkce invertovaných seznamů}
 \subsection{Hybridní indexy}
-\subsection{Indexace}
+\paragraph{Indexace}
 % 2-pass hybrid
 
 \subsection{Ohodnocení výsledků dotazu}
-\subsection{tf-idf}
+\paragraph{tf-idf}
 % SEO - exploit of google's algorithms. Více vyhledávačů ztěžuje SEO
-\subsection{Proximity}
+\paragraph{Proximity}
 % kritika tf-idf
 % alternativa proximity
 
@@ -395,6 +409,7 @@ vyhledání všech podobných slov podle zvolené distanční metriky.
 \subsection{Ukázka vyhledávání}
 
 \section{Otevřené problémy a další postup}
+\subsection{Integrace do existujících systémů}
 \subsection{Statické a dynamické indexy}
 % static: no locks and latches, compact data structures, cache efficient
 % 2 level data structure + bulk updates
@@ -403,7 +418,7 @@ vyhledání všech podobných slov podle zvolené distanční metriky.
 % document or term based
 % share nothing
 \subsection{Příliš krátký vstupní řetězec}
-\subsection{Optimalizace plánování dotazů}
+\subsection{Plánování dotazů}
 
 
 \section{Závěr}
