@@ -11,6 +11,8 @@
 \usepackage{color}
 \usepackage{titlesec}
 
+\usepackage[scaled=0.83]{beramono}
+
 \linespread{1.15}
 \definecolor{Darkgreen}{rgb}{0,0.4,0}
 \hypersetup{%
@@ -33,7 +35,8 @@
     {0pt}             % sep
     {\huge}  
 
-%\newcommand{\subsubsection}[1]{\vspace{10pt}\paragraph{#1}\mbox{}\\}
+\newcommand{\bftt}[1]{\texttt{\textbf{#1}}}
+\newcommand{\boldred}[1]{\textbf{\color{red} #1}}
 
 \begin{document}
 \frontmatter
@@ -99,79 +102,8 @@ problémy implementace takového systému. Na závěr představím možná budou
 praxi.
 
 \chapter{Motivace}
-[1] \url{https://en.wikipedia.org/wiki/Information_retrieval#History}
-[1] \url{https://www.theguardian.com/commentisfree/2015/apr/18/google-eu-monopoly-inquiry-too-late-to-stop}
 
-
-\subsection{Změny v architekturách počítačů a počítačových systémů}
-% Stonebraker o databázích
-% sloupcové a in-memory db
-% něco o nosql
-% hierarchie paměti
-% ssd
-% nvram
-
-% konvergence db a fulltextu. Podobnost se sloupcovými db. Not yet because of
-% reasons below. Columnar dbs for analytical slow access. tens of thousands
-% columns needed for each word. If some words have short inverted list, then
-% waste,because blocks have minimum size.
-
-\subsection{Nové potřeby ve vyhledávání}
-\subsection{Vertikální vyhledávání}
-Dle hlavního vedoucího výzkumu v Googlu, Petera Norviga, je úspěch Googlu
-založen ne na lepších algoritmech, než by měli ostatní, ale jednoduše tím, že
-má více dat.
-% přístup googlu - chytré scrapování. Přitom data existují ve zpracované formě.
-% Nedostatek vertikálního a site search? Špatné nebo obtížné open source
-% řešení? 
-\subsection{Linked data}
-\subsection{Mobilní zařízení}
-
-
-
-\section{Textové vyhledávání}
-Vstupem v úloze vyhledávání je \textbf{dotaz} (query), tedy vstupní textový
-řetězec. Výstupem je seznam odpovídajících záznamů (dokumentů) z databáze
-seřazený podle ohodnocení, kterou vyhledávací systém přiřadí dle shody
-(relevance) dotazu s nalezeným záznamem.
-
-Pokud by dotazem bylo například jediné slovo \textbf{Petr}, mohl by výsledek
-vyhledávání v databázi jmen vrátit jména \textbf{Petr Novák, Petr Novotný, Petr
-Klíč, Petr Žel, ...}. Dotazem je povětšinou posloupnost jednoho nebo více slov,
-ale může obsahovat i různé operátory, které upravují povahu dotazu. Například
-booleovské operátory AND, OR a NOT mohou určit zda se musí shodovat všechna
-slova, nebo pouze jedno, nebo se slovo vyskytovat nesmí. Např. dotaz
-\textbf{Pavel OR Petr AND NOT Novák}. Každý vyhledavač implementuje různé
-operátory a kromě těch základních booleovských nejsou jejich funkce nijak
-sjednoceny.
-
-Uživatelsky jsou nejpřívětivější vyhledávače, u kterých není třeba speciální
-operátory vůbec používat. Vyhledávač si je buďto sami doplní do čistě textového
-dotazu, nebo se o vysokou přesnost postarají jejich hodnotící funkce.
-
-\subsubsection{Relevance}
-Pro měření relevance existují dvě základní metriky - přesnost (precision) a
-výtěžnost (recall) \url{https://wiki.korpus.cz/doku.php/pojmy:precision}.
-
-Přesnost je poměr počtu relevantních nalezených výsledků ku počtu všech
-nalezených výsledků. Tedy vyhledávač bude vyhledávat přesně, pokud bude
-obsahovat malé množství výsledků¸ které s dotazem nemají nic společného.
-Vyhledávače cílící na přesnost ale mohou trpět tím, že některé záznamy, které
-jsou pro uživatele relevantní, nejsou vůbec nalezeny. To měří právě výtěžnost -
-tedy poměr počtu relevantních nalezených výsledků ku počtu všech relevantních
-záznamů v databázi. Pro relevantní vyhledávání jsou důležité obě hodnoty. Při
-malé výtěžnosti bude uživatel cítit frustraci z toho, že musí hloupému
-vyhledávači podstrčit více podobných dotazů a stále bude mít pocit, že
-vyhledávač nenalezl všechno. Při malé přesnosti bude mít uživatel pocit, že si
-vyhledávač vyhledává, co se mu zlíbí.
-
-U relativně malých datových sad, kterými se tato práce zabývá, je narozdíl od
-webových vyhledávačů velmi důležitá výtěžnost. Při velkém množství výsledků se
-ztratí, že některé dokumenty nebudou nalezeny. V databázi jmen by ale bylo
-velmi frustrující, kdyby při dotazu \textbf{Jan Voštěp} nebylo nic nalezeno,
-přitom by v databázi existoval záznam \textbf{Dr. Voštěp, Jan}.
-
-\subsection{Databáze a textové vyhledávání}
+\subsubsection{Databáze a textové vyhledávání}
 Textové vyhledávání se často uvádí odděleně od databázových systémů, přestože
 by v ideálním případě mělo být součástí databází. Důvodem je silně různorodá
 povaha textových dat s nejednoznačným způsobem zacházení. Pokud v databázích
@@ -225,6 +157,77 @@ Statisticky můžeme pozorovat unikátní povahu lidského jazyka v několika st
 % zipf distribuce slov
 % redundance - deflate a jiný textový komprese
 
+[1] \url{https://en.wikipedia.org/wiki/Information_retrieval#History}
+[1] \url{https://www.theguardian.com/commentisfree/2015/apr/18/google-eu-monopoly-inquiry-too-late-to-stop}
+
+
+\subsection{Změny v architekturách počítačů a počítačových systémů}
+% Stonebraker o databázích
+% sloupcové a in-memory db
+% něco o nosql
+% hierarchie paměti
+% ssd
+% nvram
+
+% konvergence db a fulltextu. Podobnost se sloupcovými db. Not yet because of
+% reasons below. Columnar dbs for analytical slow access. tens of thousands
+% columns needed for each word. If some words have short inverted list, then
+% waste,because blocks have minimum size.
+
+\subsection{Nové potřeby ve vyhledávání}
+\subsection{Vertikální vyhledávání}
+Dle hlavního vedoucího výzkumu v Googlu, Petera Norviga, je úspěch Googlu
+založen ne na lepších algoritmech, než by měli ostatní, ale jednoduše tím, že
+má více dat.
+% přístup googlu - chytré scrapování. Přitom data existují ve zpracované formě.
+% Nedostatek vertikálního a site search? Špatné nebo obtížné open source
+% řešení? 
+\subsection{Linked data}
+\subsection{Mobilní zařízení}
+
+
+
+\section{Textové vyhledávání}
+Vstupem v úloze vyhledávání je \textbf{dotaz} (query), tedy vstupní textový
+řetězec. Výstupem je seznam odpovídajících záznamů (dokumentů) z databáze
+seřazený podle ohodnocení, kterou vyhledávací systém přiřadí dle shody
+(relevance) dotazu s nalezeným záznamem.
+
+Pokud by dotazem bylo například jediné slovo \bftt{Petr}, mohl by výsledek
+vyhledávání v databázi jmen vrátit jména \bftt{Petr Novák, Petr Novotný, Petr
+Klíč, Petr Žel, ...}. Dotazem je povětšinou posloupnost jednoho nebo více slov,
+ale může obsahovat i různé operátory, které upravují povahu dotazu. Například
+booleovské operátory AND, OR a NOT mohou určit zda se musí shodovat všechna
+slova, nebo pouze jedno, nebo se slovo vyskytovat nesmí. Např. dotaz
+\bftt{Pavel OR Petr AND NOT Novák}. Každý vyhledavač implementuje různé
+operátory a kromě těch základních booleovských nejsou jejich funkce nijak
+sjednoceny.
+
+Uživatelsky jsou nejpřívětivější vyhledávače, u kterých není třeba speciální
+operátory vůbec používat. Vyhledávač si je buďto sami doplní do čistě textového
+dotazu, nebo se o vysokou přesnost postarají jejich hodnotící funkce.
+
+\subsubsection{Relevance}
+Pro měření relevance existují dvě základní metriky - přesnost (precision) a
+výtěžnost (recall) \url{https://wiki.korpus.cz/doku.php/pojmy:precision}.
+
+Přesnost je poměr počtu relevantních nalezených výsledků ku počtu všech
+nalezených výsledků. Tedy vyhledávač bude vyhledávat přesně, pokud bude
+obsahovat malé množství výsledků¸ které s dotazem nemají nic společného.
+Vyhledávače cílící na přesnost ale mohou trpět tím, že některé záznamy, které
+jsou pro uživatele relevantní, nejsou vůbec nalezeny. To měří právě výtěžnost -
+tedy poměr počtu relevantních nalezených výsledků ku počtu všech relevantních
+záznamů v databázi. Pro relevantní vyhledávání jsou důležité obě hodnoty. Při
+malé výtěžnosti bude uživatel cítit frustraci z toho, že musí hloupému
+vyhledávači podstrčit více podobných dotazů a stále bude mít pocit, že
+vyhledávač nenalezl všechno. Při malé přesnosti bude mít uživatel pocit, že si
+vyhledávač vyhledává, co se mu zlíbí.
+
+U relativně malých datových sad, kterými se tato práce zabývá, je narozdíl od
+webových vyhledávačů velmi důležitá výtěžnost. Při velkém množství výsledků se
+ztratí, že některé dokumenty nebudou nalezeny. V databázi jmen by ale bylo
+velmi frustrující, kdyby při dotazu \bftt{Jan Voštěp} nebylo nic nalezeno,
+přitom by v databázi existoval záznam \bftt{Dr. Voštěp, Jan}.
 
 \subsubsection{Invertovaný index}
 Centrální datovou strukturou, která navíc využívá ve svůj prospěch Zipfovy
@@ -286,9 +289,9 @@ Pro ještě kompaktnější uložení se používá kompresní technika Front-Co
 která využívá toho, že po sobě následující slova sdílí prefixy. Slovník se
 rozdělí na bloky o konstantním počtu slov a prefix se pro tento blok uloží
 zvlášť. Například při použití velikosti bloku 4 by slovník se slovy
-\textbf{anderson, andrea, andulka, andy, kajak, kamna, karafiol, karate,
+\bftt{anderson, andrea, andulka, andy, kajak, kamna, karafiol, karate,
 karburátor, karel, karkulka, karma, karta, karty} vypadal:
-\textbf{\{and\}erson, rea, ulka, y | \{ka\}jak, mna, rafiol, rate | \{kar\}burátor, el, kulka, ma | \{kart\}a, y}
+\bftt{\{and\}erson, rea, ulka, y | \{ka\}jak, mna, rafiol, rate | \{kar\}burátor, el, kulka, ma | \{kart\}a, y}
 
 % TODO ukázka invertovaného indexu
 
@@ -310,7 +313,7 @@ by je aplikoval na prefixové, natož přibližné vyhledávání. Na druhou
 stranu existuje více výzkumných týmů, kteří se zabývají přibližným
 (fuzzy) prohledáváním na modifikovaném invertovaném indexu.
 
-\subsection{Techniky a rozhraní pro zvýšení relevance}
+\subsection{Techniky pro zvýšení relevance}
 Vyhledávání v čistém invertovaném indexu je náchylné k neposkytování všech
 výsledků. Velkou příčinou ve webových vyhledávačích vždy byla morfologie jazyka
 textu. Dokumenty také mohou obsahovat slova jiného jazyka, který uživatel
@@ -328,16 +331,16 @@ dotazu.
 \subsubsection{Jazyková analýza}
 Velkým problémem textových vyhledávačů je tvarosloví jazyka (morfologie - různé
 tvary slov, např. dobrý, dobrou, dobrému, dobrých).  Například při dotazování vyhledávače
-na výraz \textbf{motorová pila} nás jistě budou zajímat i výsledky, které
-obsahují text \textbf{motorové pile} nebo \textbf{motorových pilách}. Nelze po
+na výraz \bftt{motorová pila} nás jistě budou zajímat i výsledky, které
+obsahují text \bftt{motorové pile} nebo \bftt{motorových pilách}. Nelze po
 uživateli požadovat, aby vyjmenoval všechny tvary slov, které zadává.
 
 V češtině a v dalších indoevropských jazycích dochází k nejvíce morfologickým
 změnám na koncích slov.  Klasickým řešením je před indexováním dat provést
 jazykovou analýzu a převést slova na kmenový tvar (stematizace). Ve výsledku se
-místo slova \textbf{motorových} zaindexuje slovo \textbf{motor} a poté při
+místo slova \bftt{motorových} zaindexuje slovo \bftt{motor} a poté při
 vyhledávání se provede tatáž konverze dotazovaných slov. Vyhledávač by tedy
-původní výraz \textbf{motorová pila} nejprve převedl na \textbf{motor pil} a
+původní výraz \bftt{motorová pila} nejprve převedl na \bftt{motor pil} a
 vykonal dotaz s tímto modifikovaným výrazem. Co se považuje za kmen slova je
 určeno vybraným algoritmem. Kromě stematizace existuje ještě technika
 lemmatizace, která místo kmenu slova hledá jeho základní (slovníkový) tvar. 
@@ -352,7 +355,7 @@ frekvenční analýza nebude dostačovat a museli bychom zvolit složitější t
 pro jazykový rozbor, které jsou ale mimo rozsah této práce.
 
 Problém s lemmatizací je také nejednoznačnost základního tvaru. Například slovo
-\textbf{tancích} může mít základní tvar \textbf{tank} nebo \textbf{tanec} podle
+\bftt{tancích} může mít základní tvar \bftt{tank} nebo \bftt{tanec} podle
 významu slova, který by člověk určil z kontextu věty. 
 
 \url{https://is.muni.cz/th/256499/fi_m/thesis_sikora.txt}
@@ -362,7 +365,7 @@ významu slova, který by člověk určil z kontextu věty.
 Alternativou k invertovaným indexům, kde invertovaný seznam odpovídá jednomu
 lidskému slovu, jsou tzv. ngramové (qgram?) invertované indexy. Ngramem je
 posloupnost několika po sobě jdoucích písmen o konstantní velikosti $n$.  Slovo
-\textbf{motorka} obsahuje trigramy (ngram, kde $n = 3$) \textbf{mot, oto, tor,
+\bftt{motorka} obsahuje trigramy (ngram, kde $n = 3$) \bftt{mot, oto, tor,
 ork, rka}.  Ngramový invertovaný index by pak měl invertovaný seznam pro každý
 nalezený ngram. Velikou výhodu oproti slovnímu indexu je jazyková nezávislost a
 podpora přibližného vyhledávání.
@@ -371,23 +374,6 @@ podpora přibližného vyhledávání.
 
 Databázový systém postgres podporuje trigramový index díky jeho univerzálnosti.
 \url{https://swtch.com/~rsc/regexp/regexp4.html}
-
-\newcommand{\boldred}[1]{\textbf{\color{red} #1}}
-
-\subsubsection{Přibližné vyhledávání}
-% describe ngrams fuzzy
-Jiný způsob, který umožňuje přibližné vyhledávání, je založený na textové
-vzdálenosti mezi dvěma textovými řetězci. Jednoduchou textovou vzdáleností je
-Hammingova vzdálenost. Ta se rovná počtu změněných znaků mezi dvěma texty o
-stejné délce. Příklad: vzdálenost mezi slovy \textbf{\boldred{m}oto\boldred{r}ka},
-\textbf{\boldred{h}oto\boldred{v}ka} je 2, protože se slova neshodují ve dvou znacích.
-
-Jinou metrikou je editovací vzdálenost, která není omezená tím, že délka obou
-textů musí být shodná. Editovací vzdálenost, stejně jako Hammingova vzdálenost,
-udává počet záměn, ale navíc ještě počet odebraných nebo naopak přidaných
-znaků. Příklad: Mezi slovy \textbf{kremrole}, \textbf{karel} je editovací
-vzdálenost 5, protože slovo \textbf{kre\boldred{mro}l\boldred{e}} obsahuje 4 znaky navíc
-a chybí mu 1 znak, který ale slovo \textbf{k\boldred{a}rel} obsahuje.
 
 
 \subsubsection{Inkrementální vyhledávání}
@@ -400,7 +386,7 @@ toho se používá slabší forma inkrementálního vyhledávání - našeptáva
 (autocompletion), který pouze nabízí uživateli nápovědu na dokončení jeho
 dotazu. Pro nápovědu se používaje historie dotazů zadaných všemi uživateli
 (query log) a našeptávač vrátí záznam, který maximalizuje podmíněnou
-pravděpodobnost $P(<dotaz> | <nedokončený dotaz>)$. Pro relativně malé datové
+pravděpodobnost \bftt{P(<dotaz>|<nedokončený\_dotaz>)}. Pro relativně malé datové
 sady je ale možné použít inkrementální vyhledávání v plné formě za cenu vyšší
 zátěže na vyhledávač. Některé systémy to řeší ukládáním průběžných výsledků
 nedokončených dotazů do mezipaměti s krátkou žívotností (cite tastier,
@@ -411,45 +397,148 @@ V prefixovém inkrementálním vyhledávání uvažujeme, že dotaz, který uži
 danou chvíli zadává, je pouze část úplného dotazu. Pokud dokáže vyhledávač
 hledat rychleji, než zadavatel píše, pak mu mohou být prezentovány záznamy s
 potentiálním dokončeným dotazem prezentovány dříve, než dotaz dopíše. Např.
-pokud je dotazem slovo \textbf{motor}, může se stát, že uživatel hledá slovo
-\textbf{motorka} a dotaz ještě nedokončil. Pokud dotaz obsahuje více slov, pak
+pokud je dotazem slovo \bftt{motor}, může se stát, že uživatel hledá slovo
+\bftt{motorka} a dotaz ještě nedokončil. Pokud dotaz obsahuje více slov, pak
 lze vyhledávač nastavit dvěma způsoby. V prvním případě dochází k prefixovému
 vyhledávání pouze u posledního slova dotazu, pokud uvažujeme, že uživatel vždy
 doplňuje pouze poslední slovo. Druhou variantou je, že umožníme uživateli
 vyhledávat každé slovo jako prefix. Výhodou druhé metody z hlediska uživatele
 je, že má částečně pod kontrolou morfologické změny slov. Protože k nim dochází
 nejčastěji na koncích slov, může uživatel jednoduše vynechat koncovky slov a
-vyhledávač mu je doplní. Např. při hledání slova \textbf{motork} by mohly být
+vyhledávač mu je doplní. Např. při hledání slova \bftt{motork} by mohly být
 nalezeny všechny záznamy obsahující tvary stejného slova (\textbf{motorka,
 motorkou, motorkami}) nebo podobných slov (\textbf{motorkem, motorkář}).
 Nevýhodou je velká výpočetní náročnost při vyhledávání krátkých prefixů.
 
-\subsubsection{Okrajové ngramy}
-Lze použít techniku okrajových ngramů (edge ngram), které kromě slova samotného
-zaindexují ještě všechny jeho prefixy. Např. \textbf{motorka} -> \textbf{m, mo,
-mot, moto, motor, motork, motorka}. Očividně pak i při nedokončeném dotazu
-\textbf{moto} systém snadno dohledá úplné slovo. Jednou nevýhodou této metody
-je náročnost na paměť - počet zaindexovaných slov i velikost indexu roste
-kvadraticky s délkou textu. Proto se často omezuje délka zaindexovaných
-okrajových ngramů. Krátké ngramy se odfiltrují, protože jich je příliš mnoho.
-Vyhledávání jednoznakového ngramu může být náročné až jako lineární průchod
-celou databází. Nevýhodou pak je, že inkrementální vyhledávání nezačne fungovat
-už od prvního zadaného písmene. Dlouhé ngramy se mohou odfiltrovat od maximální
-zvolené délky ngramu a obdobná úprava se provede s dotazem. Příklad: indexujeme
-okrajové ngramy s délkou 2 až 4 znaků. Ze slova \textbf{motorka} zaindexujeme
-odpovídající ngramy a celé slovo \textbf{mo, mot, moto, motorka}. Při dotazu
-ořízneme slovo na maximální délku, abychom nalezli shodu s nejdelším ngramem.
-Tedy při vyhledávání slova \textbf{motork} bude vyhledávač hledat záznamy,
-která obsahují buď \textbf{moto} nebo \textbf{motorka}.
+\subsubsection{Hranové ngramy} Lze použít techniku hranových ngramů
+(edge ngram), které kromě slova samotného zaindexují ještě všechny jeho
+prefixy. Např. \bftt{motorka} se rozloží na \bftt{m, mo, mot, moto,
+motor, motork, motorka}. Očividně pak i při nedokončeném dotazu
+\bftt{moto} systém snadno dohledá úplné slovo. Jednou nevýhodou této
+metody je náročnost na paměť - počet zaindexovaných slov i velikost
+indexu roste kvadraticky s délkou textu. Proto se často omezuje délka
+zaindexovaných hranových ngramů. Krátké ngramy se odfiltrují, protože
+jich je příliš mnoho.  Vyhledávání jednoznakového ngramu může být
+náročné až jako lineární průchod celou databází. Nevýhodou pak je, že
+inkrementální vyhledávání nezačne fungovat už od prvního zadaného
+písmene. Dlouhé ngramy se mohou odfiltrovat od maximální zvolené délky
+ngramu a obdobná úprava se provede s dotazem. Příklad: indexujeme
+hranové ngramy s délkou 2 až 4 znaků. Ze slova \bftt{motorka}
+zaindexujeme odpovídající ngramy a celé slovo \bftt{mo, mot, moto,
+motorka}. Při dotazu ořízneme slovo na maximální délku, abychom nalezli
+shodu s nejdelším ngramem.  Tedy při vyhledávání slova \bftt{motork}
+bude vyhledávač hledat záznamy, která obsahují buď \bftt{moto} nebo
+\bftt{motorka}.
 
-Nevýhodou okrajových ngramů je, že se může zaindexovat zbytečně mnoho ngramů.
+\subsubsection{Přibližné vyhledávání}
+% describe ngrams fuzzy
+Jiný způsob kromě ngramů, který umožňuje přibližné vyhledávání, je založený na
+textové vzdálenosti mezi dvěma textovými řetězci. Jednoduchou textovou
+vzdáleností je Hammingova vzdálenost. Ta se rovná počtu změněných znaků mezi
+dvěma texty o stejné délce. Příklad: vzdálenost mezi slovy
+\bftt{\boldred{m}oto\boldred{r}ka}, \bftt{\boldred{h}oto\boldred{v}ka} je 2,
+protože se slova neshodují ve dvou znacích.
+
+Jinou metrikou je editovací vzdálenost, která není omezená tím, že délka obou
+textů musí být shodná. Editovací vzdálenost, stejně jako Hammingova vzdálenost,
+udává počet záměn, ale navíc ještě počet odebraných nebo naopak přidaných
+znaků. Příklad: Mezi slovy \bftt{kremrole}, \bftt{karel} je editovací
+vzdálenost 5, protože slovo \bftt{kre\boldred{mro}l\boldred{e}} obsahuje 4 znaky navíc
+a chybí mu 1 znak, který ale slovo \bftt{k\boldred{a}rel} obsahuje.
+
+\subsection{Prefixové a fuzzy rozšíření indexu}
+Ačkoliv se jedná o dva různé požadavky, prefixové a fuzzy invertované indexy
+mají ve výsledku podobné vlastnosti a tudíž jsou pro ně vhodné stejné datové
+struktury. Pokud na chvíli necháme fuzzy požavky stranou, nastíním, jak lze
+jednoduše rozšířit klasický invertovaný index o podporu prefixového
+vyhledávání.
+
+Nevýhodou hranových ngramů je, že se může zaindexovat zbytečně mnoho ngramů.
 Pokud je paměťová náročnost problém, lze namísto indexování pomocných ngramů
 použít použít abecedně seřazený slovník všech zaindexovaných slov.  Všechna
 slova odpovídající dotazovanému prefixu sa dohledají vybráním všech slov mezi
 prvním a posledním slovem s daným prefixem. Ty lze snadno dohledat dvěma
-binárními vyhledáními. Dotaz je výpočetně náročnější při vykonání, protože
+binárními vyhledáními. Dotaz je výpočetně náročnější při vykonání, protože se
 nejprve musí provést sjednocení všech invertovaných seznamů odpovídajících
-jednomu prefixu před tím, než provede průnik.
+jednomu prefixu před tím, než se provede průnik.
+
+Díky morfologii, která se vyskytuje hlavně na koncích slov, bude index
+přizpůsobený pro prefixové vyhledávání vhodný zároveň i pro fuzzy vyhledávání.
+Většina podobných slov bude v seřazeném slovníku blízko u sebe. Pokud
+vyhledáváme přibližná slova do editovací vzdálenosti 1, pak několik slov se
+bude lišit v prvním znaku od dotazovaného, ale většina rozdílů bude v
+pozdějších částech slova, a tedy ve výsledku budou relativně blízko u sebe.
+
+
+\subsubsection{Trie}
+Pro rychlý průchod slovníkem s přibližným prohledáváním je vhodná datová
+struktura \textbf{trie} (radixový, prefixový strom). Trie je n-ární stromová
+struktura, ve které je každé slovo uloženo tak, že se nejprve rozloží na znaky
+a ty se ve stejném pořadí uloží jako jedna cesta ve stromu. Např. slovo
+\bftt{motorka} by se ve stromu uložilo jako cesta \bftt{/m/o/t/o/r/k/a} od
+kořene \bftt{/}, pokud bychom příklad přirovnali k hierarchii adresářů a
+souborů v souborovém systému.
+
+Trii je možné komprimovat (komprimovaná trie, compressed trie) sloučením po
+sobě jdoucích znaků, které mají pouze jednoho potomka. Např. pokud existují
+pouze dvě slova \bftt{motorka} a \bftt{motýl}, pak jejich cesty ve stromu
+budou \bftt{/mot/orka} a \bftt{/mot/ýl} a budou sdílet prefix \bftt{/mot/}.
+Je to vlastně seřazený seznam slov s tím, že všechny společné prefixy jsou
+uloženy jako rodičovské uzly stromu n-árního stromu. Tohle rozložení nám umožní
+rychle dohledat prefix, jehož potomci ve stromu jsou odpovědí na prefixový
+dotaz.
+
+Vyhledání podobných slov podle editovací vzdálenosti využije společných prefixů
+tím, že společný prefix spočítá pouze jednou pro celou skupinu slov. (cite
+Hanov).
+
+\subsubsection{Jiné reprezentace slovníku}
+\paragraph{Metrické stromy}
+% describe BK, VP-TREE
+\paragraph{Delete algoritmus}
+\paragraph{Signature hashing}
+
+\subsubsection{Hybridní index}
+Velkou výpočetní zátěží u prefixových a fuzzy indexů je, pokud musí provést
+disjunktivní sloučení (sloučení, OR) většího množství invertovaných seznamů.
+Většinou v literatuře potkáme konjunktivní sloučení (průnik, AND), které je
+naopak tím efektivnější, čím více invertovaných seznamů v něm učinkuje.
+Analogicky ke konjunkci množin - čím více náhodných množin, tím menší je
+pravděpodobnost, že bude jejich prvek ve všech najednou. U disjunkce platí, že
+čím více množin, tím bude sloučená množina zpravidla větší.
+
+Sloučení invertovaných seznamů je problém, pokud jejich množství narůstá.
+Zejména to platí pro krátké prefixy, protože ve slovníku k nim budou
+korespondovat tisíce slov. Problém velkého množství slov u krátkých prefixů je
+i u hranových ngramů, jenže u nich jsou invertované seznamy předsloučeny během
+indexování. Právě zde přichází myšlenka hybridního indexu, který během
+indexování spolu předsloučí ty invertované seznamy, které mají velkou šanci, že
+by byly sloučeny během vykonání dotazu (materializace invertovaných seznamů).
+Tahle technika je obzvlášť vhodná pro čistě prefixové indexy bez fuzzy
+rozšíření. Velkou pravděpodobnost sloučení totiž mají slova, která jsou
+abecedně blízko sebe. 
+
+Pokud je index rozšířený o pozicovou informaci, pak sloučením všech
+invertovaných záznamů získáme zpět původní datovou sadu, pouze zakódovanou
+(dopředný index, forward index). Index se nazývá hybridní, protože je hybridem
+mezi invertovaným a dopředným indexem.
+
+\paragraph{HYB} je typ hybridního invertovaného indexu, který během
+indexování předsloučí invertované seznamy slov v abecedním rozsahu.
+Materializované seznamy mohou mít rozsahy např. \bftt{[A-EN], [EN-NUL],
+[NUL-QU], [QU-Z]} - první invertovaný seznam by obsahoval slova
+začínající na \bftt{A} až \bftt{EN}. Disjunktivní dotaz v téhle
+struktuře je už buďto předsloučený, nebo během vykonání dotazu za běhu
+sloučí pouze malé množství sousedících materializovaných seznamů. Ke
+každému záznamu ve sloučeném seznamu musí být poznamenáno, ke kterému
+slovu patří. Dotazy, které nevyužijí celý rozsah seznamu se díky této
+dodatečné informaci vyfiltrují od slov, které zúženému rozsahu
+neodpovídají. cite completesearch.
+
+\subsection{Ohodnocovací funkce}
+\subsubsection{tf-idf}
+\subsubsection{Blízkost}
+
 
 
 \section{Návrh nového systému}
@@ -457,38 +546,8 @@ jednomu prefixu před tím, než provede průnik.
 \subsubsection{Apache Lucene}
 % lucene, elastic, solr, algolia, xapian, mnogosearch, postgres
 
-Ačkoliv se jedná o dva různé požadavky, prefixové a fuzzy invertované indexy
-mají ve výsledku podobné vlastnosti a tudíž jsou pro ně vhodné stejné datové
-struktury. Pokud na chvíli necháme fuzzy požavky stranou, nastíním, jak lze
-jednoduše rozšířit klasický invertovaný index o podporu prefixového
-vyhledávání.
-
-Reprezentace seřazeným seznamem slov je obzvlášť vhodná pro prefixové
-vyhledávání, protože v takovém případě stačí nalézt první a poslední slovo ve
-slovníku, které odpovídají dotazovanému prefixu. Všechna slova mezi těmito
-dvěma odpovídají na prefixový dotaz.
-
-Přibližné vyhledávání slov je s prefixovým podobné, protože většina podobných
-slov bude v seřazeném slovníku blízko u sebe. Pokud vyhledáváme přibližná slova
-do vzdálenosti 1, pak několik slov se bude lišit v prvním písmenu od
-dotazovaného, ale většina rozdílů bude v pozdějších částech slova, a tedy ve
-výsledku budou relativně blízko u sebe.
-
-Pro rychlý průchod slovníkem s přibližným prohledáváním se hodí datová
-struktura \textbf{kompaktní trie}. Je to vlastně seřazený seznam slov s tím, že
-všechny společné prefixy pro všechny skupiny slov jsou uloženy jako rodičovské
-uzly stromu n-árního stromu. Tohle rozložení nám umožní rychle dohledat prefix
-a všechny jeho potomci ve stromu jsou odpovědí na prefixový dotaz. Přibližné
-vyhledávání je efektivní, protože výpočet vzdálenostní funkce se opětovně
-použije u všech slov, které sdílí prefix.
-
-Kompaktní trie (ve skutečnosti jakákoliv trie) nám umožní nejen rychlé
-vyhledání všech slov odpovídajících prefixu, ale zároveň i rychlé přibližné
-vyhledání všech podobných slov podle zvolené distanční metriky.
 
 
-\subsection{Disjunkce invertovaných seznamů}
-\subsection{Hybridní indexy}
 \subsubsection{Indexace}
 % 2-pass hybrid
 
