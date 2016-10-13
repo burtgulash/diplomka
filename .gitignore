@@ -2,4 +2,8 @@
 *.aux
 *.out
 *.swp
-dip.pdf
+*.dvi
+*.pdf
+*.toc
+*.fdb_latexmk
+*.fls

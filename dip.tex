@@ -5,17 +5,27 @@
 \usepackage[czech]{babel}
 \usepackage{a4wide}
 \usepackage[numbers]{natbib}
-\usepackage[pdfborder={0 0 0},colorlinks=true,linkcolor=green]{hyperref}
+\usepackage{hyperref}
 \usepackage[bottom=2.8cm]{geometry}
 \usepackage{sectsty}
 \usepackage{color}
 \usepackage{titlesec}
 
 \linespread{1.15}
+\definecolor{Darkgreen}{rgb}{0,0.4,0}
+\hypersetup{%
+    pdfborder={0 0 0},
+    colorlinks,
+    citecolor=blue,
+    filecolor=blue,
+    linkcolor=blue,
+    urlcolor=Darkgreen
+}
 
 \sectionfont{\fontsize{21}{21}\selectfont}
 \subsectionfont{\fontsize{16}{16}\selectfont}
 \subsubsectionfont{\fontsize{14}{14}\selectfont}
+\pagestyle{plain}
 
 \titleformat{\chapter}
     {\Large\bfseries} % format
@@ -27,7 +37,10 @@
 
 \begin{document}
 \frontmatter
-\tableofcontents
+{\hypersetup{hidelinks}
+    \tableofcontents
+}
+
 \mainmatter
 \chapter{Úvod}
 Díky vzestupu počítačů a především internetu došlo k dramatickému nárustu
