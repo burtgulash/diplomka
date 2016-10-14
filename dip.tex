@@ -67,7 +67,7 @@ nejsou velmi známé, a zaměřím se na oblast, která je dle mého názoru jed
 nejžádanějších v praktických aplikacích. V současné době se pro ni ale
 používají techniky pro příliš obecné a zdrojově náročné prohledávání Webu a
 nedosahují takových výsledků, jakých by mohly, nebo za příliš vysokou cenu
-komplikovaných řešení. 
+komplikovaných řešení.
 
 Velkým důvodem proč převažují techniky pro Webové vyhledávání je psychologický
 - většina problémů, se kterými se potýkají firmy i nekomerční projekty, zdaleka
@@ -136,7 +136,7 @@ databázi vyskytuje v konkrétním tvaru Jaromír Kobliha nebo Kobliha, Jaromír
 nebo Dr. Jarda Kobliha, pak jednoduše zadáme dotaz na přesnou shodu a máme
 vyřešeno. Jenže naše očekávání jsou jiná. Člověk by všechny tyto tvary jména
 vyhodnotil ekvivalentně, a tím pádem je naším úkolem vytvořit podobně chytrý
-systém anebo alespoň iluzi takového systému. 
+systém anebo alespoň iluzi takového systému.
 
 Jména mohou být jednoduše rozdělena na více sloupců - křestní jméno, prostřední
 jméno, příjmení, titul(y), tak jak to známe, pokud vyplňujeme kdejaké
@@ -184,7 +184,7 @@ založen ne na lepších algoritmech, než by měli ostatní, ale jednoduše tí
 má více dat.
 % přístup googlu - chytré scrapování. Přitom data existují ve zpracované formě.
 % Nedostatek vertikálního a site search? Špatné nebo obtížné open source
-% řešení? 
+% řešení?
 \subsubsection{Linked data}
 \subsubsection{Mobilní zařízení}
 
@@ -240,7 +240,7 @@ se vyskytuje v databázi, si uložíme seznam odkazů na všechny záznamy
 (dokumenty), na kterých se slovo nachází.  Invertovaný index by měl být znám
 všem, kdo čtou knihy, protože rejstřík na posledních stránkách není ničím jiným
 než právě invertovaným indexem, kde jedním záznamem je stránka knihy a odkazem
-je číslo stránky. 
+je číslo stránky.
 
 Invertovaný index jsou ve skutečnosti dvě datové struktury. Tou první je
 takzvaný slovník - tedy seznam všech vyskytujících se slov s odkazem na svůj
@@ -275,16 +275,16 @@ nejprve vytvoří (\textbf{indexování}) a pak se používá jen pro čtení.
 %andrea            & 4  \\
 %andulka           & 1  \\
 %andy              & 2  \\
-%kajak             & 13 \\ 
+%kajak             & 13 \\
 %kamna             & 14 \\
 %karafiol          & 6  \\
-%karate            & 12 \\ 
+%karate            & 12 \\
 %karburátor        & 7  \\
 %karel             & 11 \\
 %karkulka          & 5  \\
 %karma             & 8  \\
 %karta             & 9  \\
-%karty             & 10 \\ 
+%karty             & 10 \\
 %\end{tabular}
 %\end{center}
 
@@ -329,7 +329,7 @@ být i technické pojmy nebo názvy ( ASUS GTX950-2G, 2GB GDDR5 (grafická karta
 ADATA XPG Z1 8GB (2x4GB) DDR4 2133 CL13 (paměť DRAM); ETA 0028 90040 Gratus Max
 (Kuchyňský robot)). V dnešní době to mohou být stále více se zvýšeným
 používáním mobilních zařízení (a obtížnějším zadáváním textu) překlepy v
-dotazu. 
+dotazu.
 
 \subsubsection{Jazyková analýza}
 Velkým problémem textových vyhledávačů je tvarosloví jazyka (morfologie - různé
@@ -346,7 +346,7 @@ vyhledávání se provede tatáž konverze dotazovaných slov. Vyhledávač by t
 původní výraz \bftt{motorová pila} nejprve převedl na \bftt{motor pil} a
 vykonal dotaz s tímto modifikovaným výrazem. Co se považuje za kmen slova je
 určeno vybraným algoritmem. Kromě stematizace existuje ještě technika
-lemmatizace, která místo kmenu slova hledá jeho základní (slovníkový) tvar. 
+lemmatizace, která místo kmenu slova hledá jeho základní (slovníkový) tvar.
 
 V jazykové analýze existuje mnoho problémů. Především je závislá na konkrétním
 jazyce. Může se stát, že některé datové kolekce obsahují záznamy ve více
@@ -359,7 +359,7 @@ pro jazykový rozbor, které jsou ale mimo rozsah této práce.
 
 Problém s lemmatizací je také nejednoznačnost základního tvaru. Například slovo
 \bftt{tancích} může mít základní tvar \bftt{tank} nebo \bftt{tanec} podle
-významu slova, který by člověk určil z kontextu věty. 
+významu slova, který by člověk určil z kontextu věty.
 
 \url{https://is.muni.cz/th/256499/fi_m/thesis_sikora.txt}
 
@@ -519,7 +519,7 @@ indexování spolu předsloučí ty invertované seznamy, které mají velkou š
 by byly sloučeny během vykonání dotazu (materializace invertovaných seznamů).
 Tahle technika je obzvlášť vhodná pro čistě prefixové indexy bez fuzzy
 rozšíření. Velkou pravděpodobnost sloučení totiž mají slova, která jsou
-abecedně blízko sebe. 
+abecedně blízko sebe.
 
 Pokud je index rozšířený o pozicovou informaci, pak sloučením všech
 invertovaných záznamů získáme zpět původní datovou sadu, pouze zakódovanou
@@ -575,7 +575,26 @@ Jako základní řešení sloužící pro porovnání jsem nakonfiguroval Elasti
 tak, jak by se měl doporučeně nastavit pro full-textové vyhledávání ve větších
 textových dokumentech. Text je stematizován zabudovaným stematizérem pro
 češtinu. Cílem bude ukázat, že tohle nastavení bude mít potíže s vícejazykovou
-datovou sadou a s některými případy morfologie v češtině.
+datovou sadou, jmény a s některými případy morfologie v češtině.
+
+\subsubsection{Trigramový vyhledávač}
+Pro ukázku fuzzy vyhledávání pomocí ngramů jsem vytvořil další konfiguraci pro
+Elasticsearch, která používá ngramy o minimální a maximální velikosti 3.
+
+Pokud se použije ngramový filtr, pak není podporováno ngramové zvýrazňování
+výsledků. Musí se použít ngramový tokenizér, který ale zahazuje všechny ngramy,
+které jsou kratší než minimální délka ngramu. Řešením je vytvořit dodatečný
+index se zahozenými krátkými slovy a při dotazování provést disjunkci
+ngramového a tohoto indexu. Pro zpřesnění výsledků, pokud dojde k přesné shodě
+slova v dotazu a v dokumentu, je do disjunkce přidán ještě třetí index s
+původními neořezanými slovy.
+
+Zvýrazňovač pro ngramy funguje, pouze pokud se použije \textit{Fast Vector
+Highlighter}. Bohužel nezvýrazňuje správně, když se ngramy ve výsledku
+překrývají. Je možné, že je chyba pouze ve verzi Elasticsearch, kterou
+používám. Protože jsem nikde nenašel, jak tohle vyřešit, vytvořil jsem v
+Pythonu dodatečný zvýrazňovač, aby zde prezentované výsledky byly srovnatelné s
+ostatními systémy.
 
 \subsubsection{Moje implementace}
 Můj systém vychází z výše popsaného návrhu vyhledávacího systému. Implementace
@@ -600,6 +619,62 @@ Elasticsearch.
 
 
 \section{Použité datové soubory}
+Cílem je porovnat několik vyhledávačů na datových sadách s relativně krátkými
+dokumenty, které mají navíc různé záludnosti jako výce jazyků, nebo slova
+obtížně zpracovatelná jazykovou analýzou.
+
+\subsubsection{Databáze filmů - ČSFD}
+První datovou sadou jsou názvy filmů z Československé filmové databáze
+(\url{http://csfd.cz}). Přestože je možné rozlišit jazyk filmu, protože
+databáze tuto metainformaci obsahuje, sloučil jsem všechny názvy filmů
+do jedné sady. V datové sadě se tedy film vyskytuje vícekrát, pokud má
+více názvů.
+
+V databázi je celkem \textbf{441\,173} filmů a k nim jsou přidány
+alternativní názvy v jiných jazycích, kterých je dohromady dalších
+\textbf{176\,266}.
+
+\subsubsection{Databáze filmových tvůrců - ČSFD}
+Druhá datová sada jsou všichni tvůrců (herců, režisérů, scénáristů,
+apod.) pocházejících rovněž z databáze ČSFD. Celkem obsahuje
+\textbf{240\,659} jmen.
+
+\subsubsection{Databáze filmů - IMDB}
+
+\subsubsection{Databáze produktů}
+% TODO sežeň ju
+
+%
+%\begin{center}
+%\begin{tabular}{lr}
+%\textbf{jazyk/země} & \textbf{počet názvů filmů} \\
+%\hline
+%původní           & 441\,173  \\
+%anglický          &  47\,196  \\
+%USA               &  28\,981  \\
+%Slovensko         &  13\,932  \\
+%slovenský         &   9\,539  \\
+%Japonsko          &   7\,477  \\
+%Francie           &   7\,419  \\
+%Německo           &   5\,783  \\
+%Rusko             &   3\,344  \\
+%Česko             &   3\,180  \\
+%Kanada            &   2\,774  \\
+%Itálie            &   2\,766  \\
+%český             &   2\,159  \\
+%Španělsko         &   1\,606  \\
+%Finsko            &   1\,267  \\
+%Austrálie         &   1\,171  \\
+%Polsko            &   1\,061  \\
+%Maďarsko          &      822  \\
+%Čína              &      781  \\
+%\end{tabular}
+%\end{center}
+
+
+\subsubsection{Databáze herců - ČSFD}
+
+
 \section{Demonstrace hybridního indexu}
 \section{Ukázka vyhledávání}
 
