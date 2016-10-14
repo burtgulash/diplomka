@@ -1,19 +1,17 @@
-%\documentclass[11pt]{article}
 \documentclass[11pt,letterpaper,oneside,openright]{book}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[czech]{babel}
 \usepackage{a4wide}
-\usepackage[numbers]{natbib}
 \usepackage{hyperref}
 \usepackage[bottom=2.8cm]{geometry}
-\usepackage{sectsty}
 \usepackage{color}
-\usepackage{titlesec}
-
+\usepackage[numbers]{natbib}
 \usepackage[scaled=0.83]{beramono}
 
+\pagestyle{plain}
 \linespread{1.15}
+
 \definecolor{Darkgreen}{rgb}{0,0.4,0}
 \hypersetup{%
     pdfborder={0 0 0},
@@ -24,19 +22,24 @@
     urlcolor=Darkgreen
 }
 
-\sectionfont{\fontsize{21}{21}\selectfont}
-\subsectionfont{\fontsize{16}{16}\selectfont}
-\subsubsectionfont{\fontsize{14}{14}\selectfont}
-\pagestyle{plain}
+% \usepackage{sectsty}
+% \sectionfont{\fontsize{21}{21}\selectfont}
+% \subsectionfont{\fontsize{16}{16}\selectfont}
+% \subsubsectionfont{\fontsize{14}{14}\selectfont}
 
-\titleformat{\chapter}
-    {\Large\bfseries} % format
-    {}                % label
-    {0pt}             % sep
-    {\huge}  
+\makeatletter
+\def\@makechapterhead#1{%
+    \vspace*{30pt}%
+    {\parindent 0pt \raggedright \normalfont
+        \interlinepenalty=-1
+        \Huge \bfseries \thechapter\hspace{.75em}#1\par\nobreak
+        \vskip 40pt
+    }}
+\makeatother
 
 \newcommand{\bftt}[1]{\texttt{\textbf{#1}}}
 \newcommand{\boldred}[1]{\textbf{\color{red} #1}}
+
 
 \begin{document}
 \frontmatter
@@ -161,7 +164,7 @@ Statisticky můžeme pozorovat unikátní povahu lidského jazyka v několika st
 [1] \url{https://www.theguardian.com/commentisfree/2015/apr/18/google-eu-monopoly-inquiry-too-late-to-stop}
 
 
-\subsection{Změny v architekturách počítačů a počítačových systémů}
+\section{Změny v architekturách počítačů a počítačových systémů}
 % Stonebraker o databázích
 % sloupcové a in-memory db
 % něco o nosql
@@ -174,16 +177,16 @@ Statisticky můžeme pozorovat unikátní povahu lidského jazyka v několika st
 % columns needed for each word. If some words have short inverted list, then
 % waste,because blocks have minimum size.
 
-\subsection{Nové potřeby ve vyhledávání}
-\subsection{Vertikální vyhledávání}
+\subsubsection{Nové potřeby ve vyhledávání}
+\subsubsection{Vertikální vyhledávání}
 Dle hlavního vedoucího výzkumu v Googlu, Petera Norviga, je úspěch Googlu
 založen ne na lepších algoritmech, než by měli ostatní, ale jednoduše tím, že
 má více dat.
 % přístup googlu - chytré scrapování. Přitom data existují ve zpracované formě.
 % Nedostatek vertikálního a site search? Špatné nebo obtížné open source
 % řešení? 
-\subsection{Linked data}
-\subsection{Mobilní zařízení}
+\subsubsection{Linked data}
+\subsubsection{Mobilní zařízení}
 
 
 
@@ -313,7 +316,7 @@ by je aplikoval na prefixové, natož přibližné vyhledávání. Na druhou
 stranu existuje více výzkumných týmů, kteří se zabývají přibližným
 (fuzzy) prohledáváním na modifikovaném invertovaném indexu.
 
-\subsection{Techniky pro zvýšení relevance}
+\section{Techniky pro zvýšení relevance}
 Vyhledávání v čistém invertovaném indexu je náchylné k neposkytování všech
 výsledků. Velkou příčinou ve webových vyhledávačích vždy byla morfologie jazyka
 textu. Dokumenty také mohou obsahovat slova jiného jazyka, který uživatel
@@ -446,7 +449,7 @@ znaků. Příklad: Mezi slovy \bftt{kremrole}, \bftt{karel} je editovací
 vzdálenost 5, protože slovo \bftt{kre\boldred{mro}l\boldred{e}} obsahuje 4 znaky navíc
 a chybí mu 1 znak, který ale slovo \bftt{k\boldred{a}rel} obsahuje.
 
-\subsection{Prefixové a fuzzy rozšíření indexu}
+\section{Prefixové a fuzzy rozšíření indexu}
 Ačkoliv se jedná o dva různé požadavky, prefixové a fuzzy invertované indexy
 mají ve výsledku podobné vlastnosti a tudíž jsou pro ně vhodné stejné datové
 struktury. Pokud na chvíli necháme fuzzy požavky stranou, nastíním, jak lze
@@ -535,14 +538,14 @@ slovu patří. Dotazy, které nevyužijí celý rozsah seznamu se díky této
 dodatečné informaci vyfiltrují od slov, které zúženému rozsahu
 neodpovídají. cite completesearch.
 
-\subsection{Ohodnocovací funkce}
+\section{Ohodnocovací funkce}
 \subsubsection{tf-idf}
 \subsubsection{Blízkost}
 
 
 
-\section{Návrh nového systému}
-\subsection{Podpora v existujících systémech}
+\chapter{Návrh nového systému}
+\section{Podpora v existujících systémech}
 \subsubsection{Apache Lucene}
 % lucene, elastic, solr, algolia, xapian, mnogosearch, postgres
 
@@ -551,7 +554,7 @@ neodpovídají. cite completesearch.
 \subsubsection{Indexace}
 % 2-pass hybrid
 
-\subsection{Ohodnocení výsledků dotazu}
+\section{Ohodnocení výsledků dotazu}
 \subsubsection{tf-idf}
 % SEO - exploit of google's algorithms. Více vyhledávačů ztěžuje SEO
 \subsubsection{Proximity}
@@ -560,21 +563,57 @@ neodpovídají. cite completesearch.
 
 
 \chapter{Analýza}
-\subsection{Použité datové soubory}
-\subsection{Demonstrace hybridního indexu}
-\subsection{Ukázka vyhledávání}
+\section{Implementované systémy}
+Pro demonstraci uvedených technik jsem vytvořil tři vyhledávací systémy. První
+z nich je má implementace hybridního indexu a zbylé dva jsou různé konfigurace
+pro Elasticsearch sloužící k porovnání. Všechny porovnávané systémy odstraňují
+diakritiku a převádějí velká písmena na malá při indexování i dotazování.
+Všechny konfigurace jsou přiložené v \ref{appendix:search_config}.
+
+\subsubsection{Naivní řešení}
+Jako základní řešení sloužící pro porovnání jsem nakonfiguroval Elasticsearch
+tak, jak by se měl doporučeně nastavit pro full-textové vyhledávání ve větších
+textových dokumentech. Text je stematizován zabudovaným stematizérem pro
+češtinu. Cílem bude ukázat, že tohle nastavení bude mít potíže s vícejazykovou
+datovou sadou a s některými případy morfologie v češtině.
+
+\subsubsection{Moje implementace}
+Můj systém vychází z výše popsaného návrhu vyhledávacího systému. Implementace
+je pouze prototyp napsaný v dynamicky typovaném Pythonu, a tedy nemůže z
+výkonostního důvodu sloužit k porovnání rychlosti a jiných výkonnostních
+veličin. Protože ale používám relativně malé datové sady, neměla by být
+výkonnost překážkou. Prototyp slouží zejména jako demonstrace implementovaných
+technik. Tou hlavní je výše popsaný modifikovaný hybridní invertovaný index se
+slovníkem implementovaným jako trie. Ohodnocovací funkce je čistě textově
+založená - nemá o datech žádné vlastní předpoklady nebo přednostní pořadí. V
+první řadě upřednostňuje shodu dotazu s výsledkem podle editační vzdálenosti -
+pro každé slovo zvlášť. Dále pozitivně hodnotí ty výsledky, které obsahují
+shodu s minimální poziční vzdáleností. Shody výsledků se stejným ohodnocením
+jsou pak rozbity několika minoritními hodnotami s nízkou váhou. Shoda, která je
+více na začátku záznamu má přednost a shoda, která obsahuje více shodujících se
+slov má přednost - obdobně jako u modelu tf-idf, pouze zde má velmi malou váhu
+a neuvažuje relativní důležitost slova ve shodě (idf).
+
+Dokonce při použití nového interpreteru pro Python s podporou JIT
+kompilace PyPy vyhledávač dosahuje až srovnatelných rychlostí jako
+Elasticsearch.
+
+
+\section{Použité datové soubory}
+\section{Demonstrace hybridního indexu}
+\section{Ukázka vyhledávání}
 
 \chapter{Otevřené problémy a další postup}
-\subsection{Integrace do existujících systémů}
-\subsection{Statické a dynamické indexy}
+\section{Integrace do existujících systémů}
+\section{Statické a dynamické indexy}
 % static: no locks and latches, compact data structures, cache efficient
 % 2 level data structure + bulk updates
-\subsection{Škálovatelnost}
+\section{Škálovatelnost}
 % columnar storage
 % document or term based
 % share nothing
-\subsection{Příliš krátký vstupní řetězec}
-\subsection{Plánování dotazů}
+\section{Příliš krátký vstupní řetězec}
+\section{Plánování dotazů}
 
 
 \chapter{Závěr}
@@ -583,8 +622,20 @@ demonstrovat možný vyhledávací systém s alternativními technikami, který 
 pro současné firemmní i nekomerční potřeby vhodnější, než systémy navrhované a
 tvořené pro potřeby Webových vyhledávačů, které jsou však dnes nejrozšířenější.
 
-\section{Odkazy}
+\section*{Odkazy}
 \url{http://www.dcs.gla.ac.uk/~craigm/publications/lacour08efficiency.pdf}
+
+\newpage
+\section*{Reference}
+\bibliographystyle{csplainnat}
+\bibliography{ref}
+
+\appendix
+\chapter{Konfigurace porovnaných systémů} \label{appendix:search_config}
+jo
+
+
+\backmatter
 
 
 \end{document}
