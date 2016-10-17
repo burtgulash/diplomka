@@ -1,8 +1,8 @@
-\documentclass[11pt,letterpaper,oneside,openright]{book}
+\documentclass[12pt,letterpaper,oneside,openright]{book}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[czech]{babel}
-\usepackage{a4wide}
+%\usepackage{a4wide}
 \usepackage{hyperref}
 \usepackage[bottom=2.8cm]{geometry}
 \usepackage{color}
@@ -25,7 +25,7 @@
 % \usepackage{sectsty}
 % \sectionfont{\fontsize{21}{21}\selectfont}
 % \subsectionfont{\fontsize{16}{16}\selectfont}
-% \subsubsectionfont{\fontsize{14}{14}\selectfont}
+% \subsectionfont{\fontsize{14}{14}\selectfont}
 
 \makeatletter
 \def\@makechapterhead#1{%
@@ -106,7 +106,7 @@ praxi.
 
 \chapter{Motivace}
 
-\subsubsection{Databáze a textové vyhledávání}
+\subsection{Databáze a textové vyhledávání}
 Textové vyhledávání se často uvádí odděleně od databázových systémů, přestože
 by v ideálním případě mělo být součástí databází. Důvodem je silně různorodá
 povaha textových dat s nejednoznačným způsobem zacházení. Pokud v databázích
@@ -177,16 +177,16 @@ Statisticky můžeme pozorovat unikátní povahu lidského jazyka v několika st
 % columns needed for each word. If some words have short inverted list, then
 % waste,because blocks have minimum size.
 
-\subsubsection{Nové potřeby ve vyhledávání}
-\subsubsection{Vertikální vyhledávání}
+\subsection{Nové potřeby ve vyhledávání}
+\subsection{Vertikální vyhledávání}
 Dle hlavního vedoucího výzkumu v Googlu, Petera Norviga, je úspěch Googlu
 založen ne na lepších algoritmech, než by měli ostatní, ale jednoduše tím, že
 má více dat.
 % přístup googlu - chytré scrapování. Přitom data existují ve zpracované formě.
 % Nedostatek vertikálního a site search? Špatné nebo obtížné open source
 % řešení?
-\subsubsection{Linked data}
-\subsubsection{Mobilní zařízení}
+\subsection{Linked data}
+\subsection{Mobilní zařízení}
 
 
 
@@ -210,7 +210,7 @@ Uživatelsky jsou nejpřívětivější vyhledávače, u kterých není třeba s
 operátory vůbec používat. Vyhledávač si je buďto sami doplní do čistě textového
 dotazu, nebo se o vysokou přesnost postarají jejich hodnotící funkce.
 
-\subsubsection{Relevance}
+\subsection{Relevance}
 Pro měření relevance existují dvě základní metriky - přesnost (precision) a
 výtěžnost (recall) \url{https://wiki.korpus.cz/doku.php/pojmy:precision}.
 
@@ -232,7 +232,7 @@ ztratí, že některé dokumenty nebudou nalezeny. V databázi jmen by ale bylo
 velmi frustrující, kdyby při dotazu \bftt{Jan Voštěp} nebylo nic nalezeno,
 přitom by v databázi existoval záznam \bftt{Dr. Voštěp, Jan}.
 
-\subsubsection{Invertovaný index}
+\subsection{Invertovaný index}
 Centrální datovou strukturou, která navíc využívá ve svůj prospěch Zipfovy
 distribuce slov, je datová struktura \textbf{invertovaný index} (nebo také
 invertovaný soubor). Princip datové struktury je ten, že pro každé slovo, které
@@ -298,7 +298,7 @@ karburátor, karel, karkulka, karma, karta, karty} vypadal:
 
 % TODO ukázka invertovaného indexu
 
-\subsubsection{Alternativní datové struktury}
+\subsection{Alternativní datové struktury}
 Invertovaný index je stále nejefektivnější datovou strukturou pro vyhledávání v
 textu, ale pro některé speciální případy byly navrženy i jiné datové struktury,
 které dokáží být kompaktnější než invertovaný index po kompresi, nebo umožňují
@@ -331,7 +331,7 @@ ADATA XPG Z1 8GB (2x4GB) DDR4 2133 CL13 (paměť DRAM); ETA 0028 90040 Gratus Ma
 používáním mobilních zařízení (a obtížnějším zadáváním textu) překlepy v
 dotazu.
 
-\subsubsection{Jazyková analýza}
+\subsection{Jazyková analýza}
 Velkým problémem textových vyhledávačů je tvarosloví jazyka (morfologie - různé
 tvary slov, např. dobrý, dobrou, dobrému, dobrých).  Například při dotazování vyhledávače
 na výraz \bftt{motorová pila} nás jistě budou zajímat i výsledky, které
@@ -364,7 +364,7 @@ významu slova, který by člověk určil z kontextu věty.
 \url{https://is.muni.cz/th/256499/fi_m/thesis_sikora.txt}
 
 % Aglutinativní jazyky
-\subsubsection{Ngramy}
+\subsection{Ngramy}
 Alternativou k invertovaným indexům, kde invertovaný seznam odpovídá jednomu
 lidskému slovu, jsou tzv. ngramové (qgram?) invertované indexy. Ngramem je
 posloupnost několika po sobě jdoucích písmen o konstantní velikosti $n$.  Slovo
@@ -379,7 +379,7 @@ Databázový systém postgres podporuje trigramový index díky jeho univerzáln
 \url{https://swtch.com/~rsc/regexp/regexp4.html}
 
 
-\subsubsection{Inkrementální vyhledávání}
+\subsection{Inkrementální vyhledávání}
 Z pohledu uživatele je velmi přívětivé, pokud se mu dostává zpětné vazby ještě
 před tím, než dopíše svůj dotaz. V úplné formě se už během psaní dotazu
 objevují první výsledky které by se objevily při potvrzení dotazu (typeahead
@@ -395,7 +395,7 @@ zátěže na vyhledávač. Některé systémy to řeší ukládáním průběžn
 nedokončených dotazů do mezipaměti s krátkou žívotností (cite tastier,
 completesearch?).
 
-\subsubsection{Prefixové vyhledávání}
+\subsection{Prefixové vyhledávání}
 V prefixovém inkrementálním vyhledávání uvažujeme, že dotaz, který uživatel v
 danou chvíli zadává, je pouze část úplného dotazu. Pokud dokáže vyhledávač
 hledat rychleji, než zadavatel píše, pak mu mohou být prezentovány záznamy s
@@ -413,7 +413,7 @@ nalezeny všechny záznamy obsahující tvary stejného slova (\textbf{motorka,
 motorkou, motorkami}) nebo podobných slov (\textbf{motorkem, motorkář}).
 Nevýhodou je velká výpočetní náročnost při vyhledávání krátkých prefixů.
 
-\subsubsection{Hranové ngramy} Lze použít techniku hranových ngramů
+\subsection{Hranové ngramy} Lze použít techniku hranových ngramů
 (edge ngram), které kromě slova samotného zaindexují ještě všechny jeho
 prefixy. Např. \bftt{motorka} se rozloží na \bftt{m, mo, mot, moto,
 motor, motork, motorka}. Očividně pak i při nedokončeném dotazu
@@ -433,7 +433,7 @@ shodu s nejdelším ngramem.  Tedy při vyhledávání slova \bftt{motork}
 bude vyhledávač hledat záznamy, která obsahují buď \bftt{moto} nebo
 \bftt{motorka}.
 
-\subsubsection{Přibližné vyhledávání}
+\subsection{Přibližné vyhledávání}
 % describe ngrams fuzzy
 Jiný způsob kromě ngramů, který umožňuje přibližné vyhledávání, je založený na
 textové vzdálenosti mezi dvěma textovými řetězci. Jednoduchou textovou
@@ -473,7 +473,7 @@ bude lišit v prvním znaku od dotazovaného, ale většina rozdílů bude v
 pozdějších částech slova, a tedy ve výsledku budou relativně blízko u sebe.
 
 
-\subsubsection{Trie}
+\subsection{Trie}
 Pro rychlý průchod slovníkem s přibližným prohledáváním je vhodná datová
 struktura \textbf{trie} (radixový, prefixový strom). Trie je n-ární stromová
 struktura, ve které je každé slovo uloženo tak, že se nejprve rozloží na znaky
@@ -495,13 +495,13 @@ Vyhledání podobných slov podle editovací vzdálenosti využije společných 
 tím, že společný prefix spočítá pouze jednou pro celou skupinu slov. (cite
 Hanov).
 
-\subsubsection{Jiné reprezentace slovníku}
+\subsection{Jiné reprezentace slovníku}
 \paragraph{Metrické stromy}
 % describe BK, VP-TREE
 \paragraph{Delete algoritmus}
 \paragraph{Signature hashing}
 
-\subsubsection{Hybridní index}
+\subsection{Hybridní index}
 Velkou výpočetní zátěží u prefixových a fuzzy indexů je, pokud musí provést
 disjunktivní sloučení (sloučení, OR) většího množství invertovaných seznamů.
 Většinou v literatuře potkáme konjunktivní sloučení (průnik, AND), které je
@@ -526,7 +526,7 @@ invertovaných záznamů získáme zpět původní datovou sadu, pouze zakódova
 (dopředný index, forward index). Index se nazývá hybridní, protože je hybridem
 mezi invertovaným a dopředným indexem.
 
-\paragraph{HYB} je typ hybridního invertovaného indexu, který během
+\subsubsection{HYB} je typ hybridního invertovaného indexu, který během
 indexování předsloučí invertované seznamy slov v abecedním rozsahu.
 Materializované seznamy mohou mít rozsahy např. \bftt{[A-EN], [EN-NUL],
 [NUL-QU], [QU-Z]} - první invertovaný seznam by obsahoval slova
@@ -538,26 +538,128 @@ slovu patří. Dotazy, které nevyužijí celý rozsah seznamu se díky této
 dodatečné informaci vyfiltrují od slov, které zúženému rozsahu
 neodpovídají. cite completesearch.
 
+Tím, že jsou některé seznamy sloučeny do většího, budou dotazy, které by těchto
+seznamů využily, penalizovány. Naopak komplexní disjunktivní dotazy budou
+efektivnější než bez materializace. V klasickém invertovaném indexu je kvůli
+zipfově distribuci velký nepoměr náročnosti při zpracování krátkých a dlouhých
+seznamů. Hybridní index tenhle rozdíl srovnává za cenu, že původně efektivní
+dotazy budou běžet zhruba stejně dlouho, jako ty původně náročné.
+
+Bylo by možné materializovat všechny prefixy, které se ve slovníku budou
+nacházet a prefixové dotazy by díky odpadnutí disjunkcí byly velmi efektivní,
+ale u fuzzy dotazů nelze dopředu předpovědět, které invertované seznamy v nich
+budou figurovat, protože závisí na dotazu. Tohle schéma by navíc bylo velmi
+paměťově náročné. HYB oproti tomu, až na nutnost uložení identifikátoru slova
+ke každému výskytu dokumentu, zabírá v paměti stejně místa jako obyčejný
+invertovaný index
+
+
 \section{Ohodnocovací funkce}
-\subsubsection{tf-idf}
-\subsubsection{Blízkost}
+\subsection{tf-idf}
+\subsection{Blízkost}
 
 
 
 \chapter{Návrh nového systému}
 \section{Podpora v existujících systémech}
-\subsubsection{Apache Lucene}
+\subsection{Apache Lucene}
 % lucene, elastic, solr, algolia, xapian, mnogosearch, postgres
 
 
+\subsection{Datové struktury}
+Po uvážení běžně používaných a alternativních datových struktur pro index jsem
+zvolil klasický invertovaný index s hybridní materializací. Pro slovník jsem
+použil prefixovou trii, díky její podpoře pro efektivní prefixové i fuzzy
+vyhledání slov. Invertovaný index je hybridní, protože se díky jeho
+předsloučeným invertovaným seznamům hodí právě na prefixové a fuzzy dotazy,
+které jsou klíčovou vlastností mého návrhu.
 
-\subsubsection{Indexace}
-% 2-pass hybrid
+Vzdálenostní funkcí pro fuzzy vyhledávání ve slovníku jsem použil vzdálenostně
+adaptovanou Levenshteinovu metriku kvůli lepšímu výkonu za cenu o něcoméně
+přesných výsledků při překlepech na začátcích slov. Ve výsledku to není
+problém, protože většina odlišností je až na konci slov kvůli povaze
+morfologie.
+
+Uvážil jsem i alternativní datové struktury pro index. Waveletové stromy jsou
+vhodné pro velmi kompaktní uložení indexu a navíc mohou podporovat více pořadí
+bez nutnosti ukládat index vícekrát. (cite dualsorted index). Protože se
+soustředím na menší objemy dat, není kompaktnost až tak důležitá. Za druhé jsem
+nenašel způsob, jak v něm uložit hybridní index, který má pro mé účely velkou
+výhodu.
+
+\subsection{Rozložení materializovaných skupin}
+Pro hybridní materializaci jsem použil variaci na techniku popsanou
+(completesearch) týmem. Rozložení skupin invertovaným seznamů u rozložení HYB
+obecně nerespektuje abecední hranice. Důvodem je ten, že sloučené skupiny
+invertovaných seznamů by měly být ideálně stejně dlouhé. Není to ale
+jednoduché, protože se různá písmena objevují různě často. Např. obecně bude
+existovat více slov začínající na \bftt{T} než těch, které začínají na
+\bftt{x}. Kdyby se měla každá skupina shodovat alespoň v prvním písmenu, bylo
+by to v rozporu s požadavkem na stejně dlouhé skupiny. Teoretickým řešením by
+mohlo být předefinování abecedního pořadí dle frekvenční analýzy. Nejpočetnější
+skupiny by mohly být rozděleny do více podskupin (např. \bftt{[TA-TD]},
+\bftt{[TD-TM]}, \bftt{[TM-TZ]}), pro středně početné by existovala právě jedna
+skupina a méně početné by byly sloučeny dohromady (např. \bftt{[U-X]},
+\bftt{[X-Z]}). Kdyby se nepoužilo frekvenční pořadí, mohla by se mezi méně
+početnými skupinami vyskytovat vysoce početná skupina zabraňující sloučení těch
+okolních.
+
+Tím, že používám vzdálenostně adaptovanou editační vzdálenost a většina slov
+nalezených ve fuzzy dotazu bude mít podobný prefix, docházelo by k tomu, že
+velká část seznamu bude nevyužita, protože se liší v prvním znaku. Rozmezí slov
+u jedné skupiny může být např. \bftt{[J-M]} a dotaz by začínal na \bftt{M}. Slova v
+seznamu začínající na \bftt{J}, \bftt{K} nebo \bftt{L} by v tomhle případě byla
+nevyužita. Má úprava rozložení skupin oproti abecednímu rozložení u struktury
+HYB se snaží zajistit, aby byly abecední hranice respektovány co nejvíce.
+Výsledkem by měly být skupiny, jejichž hraniční slova sdílejí co nejdelší
+prefixy. 
+
+\subsubsection{Algoritmus pro rozdělení skupin respektující abecední hranice}
+Zařazení slova do slučující skupiny lze provést při prohledání trie do hloubky.
+Začínáme na kořenovém uzlu s tím, že uvažujeme jedinou skupinu, do které na
+začátku všechna slova patří. Pokud při průchodu součet délek invertovaných
+seznamů poduzlů jednoho uzlu překročí stanovenou hranici, pak je dosavadní
+přiřazená skupina uzlu nahrazena skupinou novou. Rekurzivní aplikací pro
+všechny uzly se původně jedna skupina rozpadne na více skupin. Jediným
+parametrem je hranice určující rozpadnutí skupiny, která může být staticky
+daná, nebo být odvozená od dat. Zatím jsem ideální způsob, jak ji stanovit.
+
+
+\subsection{Indexace}
+Metody pro indexování u klasických invertovaných indexů se snaží vyhnout se
+více průchody vstupní datovou sadou. Čtení vstupu z disku, parsování a
+převádění na identifikátory je při velkých datových objemech časově náročné.
+Rozložení do skupin u hybridního indexu - HYB i mé rozložení - vyžaduje
+dvoufázové indexování, protože rozdělení do skupin potřebuje vědět statistiky,
+ze kterých se určí, jak mají být sloučené skupiny velké.
+
+V (fast HYB construction) autoři popisují techniku, jak použít jen několik
+vzorků, aby s vysokou pravděpodobností určili velikost skupin. (cite a nastin
+alg.)
+
+Hybridní index se od klasického liší v počtu invertovaných seznamů. Klasický má
+jeden seznam, byť potenciálně velmi krátký, pro každé vyskytující se slovo v
+kolekci. Počet slov se odvíjí od heapsova zákona - tedy roste přibližně s
+odmocninou velikosti kolekce - a pro velké kolekce je následně velký počet slov
+důvodem indexačních technik pracujících s externí pamětí. Kvůli
+charakteristikám pevných disků (pomalé posunutí čtecí hlavice při nesekvenčním
+přístupu) a problému mít otevřených tisíce souborů najednou spočívají klasické
+indexační algoritmy v tom, že zapisují částečné indexy sekvenčně na konec
+jednoho souboru, a poté (nebo ještě za běhu) je postupně sloučí do většího. 
+
+% TODO describe block merge sort based
+
+Hybridní index ale bude mít pouze omezené množství invertovaných seznamů, které
+lze navíc korigovat. Autoři (cite completesearch) doporučují celkový počet
+seznamů v řádu stovek - okolo 256. Díky tomu by nemělo být takovým problémem
+vytvořit pro každý invertovaný seznam jeden soubor a vyhnout se slučovacímu
+kroku.
+
 
 \section{Ohodnocení výsledků dotazu}
-\subsubsection{tf-idf}
+\subsection{tf-idf}
 % SEO - exploit of google's algorithms. Více vyhledávačů ztěžuje SEO
-\subsubsection{Proximity}
+\subsection{Proximity}
 % kritika tf-idf
 % alternativa proximity
 
@@ -568,16 +670,16 @@ Pro demonstraci uvedených technik jsem vytvořil tři vyhledávací systémy. P
 z nich je má implementace hybridního indexu a zbylé dva jsou různé konfigurace
 pro Elasticsearch sloužící k porovnání. Všechny porovnávané systémy odstraňují
 diakritiku a převádějí velká písmena na malá při indexování i dotazování.
-Všechny konfigurace jsou přiložené v \ref{appendix:search_config}.
+Všechny konfigurace jsou v příloze \ref{appendix:search_config}.
 
-\subsubsection{Naivní řešení}
+\subsection{Naivní řešení}
 Jako základní řešení sloužící pro porovnání jsem nakonfiguroval Elasticsearch
 tak, jak by se měl doporučeně nastavit pro full-textové vyhledávání ve větších
 textových dokumentech. Text je stematizován zabudovaným stematizérem pro
 češtinu. Cílem bude ukázat, že tohle nastavení bude mít potíže s vícejazykovou
 datovou sadou, jmény a s některými případy morfologie v češtině.
 
-\subsubsection{Trigramový vyhledávač}
+\subsection{Trigramový vyhledávač}
 Pro ukázku fuzzy vyhledávání pomocí ngramů jsem vytvořil další konfiguraci pro
 Elasticsearch, která používá ngramy o minimální a maximální velikosti 3.
 
@@ -596,7 +698,7 @@ používám. Protože jsem nikde nenašel, jak tohle vyřešit, vytvořil jsem v
 Pythonu dodatečný zvýrazňovač, aby zde prezentované výsledky byly srovnatelné s
 ostatními systémy.
 
-\subsubsection{Moje implementace}
+\subsection{Moje implementace}
 Můj systém vychází z výše popsaného návrhu vyhledávacího systému. Implementace
 je pouze prototyp napsaný v dynamicky typovaném Pythonu, a tedy nemůže z
 výkonostního důvodu sloužit k porovnání rychlosti a jiných výkonnostních
@@ -672,17 +774,17 @@ obsahuje \textbf{907\,094} položek.
 %\end{center}
 
 
-\subsubsection{Databáze herců - ČSFD}
+\subsection{Databáze herců - ČSFD}
 
 \section{Porovnání výsledků vyhledávání}
-\subsubsection{Morfologie}
-\subsubsection{Cizí jazyk a názvy}
-\subsubsection{Oddělená slova}
-\subsubsection{Krátký vstup}
+\subsection{Morfologie}
+\subsection{Cizí jazyk a názvy}
+\subsection{Oddělená slova}
+\subsection{Krátký vstup}
 
 \section{Rychlost vyhledávání}
-\subsubsection{CPython a PyPy}
-\subsubsection{Porovnání}
+\subsection{CPython a PyPy}
+\subsection{Porovnání}
 
 \section{Velikost indexu}
 
