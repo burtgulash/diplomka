@@ -698,18 +698,18 @@ používám. Protože jsem nikde nenašel, jak tohle vyřešit, vytvořil jsem v
 Pythonu dodatečný zvýrazňovač, aby zde prezentované výsledky byly srovnatelné s
 ostatními systémy.
 
-\subsection{Moje implementace}
+\subsection{Vlastní implementace}
 Můj systém vychází z výše popsaného návrhu vyhledávacího systému. Implementace
 je pouze prototyp napsaný v dynamicky typovaném Pythonu, a tedy nemůže z
 výkonostního důvodu sloužit k porovnání rychlosti a jiných výkonnostních
 veličin. Protože ale používám relativně malé datové sady, neměla by být
 výkonnost překážkou. Prototyp slouží zejména jako demonstrace implementovaných
 technik. Tou hlavní je výše popsaný modifikovaný hybridní invertovaný index se
-slovníkem implementovaným jako trie. Ohodnocovací funkce je čistě textově
+slovníkem implementovaným jako trie.  Ohodnocovací funkce je čistě textově
 založená - nemá o datech žádné vlastní předpoklady nebo přednostní pořadí. V
 první řadě upřednostňuje shodu dotazu s výsledkem podle editační vzdálenosti -
 pro každé slovo zvlášť. Dále pozitivně hodnotí ty výsledky, které obsahují
-shodu s minimální poziční vzdáleností. Shody výsledků se stejným ohodnocením
+shodu s minimální poziční vzdáleností.  Shody výsledků se stejným ohodnocením
 jsou pak rozbity několika minoritními hodnotami s nízkou váhou. Shoda, která je
 více na začátku záznamu má přednost a shoda, která obsahuje více shodujících se
 slov má přednost - obdobně jako u modelu tf-idf, pouze zde má velmi malou váhu
@@ -788,17 +788,59 @@ obsahuje \textbf{907\,094} položek.
 
 \section{Velikost indexu}
 
-\chapter{Otevřené problémy a další postup}
+\chapter{Zhodnocení, další postup a otevřené problémy}
 \section{Integrace do existujících systémů}
 \section{Statické a dynamické indexy}
 % static: no locks and latches, compact data structures, cache efficient
 % 2 level data structure + bulk updates
-\section{Škálovatelnost}
 % columnar storage
 % document or term based
 % share nothing
 \section{Příliš krátký vstupní řetězec}
 \section{Plánování dotazů}
+
+\subsection{Škálovatelnost}
+V této práci je mým cílem poukázat, že pro malá objemy dat je vhodné použít
+adekvátní techniky pro zvýšení relevance vyhledávání za cenu zvýšené výpočetní
+náročnosti. Tím, že jsou počítače stále výkonnější a datové sady se snadno
+vejdou do dostupné paměti RAM, neměl by být při efektivní implementaci a
+běžných dotazech s výkonem problém. Pokud jsou požadavkem větší objemy dat,
+protože například firma roste s přibývajícím počtem zákazníků, pak by dnes
+neměl být problém dokoupit si více paměti, která je každým rokem stále levnější.
+
+I kdyby nepřipadalo v úvahu vertikální škálování přidáváním více RAM, existuje
+možnost horizontálního škálování na více počítačů a vytvoření distribuovaného
+systému. Invertované indexy jsou velmi snadno paralelizovatelné problémy
+% TODO term or document distributed. cite something
+
+Ten by ostatně byl nezbytný, pokud by požadavkem byla vysoká
+dostupnost dat. Stejná data by byla replikována na více strojů a v případě
+selhání jednoho by se instantně použila redundance více strojů.
+
+
+
+\subsubsection{Indexování}
+Implementace je zaměřená především na ty části, které jsou klíčové pro
+demonstraci návrhu. Indexovací fáze používá jednoduchý \bftt{sort based}
+algoritmus a nevyužívá techniky více souborů. Do budoucna by bylo užitečné
+zjistit, jaké jsou nejvhodnější indexovací metody pro hybridní index oproti
+klasickému invertovanému indexu.
+
+\subsubsection{Porovnání výkonu}
+Algoritmy pro slučování invertovaných seznamů jsou obzvlášť citlivé na správnou
+implementaci a především na zvolený programovací jazyk. Zatímco Python je
+ideální prototypovací jazyk, je asi tím nejhorším, v čem by měl být produkční
+vyhledávací systém vytvořen. To se sice časem může změnit díky výkonově
+orientovanému interpreteru PyPy. Přesto by měla být pro adekvátní porovnání
+implementace provedena v jazyce s podporou překladu do nativního strojového
+kódu.
+
+Se zpomalujícím Mooreovým zákonem se objevují různé formy paralelismu, které by
+měly sloužit jako náhrada za klesající tempo růstu. Pro pečlivě optimalizovaný
+kód, které databázové a vyhledávací systémy často využívají, se častěji a
+častěji využívají bitově-paralelní instrukce moderních procesorů. I z tohoto
+důvodu by měl být zvolen takový jazyk, ve kterém není velkou překážkou tyto
+moderní schopnosti procesorů využívat. (cite completesearch C++).
 
 
 \chapter{Závěr}
