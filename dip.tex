@@ -744,17 +744,12 @@ dotazu (zde 2), bude těmto primitivním případům zabráněno.
 
 
 
-\section{Ohodnocení výsledků dotazu}
+\subsection{Ohodnocení výsledků dotazu}
 U dokumentů běžně uvažujeme náhodné pořadí, ale lze ho doupravit nějakým
 preferenčním pořadím (podle času, podle ceny, počtu zhlédnutí, apod.). Přesto
 by měla mít textová shoda největší význam, jinak by mohl mít uživatel pocit, že
 si buď vyhledávač vymýšlí, má nízkou přesnost, nebo se mu někdo snaží něco
 vnutit (např. upřednostněné produkty v eshopu).
-
-Důležitost textové shody by měla v první řadě určovat vzdálenost výsledku od
-dotazu podle editační vzdálenosti. V druhé řadě by to měla být minimální
-vzdálenost mezi slovy ve výsledku. Tohle pořadí pak může doupravit uživatelem
-zvolené pořadí, ale mělo by mít menší váhu než textová shoda.
 
 Výpočetně by bylo výhodnější, pokud by se uvažovalo pouze předdefinované
 pořadí, protože by bylo možné ho předpočítat během indexování a invertovaný
@@ -765,11 +760,26 @@ Předdefinované pořadí navíc ulehčuje předčasné ukončení vykonání do
 termination), protože nejdůležitější dokumenty budou nalezeny hned na začátku
 invertovaných seznamů.
 
+\subsection{Zvolení vah}
+Celkové ohodnocení shody se vypočte jako součet všech dílčích faktorů
+ohodnocených různými vahami. Důležitost textové shody by měla v první řadě být
+určena vzdáleností výsledku od dotazu podle editační vzdálenosti. V druhé řadě
+by to měla být minimální vzdálenost mezi slovy ve výsledku.  Tohle pořadí pak
+může doupravit uživatelem zvolené pořadí, ale mělo by mít menší váhu než
+textová shoda.
+
+\subsubsection{Tie-breaking}
+Jiný způsob výpočtu důležitosti používá implementace vyhledávače algolia
+(tie-breaking). V něm se určí pořadí jednotlivých faktorů podle
+důležitosti a nižší faktory se uvažují pouze pokud dojde ke shodě ve
+vyšších faktorech. Např.  pokud je vzdálenost několika prvních výsledků
+dotazu od dotazu 0 - tedy přesná shoda, pak teprve se přistoupí k
+ohodnocení podle předdefinovaného pořadí, blízkosti, nebo jiného
+faktoru. (cite algolia blog post).
 
 \subsection{Blízkost}
 Pro výpočet blízkosti slov dotazu ve výsledku jsem zvolil variaci na algoritmus
 (plane sweep proximity match).
-
 
 
 \chapter{Analýza}
