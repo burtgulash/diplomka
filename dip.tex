@@ -561,13 +561,18 @@ invertovaný index
 
 \section{Ohodnocovací funkce}
 
-\subsection{tf-idf}
-U dlouhého textu můžeme použít statistiky počtu slov k určení jeho relevance k
-nějakému slovu. Na tomhle principu stojí většina ohodnocovacích metod, které
-pracují s dlouhým textem. 
+\subsection{tf.idf}
+U dlouhého textu můžeme použít statistiky počtu slov k určení jeho
+relevance k nějakému slovu. Na tomhle principu stojí většina
+ohodnocovacích metod, které pracují s dlouhým textem. 
 
-\paragraph{tf}
-\paragraph{idf}
+$$
+\bftt{tf.idf}_{t, d} = (1 + \log \bftt{tf}_{t, d}) \times \log_{10} N / \bftt{df}_{t}
+$$
+
+\bftt{tf} (term frequency) je počet výskytů slova v daném dokumentu. \bftt{df}
+(document frequency) je počet výskytů slova v celé textové kolekci. \bftt{idf}
+(inverse document frequency) je převrácená hodnota \bftt{df}.
 
 \subsection{Předdefinované pořadí}
 
@@ -583,7 +588,7 @@ kolekci bude slovo obsahovat jenom jednou.
 
 \subsection{Problémy ohodnocovacích funkcí}
 Už od počátků velkých webových vyhledávačů v 90. letech se čistě textové
-statistické metody založené na tf-idf zneužívaly, protože každý mohl
+statistické metody založené na tf.idf zneužívaly, protože každý mohl
 přizpůsobit text na své webové stránce, aby se lépe přizpůsobila
 jednoduchým statistikám.
 
@@ -734,8 +739,8 @@ výskytů, kolik má dotaz celkově slov. To zabrání případům, kdy více po
 slov v dotazu zasáhne jediné vyskytující se slovo ve výsledku. Např. dotaz
 \bftt{2015 - 2016} by nesprávně vrátil dokument \bftt{Grand Tour 2015}, protože
 obě slova dotazu zasáhnou jediný výskyt \bftt{2015}. Tím, že nastolíme
-požadavek, že výsledek musí mít alespoň tolik výsledků (př. 1), kolik je slov v
-dotazu (př. 2), bude těmto primitivním případům zabráněno.
+požadavek, že výsledek musí mít alespoň tolik výsledků (zde 1), kolik je slov v
+dotazu (zde 2), bude těmto primitivním případům zabráněno.
 
 
 
@@ -815,7 +820,7 @@ pro každé slovo zvlášť. Dále pozitivně hodnotí ty výsledky, které obsa
 shodu s minimální poziční vzdáleností.  Shody výsledků se stejným ohodnocením
 jsou pak rozbity několika minoritními hodnotami s nízkou váhou. Shoda, která je
 více na začátku záznamu má přednost a shoda, která obsahuje více shodujících se
-slov má přednost - obdobně jako u modelu tf-idf, pouze zde má velmi malou váhu
+slov má přednost - obdobně jako u modelu tf.idf, pouze zde má velmi malou váhu
 a neuvažuje relativní důležitost slova ve shodě (idf).
 
 Dokonce při použití nového interpreteru pro Python s podporou JIT
