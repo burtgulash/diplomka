@@ -655,6 +655,52 @@ seznamů v řádu stovek - okolo 256. Díky tomu by nemělo být takovým probl�
 vytvořit pro každý invertovaný seznam jeden soubor a vyhnout se slučovacímu
 kroku.
 
+\subsection{Problém korelovaných slov}
+Jednou příčinou pomalých dotazů ve fuzzy vyhledávači je výskyt více podobných
+slov v dotazu. Jednoduchým případem pro ilustraci je, pokud dotaz obsahuje více
+totožných slov. Jejich invertované seznamy, případně disjunkce více
+invertovaných seznamů, budou totožné. Dotaz ale proběhne beze změn, a tedy
+provede jejich sloučení. Je snadno vidět, že sloučení dvou totožných seznamů
+bude odpovídat dvojnásobku času průchodu pouze jedním seznamem.
+
+O dvou podobných invertovaných seznamech můžeme hovořit jako o vysoce
+korelovaných. Pokud slučujeme dva nízce korelované seznamy, pak jejich sloučení
+bude relativně malá množina. Vysoce korelované dotazy trpí tím, že pozitivní
+zmenšující efekt konjunkce u nich neplatí a navíc zvyšuje výpočetní náročnost
+lineárně s každým takovým slovem.
+
+Jednoduchým případem pro vyřešení je, pokud lze v dotazu identifikovat totožná
+slova a jednoduše použít jen jedno z nich, protože průnik více stejných množin
+neovlivní výsledek. Pouze se musí zajistit, že výsledky skutečně obsahují více
+výskytů téhož slova, a to lze provést až v pozdější fázi po průchodem
+invertovanými seznamy.
+
+Těžším případem je, pokud se v dotazu vyskytují slova, která k sobě mají podle
+editační vzdálenosti blízko. Jejich invertované seznamy, případně disjunkce
+více seznamů, budou sdílet značnou část slov. Kvůli tomu budou jejich
+invertované seznamy vysoce korelované a budou způsobovat degradaci dotazu.
+Nicméně tohle už nelze řešit pouhým přepsáním dotazu odstraněním duplikovaných
+slov.
+
+Dalším problémem korelovaných slov je najít každému slovu v dotazu odpovídající
+slovo ve výsledku bez překrytí, tj. pro každé slovo v dotazu, přestože může být
+duplikované, musí být nalezen výskyt ve výsledném dokumentu, který ale nesmí
+připadat jinému slovu z dotazu. Např. naivní technika deduplikování totožných
+slov by způsobila, že dotaz \bftt{the the} by nalezl všechna slova, která
+obsahují pouze jeden výskyt slova \bftt{the}. Nás ale budou zajímat výsledky,
+které obsahují alespoň dva výskyty. Proto jsme v dotazu druhé \bftt{the} přece
+použili.
+
+Řešení není úplně snadné, protože algoritmicky odpovídá nalezení maximálního
+párování v bipartitním grafu. Pro svou implementaci používám pouze jednoduchou
+heuristiku, která zajistí, že neodfiltrovaný výsledek obsahuje alespoň tolik
+výskytů, kolik má dotaz celkově slov. To zabrání případům, kdy více podobných
+slov v dotazu zasáhne jediné vyskytující se slovo ve výsledku. Např. dotaz
+\bftt{2015 - 2016} by nesprávně vrátil dokument \bftt{Grand Tour 2015}, protože
+obě slova dotazu zasáhnou jediný výskyt \bftt{2015}. Tím, že nastolíme
+požadavek, že výsledek musí mít alespoň tolik výsledků (př. 1), kolik je slov v
+dotazu (př. 2), bude těmto primitivním případům zabráněno.
+
 
 \section{Ohodnocení výsledků dotazu}
 \subsection{tf-idf}
@@ -798,7 +844,6 @@ obsahuje \textbf{907\,094} položek.
 % share nothing
 \section{Příliš krátký vstupní řetězec}
 \section{Plánování dotazů}
-
 \subsection{Škálovatelnost}
 V této práci je mým cílem poukázat, že pro malá objemy dat je vhodné použít
 adekvátní techniky pro zvýšení relevance vyhledávání za cenu zvýšené výpočetní
