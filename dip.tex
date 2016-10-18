@@ -524,7 +524,12 @@ abecedně blízko sebe.
 Pokud je index rozšířený o pozicovou informaci, pak sloučením všech
 invertovaných záznamů získáme zpět původní datovou sadu, pouze zakódovanou
 (dopředný index, forward index). Index se nazývá hybridní, protože je hybridem
-mezi invertovaným a dopředným indexem.
+mezi invertovaným a dopředným indexem.  Hybridní index je velmi podobný
+dopřednému indexu v jednom z prvních popisů architektury Googlu. To, co se
+myslí skupinou slov v hybridním indexu, odpovídá barelu (barrel) v jejich
+indexu. S rozdílem, že oba pojmy slouží k jinému účelu. Jejich dopředný index
+byla pouze mezifáze před vytvořením invertovaného indexu, zatímco u hybridního
+indexu se tahle datová struktura struktura používá přímo k vyhledávání.
 
 \subsubsection{HYB} je typ hybridního invertovaného indexu, který během
 indexování předsloučí invertované seznamy slov v abecedním rozsahu.
