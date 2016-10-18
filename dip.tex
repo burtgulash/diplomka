@@ -560,8 +560,39 @@ invertovaný index
 
 
 \section{Ohodnocovací funkce}
+
 \subsection{tf-idf}
+U dlouhého textu můžeme použít statistiky počtu slov k určení jeho relevance k
+nějakému slovu. Na tomhle principu stojí většina ohodnocovacích metod, které
+pracují s dlouhým textem. 
+
+\paragraph{tf}
+\paragraph{idf}
+
+\subsection{Předdefinované pořadí}
+
+\subsection{Grafová analýza}
+% page rank, centrality measures
+
 \subsection{Blízkost}
+Statistiky jako počet slov v textu ztrácí v krátkém textu význam. Film
+nebude více zelený, pokud se v jeho názvu bude vícekrát vyskytovat slovo
+\bftt{zelený} (cite algolia). V krátkém textu by byly nadměrně hodnoceny
+delší texty, které slovo obsahují vícekrát, protože většina textů v
+kolekci bude slovo obsahovat jenom jednou.
+
+\subsection{Problémy ohodnocovacích funkcí}
+Už od počátků velkých webových vyhledávačů v 90. letech se čistě textové
+statistické metody založené na tf-idf zneužívaly, protože každý mohl
+přizpůsobit text na své webové stránce, aby se lépe přizpůsobila
+jednoduchým statistikám.
+
+Stačí stránku zahltit co největším počtem různých slov (Keyword
+stuffing), aby byla zvýšená pravděpodobnost, že ji vyhledávač uzná
+relevantní při náhodném dotazu. Pro ještě větší úspěšnost lze důležitá
+slova na stránce duplikovat pro zvýšení parametru \bftt{tf}. 
+
+% SEO - exploit of google's algorithms. Více vyhledávačů ztěžuje SEO
 
 
 
@@ -707,12 +738,33 @@ požadavek, že výsledek musí mít alespoň tolik výsledků (př. 1), kolik j
 dotazu (př. 2), bude těmto primitivním případům zabráněno.
 
 
+
 \section{Ohodnocení výsledků dotazu}
-\subsection{tf-idf}
-% SEO - exploit of google's algorithms. Více vyhledávačů ztěžuje SEO
-\subsection{Proximity}
-% kritika tf-idf
-% alternativa proximity
+U dokumentů běžně uvažujeme náhodné pořadí, ale lze ho doupravit nějakým
+preferenčním pořadím (podle času, podle ceny, počtu zhlédnutí, apod.). Přesto
+by měla mít textová shoda největší význam, jinak by mohl mít uživatel pocit, že
+si buď vyhledávač vymýšlí, má nízkou přesnost, nebo se mu někdo snaží něco
+vnutit (např. upřednostněné produkty v eshopu).
+
+Důležitost textové shody by měla v první řadě určovat vzdálenost výsledku od
+dotazu podle editační vzdálenosti. V druhé řadě by to měla být minimální
+vzdálenost mezi slovy ve výsledku. Tohle pořadí pak může doupravit uživatelem
+zvolené pořadí, ale mělo by mít menší váhu než textová shoda.
+
+Výpočetně by bylo výhodnější, pokud by se uvažovalo pouze předdefinované
+pořadí, protože by bylo možné ho předpočítat během indexování a invertovaný
+index seřadit podle něj. Případně ho uložit ve více pořadích za cenu více
+potřebného úložného prostoru.
+
+Předdefinované pořadí navíc ulehčuje předčasné ukončení vykonání dotazu (early
+termination), protože nejdůležitější dokumenty budou nalezeny hned na začátku
+invertovaných seznamů.
+
+
+\subsection{Blízkost}
+Pro výpočet blízkosti slov dotazu ve výsledku jsem zvolil variaci na algoritmus
+(plane sweep proximity match).
+
 
 
 \chapter{Analýza}
