@@ -907,7 +907,9 @@ výsledkových tabulkách je zobrazeno několik prvních výsledků vyhledáván
 každý vyhledávač s uvedeným počtem celkových nalezených výsledků. Vedle každého
 výsledku je uvedeno skóre, který daný vyhledávač přiřadil. Vyšší skóre zde
 neznamená větší shodu, ale naopak označuje míru penalizace od perfektní shody.
-Tedy menší skóre znamená přesnější shodu.
+Tedy menší skóre znamená přesnější shodu. Skóre nelze napříč vyhledávači
+porovnávat (s výjimkou \bftt{edit} a \bftt{edit\_dyn}). Slouží jen pro
+relativní porovnání shod v rámci jednoho vyhledávače.
 
 \clearpage
 \input{hits/forrest_gump.tex}
