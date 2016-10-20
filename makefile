@@ -8,4 +8,4 @@ $(TEXFILE).pdf: $(TEXFILE).tex
 view: $(TEXFILE).pdf
 	evince $^ 2>/dev/null
 clean:
-	rm -f *.aux *.out *.log $(TEXFILE).pdf
+	latexmk -C

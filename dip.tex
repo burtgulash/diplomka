@@ -1,4 +1,4 @@
-\documentclass[12pt,letterpaper,oneside,openright]{book}
+\documentclass[10pt,letterpaper,oneside,openright]{book}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[czech]{babel}
@@ -578,7 +578,7 @@ invertovaný index
 \subsection{tf.idf}
 U dlouhého textu můžeme použít statistiky počtu slov k určení jeho
 relevance k nějakému slovu. Na tomhle principu stojí většina
-ohodnocovacích metod, které pracují s dlouhým textem. 
+ohodnocovacích metod, které pracují s dlouhým textem.
 
 $$
 \bftt{tf.idf}_{t, d} = (1 + \log \bftt{tf}_{t, d}) \times \log_{10} N / \bftt{df}_{t}
@@ -609,7 +609,7 @@ jednoduchým statistikám.
 Stačí stránku zahltit co největším počtem různých slov (Keyword
 stuffing), aby byla zvýšená pravděpodobnost, že ji vyhledávač uzná
 relevantní při náhodném dotazu. Pro ještě větší úspěšnost lze důležitá
-slova na stránce duplikovat pro zvýšení parametru \bftt{tf}. 
+slova na stránce duplikovat pro zvýšení parametru \bftt{tf}.
 
 % SEO - exploit of google's algorithms. Více vyhledávačů ztěžuje SEO
 
@@ -667,7 +667,7 @@ seznamu začínající na \bftt{J}, \bftt{K} nebo \bftt{L} by v tomhle případ�
 nevyužita. Má úprava rozložení skupin oproti abecednímu rozložení u struktury
 HYB se snaží zajistit, aby byly abecední hranice respektovány co nejvíce.
 Výsledkem by měly být skupiny, jejichž hraniční slova sdílejí co nejdelší
-prefixy. 
+prefixy.
 
 \subsubsection{Algoritmus pro rozdělení skupin respektující abecední hranice}
 Zařazení slova do slučující skupiny lze provést při prohledání trie do hloubky.
@@ -700,7 +700,7 @@ důvodem indexačních technik pracujících s externí pamětí. Kvůli
 charakteristikám pevných disků (pomalé posunutí čtecí hlavice při nesekvenčním
 přístupu) a problému mít otevřených tisíce souborů najednou spočívají klasické
 indexační algoritmy v tom, že zapisují částečné indexy sekvenčně na konec
-jednoho souboru, a poté (nebo ještě za běhu) je postupně sloučí do většího. 
+jednoho souboru, a poté (nebo ještě za běhu) je postupně sloučí do většího.
 
 % TODO describe block merge sort based
 
@@ -921,14 +921,22 @@ Tedy menší skóre znamená přesnější shodu. Skóre nelze napříč vyhled�
 porovnávat (s výjimkou \bftt{edit} a \bftt{edit\_dyn}). Slouží jen pro
 relativní porovnání shod v rámci jednoho vyhledávače.
 
-\clearpage
 \input{hits/forrest_gump.tex}
+
 První příklad (tab.~\ref{tab:result:forrest_gump}) je dotaz, ve kterém hledáme
 zahraniční film \bftt{Forrest Gump}, jehož jméno známe a umíme ho správně
 napsat.
 
 \clearpage
+\subsection{Přesnost}
+Několik následujících příkladů demonstruje záměrně zkomolené nebo jinak
+nepřesné dotazy, od kterých ale beztak očekáváme přesný zásah.
+Vyhledávače by neměly vracet příliš mnoho výsledků, protože tyto dotazy
+budou relativně dlouhé a specifické, které by v omezených datových
+sadách měly obsahovat jen několik shodujících se záznamů.
+
 \input{hits/smrt_krasneho_srnce.tex}
+
 Tab.~\ref{tab:result:smrt_krasneho_srnce} ukazuje schopnost vyhledávačů
 vypořádat se s dotazem v jiném pádu a číslu, než je zamýšlený film. K
 povšimnutí stojí rozdíl mezi vyhledávačem \bftt{edit} a jeho dynamickou
@@ -936,7 +944,7 @@ variantou \bftt{edit\_dyn}. Dynamická editovací vzdálenost má větší toler
 pro odlišnosti na koncích slov, proto se dokázala vypořádat s editovací
 vzdáleností \bftt{3} u rozdílu mezi \bftt{krásného} a \bftt{krásných}.
 \bftt{edit} používá vzdálenost \bftt{3} až od délky slova \bftt{9}, jinak by
-došlo k obrovskému nárůstu podobných slov. 
+došlo k obrovskému nárůstu podobných slov.
 
 \bftt{cs\_ES} nenašel žádnou shodu, přestože by jeho český stematizátor měl
 tenhle případ zvládnout. Tím, že se jazyková analýza dotazu (\bftt{smrt krasnh
@@ -944,6 +952,7 @@ srnk}) neshoduje s analýzou výsledku (\bftt{smrt krasnych srnk}), nedojde ke
 shodě. Vinou zde bude pouze nedostatečný základní stematizér v ElasticSearch.
 
 \input{hits/sindleruv_seznam.tex}
+
 Protože dynamická editovací vzdálenost upřednostňuje odlišnosti na
 koncích slov oproti těm na začátcích, nenajde \bftt{edit\_dyn} shodu
 filmu \bftt{Schindlerův seznam} při zkomoleném dotazu \bftt{Šindlerův
@@ -951,6 +960,7 @@ seznam}, který odpovídá fonetické reprezentaci - \bftt{Schi} je
 nahrazeno českým \bftt{Ši} (tab.~\ref{tab:result:sindleruv_seznam}).
 
 \input{hits/veznice_showsank.tex}
+
 Na dotaz jiný zkomolený dotaz \bftt{Věznice Showsank}
 (tab.~\ref{tab:result:veznice_showsank}, který by měl nalézt
 \bftt{Vykoupení z věznice Shawshank} kladně reagují pouze \bftt{edit}
@@ -964,6 +974,7 @@ tomu není poslední písmeno slova \bftt{Shawshank} zvýrazněno, přičemž by
 být.
 
 \input{hits/vezeni_showsank.tex}
+
 Při zkomolení druhého slova už reaguje pouze \bftt{edit\_dyn}
 (tab.~\ref{tab:result:vezeni_showsank}), protože ke zkomolení došlo na
 konci slova.
@@ -981,16 +992,25 @@ konci slova.
 11.87 & Byl jednou jeden film: \boldred{Přelet} nad \boldred{kukaččí}m hnízdem \\
 \end{tabulary}
 \horizlina
-\label{tab:result:preletela_kukajda}
-\caption{Výsledek dotazu \bftt{Přeletěla kukajda}}
+
 \end{tt}
+\caption{Výsledek dotazu \bftt{Přeletěla kukajda}}
+\label{tab:result:preletela_kukajda}
 \end{table}
 
 U dotazu \bftt{přelet kukačka} v tab.~\ref{tab:result:prelet_kukacka} opět
-selhal stematizér češtiny (TODO detaily analýzy).
+selhal stematizér češtiny. Dotaz se převedl na \bftt{prelt kukack}, zatímco
+záznam \bftt{Přelet nad kukaččím hnízdem} byl při indexování převeden na
+neshodující se \bftt{prelt nad kukaccim hnizd}. \bftt{edit\_dyn} našel shodu i
+pro velmi zkomolený dotaz (tab.~\ref{tab:result:preletela_kukajda}).
 
-\bftt{edit\_dyn} našel shodu i pro velmi zkomolený dotaz
-(tab.~\ref{tab:result:preletela_kukajda}).
+\input{hits/gottfather.tex}
+
+Pokud chceme najít film s anglickým názvem \bftt{The Godfather} a nemůžeme si
+vzpomenout, jak se to vlastně píše, vyhledávače využívající editovací
+vzdálenost mohou napovědět. Trigramový nenašel shodu, kterou jsme hledali, ale
+několik textově správných výsledků také našel.
+(tab.~\ref{tab:result:gottfather}).
 
 
 \subsection{Cizí jazyk a názvy}
