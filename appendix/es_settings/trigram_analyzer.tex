@@ -1,0 +1,50 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{p}{\PYZob{}}
+  \PY{n+nt}{\PYZdq{}settings\PYZdq{}}\PY{p}{:} \PY{p}{\PYZob{}}
+    \PY{n+nt}{\PYZdq{}analysis\PYZdq{}}\PY{p}{:} \PY{p}{\PYZob{}}
+      \PY{n+nt}{\PYZdq{}tokenizer\PYZdq{}}\PY{p}{:} \PY{p}{\PYZob{}}
+        \PY{n+nt}{\PYZdq{}my\PYZus{}ngram\PYZus{}tokenizer\PYZdq{}}\PY{p}{:} \PY{p}{\PYZob{}}
+          \PY{n+nt}{\PYZdq{}type\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}nGram\PYZdq{}}\PY{p}{,}
+          \PY{n+nt}{\PYZdq{}min\PYZus{}gram\PYZdq{}}\PY{p}{:} \PY{l+m+mi}{3}\PY{p}{,}
+          \PY{n+nt}{\PYZdq{}max\PYZus{}gram\PYZdq{}}\PY{p}{:} \PY{l+m+mi}{3}\PY{p}{,}
+          \PY{n+nt}{\PYZdq{}token\PYZus{}chars\PYZdq{}}\PY{p}{:} \PY{p}{[}\PY{l+s+s2}{\PYZdq{}letter\PYZdq{}}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}digit\PYZdq{}}\PY{p}{]}
+        \PY{p}{\PYZcb{}}
+      \PY{p}{\PYZcb{}}\PY{p}{,}
+      \PY{n+nt}{\PYZdq{}filter\PYZdq{}}\PY{p}{:} \PY{p}{\PYZob{}}
+        \PY{n+nt}{\PYZdq{}my\PYZus{}ngram\PYZus{}filter\PYZdq{}}\PY{p}{:} \PY{p}{\PYZob{}}
+          \PY{n+nt}{\PYZdq{}type\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}ngram\PYZdq{}}\PY{p}{,}
+          \PY{n+nt}{\PYZdq{}min\PYZus{}gram\PYZdq{}}\PY{p}{:} \PY{l+m+mi}{3}\PY{p}{,}
+          \PY{n+nt}{\PYZdq{}max\PYZus{}gram\PYZdq{}}\PY{p}{:} \PY{l+m+mi}{3}
+        \PY{p}{\PYZcb{}}\PY{p}{,}
+        \PY{n+nt}{\PYZdq{}my\PYZus{}short\PYZus{}words\PYZus{}filter\PYZdq{}}\PY{p}{:} \PY{p}{\PYZob{}}
+            \PY{n+nt}{\PYZdq{}type\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}length\PYZdq{}}\PY{p}{,}
+            \PY{n+nt}{\PYZdq{}max\PYZdq{}}\PY{p}{:} \PY{l+m+mi}{2}
+        \PY{p}{\PYZcb{}}
+      \PY{p}{\PYZcb{}}\PY{p}{,}
+      \PY{n+nt}{\PYZdq{}analyzer\PYZdq{}}\PY{p}{:} \PY{p}{\PYZob{}}
+        \PY{n+nt}{\PYZdq{}my\PYZus{}ngrams\PYZdq{}}\PY{p}{:} \PY{p}{\PYZob{}}
+          \PY{n+nt}{\PYZdq{}type\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}custom\PYZdq{}}\PY{p}{,}
+          \PY{n+nt}{\PYZdq{}tokenizer\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}my\PYZus{}ngram\PYZus{}tokenizer\PYZdq{}}\PY{p}{,}
+          \PY{n+nt}{\PYZdq{}filter\PYZdq{}}\PY{p}{:} \PY{p}{[}
+            \PY{l+s+s2}{\PYZdq{}asciifolding\PYZdq{}}\PY{p}{,}
+            \PY{l+s+s2}{\PYZdq{}lowercase\PYZdq{}}
+          \PY{p}{]}
+        \PY{p}{\PYZcb{}}\PY{p}{,}
+        \PY{n+nt}{\PYZdq{}my\PYZus{}standard\PYZdq{}}\PY{p}{:} \PY{p}{\PYZob{}}
+            \PY{n+nt}{\PYZdq{}type\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}custom\PYZdq{}}\PY{p}{,}
+            \PY{n+nt}{\PYZdq{}tokenizer\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}standard\PYZdq{}}\PY{p}{,}
+            \PY{n+nt}{\PYZdq{}filter\PYZdq{}}\PY{p}{:} \PY{p}{[}
+                \PY{l+s+s2}{\PYZdq{}asciifolding\PYZdq{}}\PY{p}{,}
+                \PY{l+s+s2}{\PYZdq{}lowercase\PYZdq{}}
+            \PY{p}{]}
+        \PY{p}{\PYZcb{}}\PY{p}{,}
+        \PY{n+nt}{\PYZdq{}my\PYZus{}short\PYZus{}words\PYZdq{}}\PY{p}{:} \PY{p}{\PYZob{}}
+            \PY{n+nt}{\PYZdq{}type\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}custom\PYZdq{}}\PY{p}{,}
+            \PY{n+nt}{\PYZdq{}tokenizer\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}standard\PYZdq{}}\PY{p}{,}
+            \PY{n+nt}{\PYZdq{}filter\PYZdq{}}\PY{p}{:} \PY{p}{[}
+                \PY{l+s+s2}{\PYZdq{}asciifolding\PYZdq{}}\PY{p}{,}
+                \PY{l+s+s2}{\PYZdq{}lowercase\PYZdq{}}\PY{p}{,}
+                \PY{l+s+s2}{\PYZdq{}my\PYZus{}short\PYZus{}words\PYZus{}filter\PYZdq{}}
+            \PY{p}{]}
+        \PY{p}{\PYZcb{}}\PY{p}{\PYZcb{}}\PY{p}{\PYZcb{}}\PY{p}{\PYZcb{}}\PY{p}{\PYZcb{}}
+\end{Verbatim}

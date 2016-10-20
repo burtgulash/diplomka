@@ -12,6 +12,9 @@
 \usepackage{tabulary}
 \usepackage{subcaption}
 
+\usepackage{fancyvrb}
+\usepackage{pygme}
+
 \pagestyle{plain}
 \linespread{1.15}
 \setlength{\tabcolsep}{1em}
@@ -1013,7 +1016,16 @@ tvořené pro potřeby Webových vyhledávačů, které jsou však dnes nejrozš
 
 \appendix
 \chapter{Konfigurace porovnaných systémů} \label{appendix:search_config}
-jo
+\section{ElasticSearch}
+\subsection{trigram\_ES}
+\subsubsection{Analyzér}
+\input{appendix/es_settings/trigram_analyzer.tex}
+
+\subsubsection{Mapování}
+\input{appendix/es_settings/trigram_mapping.tex}
+
+\subsubsection{Dotaz pro vyhledávání}
+\input{appendix/es_settings/trigram_search.tex}
 
 
 \backmatter

@@ -1,0 +1,31 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{p}{\PYZob{}}
+    \PY{n+nt}{\PYZdq{}min\PYZus{}score\PYZdq{}}\PY{p}{:} \PY{l+m+mf}{0.1}\PY{p}{,}
+    \PY{n+nt}{\PYZdq{}size\PYZdq{}}\PY{p}{:} \PY{l+m+mi}{100}\PY{p}{,}
+    \PY{n+nt}{\PYZdq{}query\PYZdq{}}\PY{p}{:} \PY{p}{\PYZob{}}
+        \PY{n+nt}{\PYZdq{}multi\PYZus{}match\PYZdq{}}\PY{p}{:} \PY{p}{\PYZob{}}
+            \PY{n+nt}{\PYZdq{}query\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}QUERY\PYZdq{}}\PY{p}{,}
+            \PY{n+nt}{\PYZdq{}minimum\PYZus{}should\PYZus{}match\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}70\PYZpc{}\PYZdq{}}\PY{p}{,}
+            \PY{n+nt}{\PYZdq{}boost\PYZdq{}}\PY{p}{:} \PY{l+m+mi}{2}\PY{p}{,}
+            \PY{n+nt}{\PYZdq{}type\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}most\PYZus{}fields\PYZdq{}}\PY{p}{,}
+            \PY{n+nt}{\PYZdq{}fields\PYZdq{}}\PY{p}{:} \PY{p}{[}
+                \PY{l+s+s2}{\PYZdq{}title.shorts\PYZdq{}}\PY{p}{,}
+                \PY{l+s+s2}{\PYZdq{}title.title\PYZca{}3.5\PYZdq{}}\PY{p}{,}
+                \PY{l+s+s2}{\PYZdq{}title.trigram\PYZca{}2.5\PYZdq{}}
+            \PY{p}{]}
+        \PY{p}{\PYZcb{}}
+    \PY{p}{\PYZcb{}}\PY{p}{,}
+    \PY{n+nt}{\PYZdq{}highlight\PYZdq{}}\PY{p}{:} \PY{p}{\PYZob{}}
+        \PY{n+nt}{\PYZdq{}pre\PYZus{}tags\PYZdq{}}\PY{p}{:} \PY{p}{[}\PY{l+s+s2}{\PYZdq{}HLSTART\PYZdq{}}\PY{p}{]}\PY{p}{,}
+        \PY{n+nt}{\PYZdq{}post\PYZus{}tags\PYZdq{}}\PY{p}{:} \PY{p}{[}\PY{l+s+s2}{\PYZdq{}HLEND\PYZdq{}}\PY{p}{]}\PY{p}{,}
+        \PY{n+nt}{\PYZdq{}type\PYZdq{}}\PY{p}{:} \PY{l+s+s2}{\PYZdq{}fvh\PYZdq{}}\PY{p}{,}
+        \PY{n+nt}{\PYZdq{}number\PYZus{}of\PYZus{}fragments\PYZdq{}}\PY{p}{:} \PY{l+m+mi}{0}\PY{p}{,}
+        \PY{n+nt}{\PYZdq{}fields\PYZdq{}}\PY{p}{:} \PY{p}{\PYZob{}}
+            \PY{n+nt}{\PYZdq{}title\PYZdq{}}\PY{p}{:} \PY{p}{\PYZob{}}
+                \PY{n+nt}{\PYZdq{}matched\PYZus{}fields\PYZdq{}}\PY{p}{:} \PY{p}{[}
+                    \PY{l+s+s2}{\PYZdq{}title.trigram\PYZdq{}}\PY{p}{,}
+                    \PY{l+s+s2}{\PYZdq{}title.title\PYZdq{}}\PY{p}{,}
+                    \PY{l+s+s2}{\PYZdq{}title.shorts\PYZdq{}}
+                \PY{p}{]}
+            \PY{p}{\PYZcb{}}\PY{p}{\PYZcb{}}\PY{p}{\PYZcb{}}\PY{p}{\PYZcb{}}
+\end{Verbatim}
