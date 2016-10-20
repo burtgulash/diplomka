@@ -46,6 +46,13 @@
 
 \newcommand{\bftt}[1]{\texttt{\textbf{#1}}}
 \newcommand{\boldred}[1]{\textbf{\color{red} #1}}
+\newcommand{\horizlina}%
+{
+    \mbox{}\vspace{1em}
+    \hrule
+    \mbox{}
+}
+
 
 
 \begin{document}
@@ -945,7 +952,7 @@ nahrazeno českým \bftt{Ši} (tab.~\ref{tab:result:sindleruv_seznam}).
 
 \input{hits/veznice_showsank.tex}
 Na dotaz jiný zkomolený dotaz \bftt{Věznice Showsank}
-(tab.~\ref{tab:result:veznice_showsank.tex}, který by měl nalézt
+(tab.~\ref{tab:result:veznice_showsank}, který by měl nalézt
 \bftt{Vykoupení z věznice Shawshank} kladně reagují pouze \bftt{edit}
 vyhledávače, protože cizí a specifický název \bftt{Shawshank} neprojde
 jazykovou analýzou a trigramový systém selže, protože zasáhne pouze jeden
@@ -958,8 +965,32 @@ být.
 
 \input{hits/vezeni_showsank.tex}
 Při zkomolení druhého slova už reaguje pouze \bftt{edit\_dyn}
-(tab.~\ref{tab:result:vezeni_showsank.tex}), protože ke zkomolení došlo na
+(tab.~\ref{tab:result:vezeni_showsank}), protože ke zkomolení došlo na
 konci slova.
+
+\input{hits/prelet_kukacka.tex}
+
+\begin{table}
+\begin{tt}
+\horizlina
+
+\bftt{edit\_dyn} [2 nalezeno]\vspace{5pt}
+
+\begin{tabulary}{1.1\textwidth}{LL}
+11.64 & \boldred{Přelet} nad \boldred{kukaččí}m hnízdem \\
+11.87 & Byl jednou jeden film: \boldred{Přelet} nad \boldred{kukaččí}m hnízdem \\
+\end{tabulary}
+\horizlina
+\label{tab:result:preletela_kukajda}
+\caption{Výsledek dotazu \bftt{Přeletěla kukajda}}
+\end{tt}
+\end{table}
+
+U dotazu \bftt{přelet kukačka} v tab.~\ref{tab:result:prelet_kukacka} opět
+selhal stematizér češtiny (TODO detaily analýzy).
+
+\bftt{edit\_dyn} našel shodu i pro velmi zkomolený dotaz
+(tab.~\ref{tab:result:preletela_kukajda}).
 
 
 \subsection{Cizí jazyk a názvy}
