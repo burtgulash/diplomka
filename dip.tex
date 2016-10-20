@@ -1012,6 +1012,16 @@ vzdálenost mohou napovědět. Trigramový nenašel shodu, kterou jsme hledali, 
 několik textově správných výsledků také našel.
 (tab.~\ref{tab:result:gottfather}).
 
+\input{hits/god_father.tex}
+
+Obecně je u invertovaných indexů problém s oddělenými slovy. \bftt{edit},
+\bftt{edit\_dyn} a \bftt{cs\_ES} indexují celá slova, zatímco
+\bftt{trigram\_ES} indexuje trigramy. Příklad v
+tab.~\ref{tab:result:god_father} je ukázkou, jak se vyhledávače zachovají, když
+je cílovým dokumentem opět film \bftt{The Godfather}, ale dotaz je napsán jako
+dvě oddělená slova \bftt{god} a \bftt{father}, ze kterých je kompozitní slovo
+\bftt{godfather} složeno.
+
 
 \subsection{Cizí jazyk a názvy}
 \subsection{Oddělená slova}
