@@ -455,15 +455,15 @@ Jiný způsob kromě ngramů, který umožňuje přibližné vyhledávání, je 
 textové vzdálenosti mezi dvěma textovými řetězci. Jednoduchou textovou
 vzdáleností je Hammingova vzdálenost. Ta se rovná počtu změněných znaků mezi
 dvěma texty o stejné délce. Příklad: vzdálenost mezi slovy
-\bftt{\boldred{m}oto\boldred{r}ka}, \bftt{\boldred{h}oto\boldred{v}ka} je 2,
+\bftt{\boldred{m}oto\boldred{r}ka} a \bftt{\boldred{h}oto\boldred{v}ka} je 2,
 protože se slova neshodují ve dvou znacích.
 
 Jinou metrikou je editovací vzdálenost, která není omezená tím, že délka obou
 textů musí být shodná. Editovací vzdálenost, stejně jako Hammingova vzdálenost,
 udává počet záměn, ale navíc ještě počet odebraných nebo naopak přidaných
-znaků. Příklad: Mezi slovy \bftt{kremrole}, \bftt{karel} je editovací
-vzdálenost 5, protože slovo \bftt{kre\boldred{mro}l\boldred{e}} obsahuje 4 znaky navíc
-a chybí mu 1 znak, který ale slovo \bftt{k\boldred{a}rel} obsahuje.
+znaků. Příklad: Mezi slovy \bftt{kremrole} a \bftt{karel} je editovací
+vzdálenost 5, protože slovo \bftt{kre\boldred{mro}l\boldred{e}} obsahuje 4
+znaky navíc a chybí mu 1 znak, který ale slovo \bftt{k\boldred{a}rel} obsahuje.
 
 \section{Prefixové a fuzzy rozšíření indexu}
 Ačkoliv se jedná o dva různé požadavky, prefixové a fuzzy invertované indexy
@@ -950,9 +950,10 @@ vzdáleností \bftt{3} u rozdílu mezi \bftt{krásného} a \bftt{krásných}.
 došlo k obrovskému nárůstu podobných slov.
 
 \bftt{cs\_ES} nenašel žádnou shodu, přestože by jeho český stematizátor měl
-tenhle případ zvládnout. Tím, že se jazyková analýza dotazu (\bftt{smrt krasnh
-srnk}) neshoduje s analýzou výsledku (\bftt{smrt krasnych srnk}), nedojde ke
-shodě. Vinou zde bude pouze nedostatečný základní stematizér v ElasticSearch.
+tenhle případ zvládnout. Tím, že se jazyková analýza dotazu
+(\bftt{smrt~krasnh~srnk}) neshoduje s analýzou výsledku
+(\bftt{smrt~krasnych~srnk}), nedojde ke shodě. Vinou zde bude pouze
+nedostatečný základní stematizér v ElasticSearch.
 
 \mbox{}\input{hits/sindleruv_seznam.tex}\mbox{}
 
@@ -984,7 +985,7 @@ konci slova.
 
 \mbox{}\input{hits/prelet_kukacka.tex}\mbox{}
 
-\begin{table}
+\begin{table}[H]
 \begin{tt}
 \horizlina
 
@@ -1001,10 +1002,10 @@ konci slova.
 \label{tab:result:preletela_kukajda}
 \end{table}
 
-U dotazu \bftt{přelet kukačka} v tab.~\ref{tab:result:prelet_kukacka} opět
-selhal stematizér češtiny. Dotaz se převedl na \bftt{prelt kukack}, zatímco
-záznam \bftt{Přelet nad kukaččím hnízdem} byl při indexování převeden na
-neshodující se \bftt{prelt nad kukaccim hnizd}. \bftt{edit\_dyn} našel shodu i
+U dotazu \bftt{přelet~kukačka} v tab.~\ref{tab:result:prelet_kukacka} opět
+selhal stematizér češtiny. Dotaz se převedl na \bftt{prelt~kukack}, zatímco
+záznam \bftt{Přelet~nad~kukaččím~hnízdem} byl při indexování převeden na
+neshodující se \bftt{prelt~nad~kukaccim~hnizd}. \bftt{edit\_dyn} našel shodu i
 pro velmi zkomolený dotaz (tab.~\ref{tab:result:preletela_kukajda}).
 
 \mbox{}\input{hits/gottfather.tex}\mbox{}
@@ -1061,9 +1062,9 @@ Konery}. Musela by být silně zvýšena tolerance editační vzdálenosti pro k
 slova (\bftt{son} a \bftt{sean} se liší vzdáleností 2). Nevýhodou by bylo velké
 množství nevyhovujících záznamů.
 
-\section{Blízkost slov}
+\section{Proximita slov}
 
-\mbox{}\input{hits/co_nam.tex}\mbox{}
+%\mbox{}\input{hits/co_nam.tex}\mbox{}
 
 \mbox{}\input{hits/the_live.tex}\mbox{}
 
