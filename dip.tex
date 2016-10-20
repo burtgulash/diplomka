@@ -941,7 +941,26 @@ Protože dynamická editovací vzdálenost upřednostňuje odlišnosti na
 koncích slov oproti těm na začátcích, nenajde \bftt{edit\_dyn} shodu
 filmu \bftt{Schindlerův seznam} při zkomoleném dotazu \bftt{Šindlerův
 seznam}, který odpovídá fonetické reprezentaci - \bftt{Schi} je
-nahrazeno českým \bftt{Ši} (Tab.~\ref{tab:result:sindleruv_seznam}).
+nahrazeno českým \bftt{Ši} (tab.~\ref{tab:result:sindleruv_seznam}).
+
+\input{hits/veznice_showsank.tex}
+Na dotaz jiný zkomolený dotaz \bftt{Věznice Showsank}
+(tab.~\ref{tab:result:veznice_showsank.tex}, který by měl nalézt
+\bftt{Vykoupení z věznice Shawshank} kladně reagují pouze \bftt{edit}
+vyhledávače, protože cizí a specifický název \bftt{Shawshank} neprojde
+jazykovou analýzou a trigramový systém selže, protože zasáhne pouze jeden
+trigram \bftt{ank}.
+
+Zvýrazňovač výsledků nebere v úvahu odstraněná písmena. Místo toho použije
+délku dotazovaného slova nebo nejbližší mezeru, pokud je slovo delší. Kvůli
+tomu není poslední písmeno slova \bftt{Shawshank} zvýrazněno, přičemž by mělo
+být.
+
+\input{hits/vezeni_showsank.tex}
+Při zkomolení druhého slova už reaguje pouze \bftt{edit\_dyn}
+(tab.~\ref{tab:result:vezeni_showsank.tex}), protože ke zkomolení došlo na
+konci slova.
+
 
 \subsection{Cizí jazyk a názvy}
 \subsection{Oddělená slova}
