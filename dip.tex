@@ -923,13 +923,12 @@ Tedy menší skóre znamená přesnější shodu. Skóre nelze napříč vyhled�
 porovnávat (s výjimkou \bftt{edit} a \bftt{edit\_dyn}). Slouží jen pro
 relativní porovnání shod v rámci jednoho vyhledávače.
 
-\input{hits/forrest_gump.tex}
+\mbox{}\input{hits/forrest_gump.tex}\mbox{}
 
 První příklad (tab.~\ref{tab:result:forrest_gump}) je dotaz, ve kterém hledáme
 zahraniční film \bftt{Forrest Gump}, jehož jméno známe a umíme ho správně
 napsat.
 
-\clearpage
 \section{Přesnost}
 \subsection{Filmy}
 Několik následujících příkladů demonstruje záměrně zkomolené nebo jinak
@@ -938,7 +937,7 @@ Vyhledávače by neměly vracet příliš mnoho výsledků, protože tyto dotazy
 budou relativně dlouhé a specifické, které by v omezených datových
 sadách měly obsahovat jen několik shodujících se záznamů.
 
-\input{hits/smrt_krasneho_srnce.tex}
+\mbox{}\input{hits/smrt_krasneho_srnce.tex}\mbox{}
 
 Tab.~\ref{tab:result:smrt_krasneho_srnce} ukazuje schopnost vyhledávačů
 vypořádat se s dotazem v jiném pádu a číslu, než je zamýšlený film. K
@@ -954,7 +953,7 @@ tenhle případ zvládnout. Tím, že se jazyková analýza dotazu (\bftt{smrt k
 srnk}) neshoduje s analýzou výsledku (\bftt{smrt krasnych srnk}), nedojde ke
 shodě. Vinou zde bude pouze nedostatečný základní stematizér v ElasticSearch.
 
-\input{hits/sindleruv_seznam.tex}
+\mbox{}\input{hits/sindleruv_seznam.tex}\mbox{}
 
 Protože dynamická editovací vzdálenost upřednostňuje odlišnosti na
 koncích slov oproti těm na začátcích, nenajde \bftt{edit\_dyn} shodu
@@ -962,7 +961,7 @@ filmu \bftt{Schindlerův seznam} při zkomoleném dotazu \bftt{Šindlerův
 seznam}, který odpovídá fonetické reprezentaci - \bftt{Schi} je
 nahrazeno českým \bftt{Ši} (tab.~\ref{tab:result:sindleruv_seznam}).
 
-\input{hits/veznice_showsank.tex}
+\mbox{}\input{hits/veznice_showsank.tex}\mbox{}
 
 Na dotaz jiný zkomolený dotaz \bftt{Věznice Showsank}
 (tab.~\ref{tab:result:veznice_showsank}, který by měl nalézt
@@ -976,13 +975,13 @@ délku dotazovaného slova nebo nejbližší mezeru, pokud je slovo delší. Kv�
 tomu není poslední písmeno slova \bftt{Shawshank} zvýrazněno, přičemž by mělo
 být.
 
-\input{hits/vezeni_showsank.tex}
+\mbox{}\input{hits/vezeni_showsank.tex}\mbox{}
 
 Při zkomolení druhého slova už reaguje pouze \bftt{edit\_dyn}
 (tab.~\ref{tab:result:vezeni_showsank}), protože ke zkomolení došlo na
 konci slova.
 
-\input{hits/prelet_kukacka.tex}
+\mbox{}\input{hits/prelet_kukacka.tex}\mbox{}
 
 \begin{table}
 \begin{tt}
@@ -1007,7 +1006,7 @@ záznam \bftt{Přelet nad kukaččím hnízdem} byl při indexování převeden 
 neshodující se \bftt{prelt nad kukaccim hnizd}. \bftt{edit\_dyn} našel shodu i
 pro velmi zkomolený dotaz (tab.~\ref{tab:result:preletela_kukajda}).
 
-\input{hits/gottfather.tex}
+\mbox{}\input{hits/gottfather.tex}\mbox{}
 
 Pokud chceme najít film s anglickým názvem \bftt{The Godfather} a nemůžeme si
 vzpomenout, jak se to vlastně píše (př. \bftt{Gottfather}), vyhledávače
@@ -1015,7 +1014,7 @@ využívající editovací vzdálenost mohou napovědět. Trigramový vyhledáva
 \bftt{trigram\_ES} nenašel shodu, kterou jsme hledali, ale několik textově
 správných výsledků také našel.  (tab.~\ref{tab:result:gottfather}).
 
-\input{hits/god_father.tex}
+\mbox{}\input{hits/god_father.tex}\mbox{}
 
 Obecně je u invertovaných indexů problém s oddělenými slovy. \bftt{edit},
 \bftt{edit\_dyn} a \bftt{cs\_ES} indexují celá slova, zatímco
@@ -1036,16 +1035,30 @@ kratší slova, protože jména jsou obvykle krátká proti názvům filmů. Men
 datová sada vykompenzuje nadbytečný výpočetní výkon, který se použije pro vyšší
 editační vzdálenost.
 
-\input{hits/paul_mccartney.tex}
+\mbox{}\input{hits/paul_mccartney.tex}\mbox{}
 
 Od všech vyhledávačů opět požadujeme alespoň přesnou shodu
 (tab.~\ref{tab:result:paul_mccartney}).
 
-\input{hits/paul_mccountry.tex}
+\mbox{}\input{hits/paul_mccountry.tex}\mbox{}
 
 Pro ukázku fuzzy hledání v databázi jmen je dotazem zkomolené jméno
 \bftt{Paul McCountry}, které by mělo nalézt \bftt{Paul McCartney}
 (tab.~\ref{tab:result:paul_mccountry}).
+
+\mbox{}\input{hits/sean_konery.tex}\mbox{}
+
+Dynamická editační vzdálenost u \bftt{edit\_dyn} se obtížně vypořádává s
+krátkými jmény jako \bftt{Sean} u \bftt{Sean Connery} a s fonetickým přepisem
+přepisem příjmení jako \bftt{Konery} (tab.~\ref{tab:result:sean_konery}). Běžná
+editační vzdálenost neupřednostňující změny na koncovkách se s fonetickým
+případem vypořádá opět za cenu toho, že najde velké množství nesouvisejících
+záznamů.
+
+Žádný vyhledávač se neuplatnil u plně fonetického přepisu u dotazu \bftt{Šón
+Konery}. Musela by být silně zvýšena tolerance editační vzdálenosti pro krátká
+slova (\bftt{son} a \bftt{sean} se liší vzdáleností 2). Nevýhodou by bylo velké
+množství nevyhovujících záznamů.
 
 
 
