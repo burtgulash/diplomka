@@ -1,4 +1,4 @@
-\documentclass[10pt,letterpaper,oneside,openright]{book}
+\documentclass[11pt,letterpaper,oneside,openright]{book}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[czech]{babel}
@@ -14,6 +14,8 @@
 
 \usepackage{fancyvrb}
 \usepackage{pygme}
+
+\usepackage{float}
 
 \pagestyle{plain}
 \linespread{1.15}
@@ -928,7 +930,8 @@ zahraniční film \bftt{Forrest Gump}, jehož jméno známe a umíme ho správn�
 napsat.
 
 \clearpage
-\subsection{Přesnost}
+\section{Přesnost}
+\subsection{Filmy}
 Několik následujících příkladů demonstruje záměrně zkomolené nebo jinak
 nepřesné dotazy, od kterých ale beztak očekáváme přesný zásah.
 Vyhledávače by neměly vracet příliš mnoho výsledků, protože tyto dotazy
@@ -1007,10 +1010,10 @@ pro velmi zkomolený dotaz (tab.~\ref{tab:result:preletela_kukajda}).
 \input{hits/gottfather.tex}
 
 Pokud chceme najít film s anglickým názvem \bftt{The Godfather} a nemůžeme si
-vzpomenout, jak se to vlastně píše, vyhledávače využívající editovací
-vzdálenost mohou napovědět. Trigramový nenašel shodu, kterou jsme hledali, ale
-několik textově správných výsledků také našel.
-(tab.~\ref{tab:result:gottfather}).
+vzpomenout, jak se to vlastně píše (př. \bftt{Gottfather}), vyhledávače
+využívající editovací vzdálenost mohou napovědět. Trigramový vyhledávač
+\bftt{trigram\_ES} nenašel shodu, kterou jsme hledali, ale několik textově
+správných výsledků také našel.  (tab.~\ref{tab:result:gottfather}).
 
 \input{hits/god_father.tex}
 
@@ -1027,11 +1030,26 @@ našemu očekávání. Ostatní rovněž nalezly několik dokumenťů, ale až n
 výjimek, které v textu obsahují kompozitní slovo oddělené pomlčkou, se k cíli
 ani nepřibližíly.
 
+\subsection{Jména}
+Pro databázi jmen byla zvýšena tolerance překlepů v editační vzdálenosti pro
+kratší slova, protože jména jsou obvykle krátká proti názvům filmů. Menší
+datová sada vykompenzuje nadbytečný výpočetní výkon, který se použije pro vyšší
+editační vzdálenost.
 
-\subsection{Cizí jazyk a názvy}
-\subsection{Oddělená slova}
-\subsection{Krátký vstup}
+\input{hits/paul_mccartney.tex}
 
+Od všech vyhledávačů opět požadujeme alespoň přesnou shodu
+(tab.~\ref{tab:result:paul_mccartney}).
+
+\input{hits/paul_mccountry.tex}
+
+Pro ukázku fuzzy hledání v databázi jmen je dotazem zkomolené jméno
+\bftt{Paul McCountry}, které by mělo nalézt \bftt{Paul McCartney}
+(tab.~\ref{tab:result:paul_mccountry}).
+
+
+
+\clearpage
 \section{Rychlost vyhledávání}
 \subsection{CPython a PyPy}
 \subsection{Porovnání}
