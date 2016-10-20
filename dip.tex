@@ -936,6 +936,13 @@ tenhle případ zvládnout. Tím, že se jazyková analýza dotazu (\bftt{smrt k
 srnk}) neshoduje s analýzou výsledku (\bftt{smrt krasnych srnk}), nedojde ke
 shodě. Vinou zde bude pouze nedostatečný základní stematizér v ElasticSearch.
 
+\input{hits/sindleruv_seznam.tex}
+Protože dynamická editovací vzdálenost upřednostňuje odlišnosti na
+koncích slov oproti těm na začátcích, nenajde \bftt{edit\_dyn} shodu
+filmu \bftt{Schindlerův seznam} při zkomoleném dotazu \bftt{Šindlerův
+seznam}, který odpovídá fonetické reprezentaci - \bftt{Schi} je
+nahrazeno českým \bftt{Ši} (Tab.~\ref{tab:result:sindleruv_seznam}).
+
 \subsection{Cizí jazyk a názvy}
 \subsection{Oddělená slova}
 \subsection{Krátký vstup}
