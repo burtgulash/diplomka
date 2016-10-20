@@ -14,6 +14,7 @@
 
 \pagestyle{plain}
 \linespread{1.15}
+\setlength{\tabcolsep}{1em}
 
 \definecolor{Darkgreen}{rgb}{0,0.4,0}
 \hypersetup{%
@@ -898,10 +899,37 @@ obsahuje \textbf{907\,094} položek.
 \subsection{Databáze herců - ČSFD}
 
 \section{Porovnání výsledků vyhledávání}
-\subsection{Morfologie}
+Všechny analyzované vyhledávače podle očekávání vrátí výsledek, pokud se v
+jednotlivých slovech přesně shoduje s dotazem. Některé, zejména
+\bftt{trigram\_ES}, vrací za cenu vyšší přesnosti více výsledků, aby se zvýšila
+šance, že žádný relevantní výsledek nebude vynechán.  V následujících
+výsledkových tabulkách je zobrazeno několik prvních výsledků vyhledávání pro
+každý vyhledávač s uvedeným počtem celkových nalezených výsledků. Vedle každého
+výsledku je uvedeno skóre, který daný vyhledávač přiřadil. Vyšší skóre zde
+neznamená větší shodu, ale naopak označuje míru penalizace od perfektní shody.
+Tedy menší skóre znamená přesnější shodu.
 
-%\input{hits/smrt_krasneho_srnce.tex}
+\clearpage
 \input{hits/forrest_gump.tex}
+První příklad (tab.~\ref{tab:result:forrest_gump}) je dotaz, ve kterém hledáme
+zahraniční film \bftt{Forrest Gump}, jehož jméno známe a umíme ho správně
+napsat.
+
+\clearpage
+\input{hits/smrt_krasneho_srnce.tex}
+Tab.~\ref{tab:result:smrt_krasneho_srnce} ukazuje schopnost vyhledávačů
+vypořádat se s dotazem v jiném pádu a číslu, než je zamýšlený film. K
+povšimnutí stojí rozdíl mezi vyhledávačem \bftt{edit} a jeho dynamickou
+variantou \bftt{edit\_dyn}. Dynamická editovací vzdálenost má větší toleranci
+pro odlišnosti na koncích slov, proto se dokázala vypořádat s editovací
+vzdáleností \bftt{3} u rozdílu mezi \bftt{krásného} a \bftt{krásných}.
+\bftt{edit} používá vzdálenost \bftt{3} až od délky slova \bftt{9}, jinak by
+došlo k obrovskému nárůstu podobných slov. 
+
+\bftt{cs\_ES} nenašel žádnou shodu, přestože by jeho český stematizátor měl
+tenhle případ zvládnout. Tím, že se jazyková analýza dotazu (\bftt{smrt krasnh
+srnk}) neshoduje s analýzou výsledku (\bftt{smrt krasnych srnk}), nedojde ke
+shodě. Vinou zde bude pouze nedostatečný základní stematizér v ElasticSearch.
 
 \subsection{Cizí jazyk a názvy}
 \subsection{Oddělená slova}
