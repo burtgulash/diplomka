@@ -2,9 +2,8 @@
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[czech]{babel}
-%\usepackage{a4wide}
 \usepackage{hyperref}
-\usepackage[bottom=2.8cm]{geometry}
+\usepackage[bottom=3.5cm,footskip=1.5cm]{geometry}
 \usepackage{color}
 \usepackage[numbers]{natbib}
 \usepackage[scaled=0.83]{beramono}
@@ -16,6 +15,11 @@
 \usepackage{pygme}
 
 \usepackage{float}
+\usepackage{graphicx}
+
+\usepackage{caption}
+\captionsetup[figure]{name=Obr.}
+\captionsetup[table]{name=Tab.}
 
 \pagestyle{plain}
 \linespread{1.15}
@@ -1074,7 +1078,54 @@ množství nevyhovujících záznamů.
 
 \clearpage
 \section{Rychlost vyhledávání}
-\subsection{CPython a PyPy}
+
+%\mbox{}\input{figures/timings.tex}\mbox{}
+
+\noindent\makebox[\textwidth][c]{%
+    \begin{minipage}[H]{.5\textwidth}\vspace{0pt}
+    \begin{figure}[H]
+    \includegraphics[width=\textwidth]{figures/timings.eps}
+    \captionsetup{justification=centering}
+    \caption{Rychlost dotazu \bftt{[ms]}}
+    \label{fig:timings}
+    \end{figure}
+    \end{minipage}
+    \begin{minipage}[H]{.5\textwidth}\vspace{0pt}
+    \begin{figure}[H]
+    \includegraphics[width=\textwidth]{figures/timings_log.eps}
+    \captionsetup{justification=centering}
+    \caption{Rychlost dotazu (log) \bftt{[ms]}}
+    \label{fig:timings_log}
+    \end{figure}
+    \end{minipage}}
+
+\mbox{}\\
+
+Pro porovnání výkonu bylo náhodně zvoleno X dotazů s neprázdnou množinou
+výsledků vyhledání v databázi \bftt{csfd\_filmy}. V pořadí jsou to \bftt{ 2005
+2007, ctvrtek patek, dalnice, epizoda 3, godfather, jaromir nohavica, krasneho
+srnce, kriminalka, kukacci hnizdo, live tour, long road, mice men, o vikendu,
+ovoce, praha, pro nej, repeat, s nami, the godfather, the live tour, the of,
+the than then they thel them thun, the they, za pultem, znami lide}. Obrázky
+\ref{fig:timings} a \ref{fig:timings_log} porovnávají rychlost běhu dotazu
+mezi systémy \bftt{edit\_dyn} interpretovaného v CPythonu, \bftt{edit\_dyn}
+interpretovaného v PyPy a dvou konfigurací pro ElasticSearch \bftt{trig\_ES} a
+\bftt{cs\_ES}. Časy jsou průměrem 100 běhů dotazu pro každý ze systémů.
+
+Podle očekávání je implementace \bftt{edit\_dyn} výkonově nejslabší kvůli
+dynamicky typovanému Pythonu. Znatelný je rozdíl mezi jednotlivými interpretery
+Pythonu. Zejména pro korelované dotazy \bftt{the of}, \bftt{the they} a
+\bftt{the than then they thel them thun}, jimž odpovídá v
+obr.~\ref{fig:timings_log} špička dosahující až 4000ms. Tyto dotazy byly
+záměrně zkonstruovány z nefrekventovanějších slov \bftt{the} a \bftt{of}, aby
+ukázaly na nejhorší možný případ. Oproti CPythonu dokáže PyPy rozpoznat
+opakující se kód průchodu invertovanými seznamy a efektivně ho vykonat, jak je
+patrné z relativního rozdílu těchto dotazů oproti ostatním. 
+
+\bftt{trig\_ES} je podle očekávání pomalejší než základní \bftt{cs\_ES}, ale do
+takové míry, kdy to pro malou datovou kolekci nevadí.
+
+
 \subsection{Porovnání}
 
 \section{Velikost indexu}
