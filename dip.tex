@@ -862,59 +862,49 @@ Elasticsearch.
 
 \section{Použité datové soubory}
 Cílem je porovnat několik vyhledávačů na datových sadách s relativně krátkými
-dokumenty, které mají navíc různé záludnosti jako výce jazyků, nebo slova
-obtížně zpracovatelná jazykovou analýzou.
+dokumenty, které mají navíc různé záludnosti jako více jazyků, nebo slova
+obtížně zpracovatelná jazykovou analýzou (jména nebo odborné pojmy).
 
 \subsubsection{ČSFD - filmy}
-První datovou sadou jsou názvy filmů z Československé filmové databáze
-(\url{http://csfd.cz}). Přestože je možné rozlišit jazyk filmu, protože
-databáze tuto metainformaci obsahuje, sloučil jsem všechny názvy filmů
-do jedné sady. V datové sadě se tedy film vyskytuje vícekrát, pokud má
+První datovou sadou (\bftt{csfd\_filmy}) jsou názvy filmů z Československé
+filmové databáze (\url{http://csfd.cz}). Přestože je možné rozlišit jazyk
+filmu, protože databáze tuto metainformaci obsahuje, sloučil jsem všechny názvy
+filmů do jedné sady. V datové sadě se tedy film vyskytuje vícekrát, pokud má
 více názvů.
 
-V databázi je celkem \textbf{441\,173} filmů a k nim jsou přidány
+V datovém souboru je celkem \textbf{398\,430} filmů a k nim jsou přidány
 alternativní názvy v jiných jazycích, kterých je dohromady dalších
-\textbf{176\,266}.
+\textbf{141\,722}.
 
 \subsubsection{ČSFD - filmoví tvůrci}
-Druhá datová sada jsou všichni tvůrců (herců, režisérů, scénáristů,
-apod.) pocházejících rovněž z databáze ČSFD. Celkem obsahuje
-\textbf{240\,659} jmen.
+Druhá datová sada (\bftt{csfd\_tvůrci}) jsou všichni tvůrci (herci, režiséři,
+scénáristé, apod.) pocházejících rovněž z databáze ČSFD. Jsou uvažováni jen ti
+tvůrci, kteří se podle dat podíleli na filmech z databáze \bftt{csfd\_filmy}.
+Nejsou uvažováni tvůrci, kteří nejsou přiřazeni k žádnému filmu.
 
 \subsubsection{Česká wikipedia - nadpisy článků}
 Data z wikipedie lze stáhnout z \url{https://dumps.wikimedia.org/cswiki/}. Pro
 nadpisy byl použit soubor \textbf{cswiki-20160111-all-titles.gz}, který
-obsahuje \textbf{907\,094} položek.
-
-%
-%\begin{center}
-%\begin{tabular}{lr}
-%\textbf{jazyk/země} & \textbf{počet názvů filmů} \\
-%\hline
-%původní           & 441\,173  \\
-%anglický          &  47\,196  \\
-%USA               &  28\,981  \\
-%Slovensko         &  13\,932  \\
-%slovenský         &   9\,539  \\
-%Japonsko          &   7\,477  \\
-%Francie           &   7\,419  \\
-%Německo           &   5\,783  \\
-%Rusko             &   3\,344  \\
-%Česko             &   3\,180  \\
-%Kanada            &   2\,774  \\
-%Itálie            &   2\,766  \\
-%český             &   2\,159  \\
-%Španělsko         &   1\,606  \\
-%Finsko            &   1\,267  \\
-%Austrálie         &   1\,171  \\
-%Polsko            &   1\,061  \\
-%Maďarsko          &      822  \\
-%Čína              &      781  \\
-%\end{tabular}
-%\end{center}
+obsahuje \textbf{907\,094} titulků článků (\bftt{cswiki\_titulky}).
 
 
-\subsection{Databáze herců - ČSFD}
+\mbox{}
+\begin{tt}
+\begin{table}[H]
+\centering
+\begin{tabulary}{\textwidth}{LRRRR}
+\hline
+\textbf{data} & \textbf{velikost} & \textbf{\# záznamů} & \textbf{\# slov} & \textbf{\# unikátních slov} \\
+\hline
+csfd\_filmy     & 11.2\,MB & 540\,152 & 1\,958\,147 & 231\,452 \\
+csfd\_tvůrci    & 3.6\,MB  & 240\,659 & 523\,544    & 124\,780 \\
+cswiki\_titulky & 17.1\,MB & 907\,094 & 2\,987\,750 & 339\,091 \\
+\hline
+\end{tabulary}
+\caption{Statistiky datových sad}
+\label{tab:data_stats}
+\end{table}
+\end{tt}
 
 \section{Porovnání výsledků vyhledávání}
 Všechny analyzované vyhledávače podle očekávání vrátí výsledek, pokud se v
@@ -1204,9 +1194,9 @@ http '<uri>/<index>/_stats' | jq .indices.<index>.primaries.store.size_in_bytes
 \begin{tt}
 \begin{table}[H]
 \centering
-\begin{tabulary}{\textwidth}{LLL}
+\begin{tabulary}{\textwidth}{LLRR}
 \hline
-\textbf{databáze} & \textbf{implementace} & \textbf{velikost} \\
+\textbf{databáze} & \textbf{implementace} & \textbf{velikost indexu} \\
 \hline
 \multirow{3}{*}{\texttt{csfd\_filmy}} & trigram\_ES & 86\,MB \\
                                       & cs\_ES      & 37\,MB \\
