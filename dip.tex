@@ -1098,7 +1098,6 @@ množství nevyhovujících záznamů.
     \label{fig:timings_log}
     \end{figure}
     \end{minipage}}
-
 \mbox{}\\
 
 Pro porovnání výkonu bylo náhodně zvoleno X dotazů s neprázdnou množinou
@@ -1124,6 +1123,66 @@ patrné z relativního rozdílu těchto dotazů oproti ostatním.
 
 \bftt{trig\_ES} je podle očekávání pomalejší než základní \bftt{cs\_ES}, ale do
 takové míry, kdy to pro malou datovou kolekci nevadí.
+
+
+\noindent\makebox[\textwidth][c]{%
+    \begin{minipage}[H]{.5\textwidth}\vspace{0pt}
+    \begin{figure}[H]
+    \includegraphics[width=\textwidth]{figures/timings_py_sorted.eps}
+    \captionsetup{justification=centering}
+    \caption{Rychlost fází \bftt{edit\_dyn} pro CPython \bftt{log[x]}}
+    \label{fig:timings_py_sorted}
+    \end{figure}
+    \end{minipage}
+    \begin{minipage}[H]{.5\textwidth}\vspace{0pt}
+    \begin{figure}[H]
+    \includegraphics[width=\textwidth]{figures/timings_pypy_sorted.eps}
+    \captionsetup{justification=centering}
+    \caption{Rychlost fází \bftt{edit\_dyn} pro PyPy \bftt{log[x]}}
+    \label{fig:timings_pypy_sorted}
+    \end{figure}
+    \end{minipage}}
+
+\noindent\makebox[\textwidth][c]{%
+    \begin{minipage}[H]{.5\textwidth}\vspace{0pt}
+    \begin{figure}[H]
+    \includegraphics[width=\textwidth]{figures/timings_py_sorted_log.eps}
+    \captionsetup{justification=centering}
+    \caption{Rychlost fází \bftt{edit\_dyn} pro CPython \bftt{log[x,y]}}
+    \label{fig:timings_py_sorted_log}
+    \end{figure}
+    \end{minipage}
+    \begin{minipage}[H]{.5\textwidth}\vspace{0pt}
+    \begin{figure}[H]
+    \includegraphics[width=\textwidth]{figures/timings_pypy_sorted_log.eps}
+    \captionsetup{justification=centering}
+    \caption{Rychlost fází \bftt{edit\_dyn} pro PyPy \bftt{log[x,y]}}
+    \label{fig:timings_pypy_sorted_log}
+    \end{figure}
+    \end{minipage}}
+\mbox{}\\
+
+Poměr všech tří fází vykonání dotazu (1. vyhledání podobných slov ve slovníku
+\bftt{trie}, 2. sloučení všech odpovídajících invertovaných seznamů
+\bftt{slouceni}, 3. ohodnocení nalezených dokumentů \bftt{ohodnoceni}) na
+obrázcích \ref{fig:timings_py_sorted}, \ref{fig:timings_pypy_sorted},
+\ref{fig:timings_py_sorted_log} a~\ref{fig:timings_pypy_sorted_log} je odlišný
+pro různé dotazy. \bftt{ohodnoceni} je přímo závislé na počtu nalezených
+výsledků, protože se pro každý z nich aplikuje stejná ohodnocující funkce a
+následné seřazení. 
+
+Ostatní fáze nejsou na počtu výsledku závislé. \bftt{slouceni} není tolik
+závislé díky předsloučeným invertovaným seznamům hybridního uspořádání. Zvýšení
+náročnosti je možné pozorovat pro dotazy s frekventovanými slovy \bftt{the} a
+\bftt{of}, protože jejich invertované seznamy a disjunkce seznamů s podobnými
+slovy jsou delší než u průměrného dotazu. Fáze vyhledání všech slov -
+\bftt{trie} - se odvíjí pouze od charakteristiky dat. Tedy pokud existuje více
+podobných slov, pak je vykonání delší. Přesto nedosahuje velikých výkyvů.
+
+Za zmínku stojí změna v pořadí fází \bftt{trie} a \bftt{slouceni} mezi
+interpretery CPython a PyPy. PyPy si lehce poradí se sloučením invertovaných
+seznamů a dominující fází se stane ne tak snadno predikovatelné prohledání ve
+slovníku.
 
 
 \subsection{Porovnání}
