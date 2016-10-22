@@ -16,6 +16,7 @@
 
 \usepackage{float}
 \usepackage{graphicx}
+\usepackage{multirow}
 
 \usepackage{caption}
 \captionsetup[figure]{name=Obr.}
@@ -1184,10 +1185,46 @@ interpretery CPython a PyPy. PyPy si lehce poradí se sloučením invertovaných
 seznamů a dominující fází se stane ne tak snadno predikovatelné prohledání ve
 slovníku.
 
+\subsection{Velikost indexu}
+ElasticSearch nabízí bod API se statistikami, které nám řeknou i velikost místa
+zabraného indexem. Alternativně lze velikost indexu zjistit sečtením velikostí
+všech uložených souborů. Obě metody vracejí zhruba stejné výsledky ($\pm 4\%$).
 
-\subsection{Porovnání}
+Indexy pro vyhledávače \bftt{edit} a \bftt{edit\_dyn} jsou totožné. Liší se
+pouze formou hledání podobných slov ve slovníku.
 
-\section{Velikost indexu}
+\begin{Verbatim}
+# Součet souborů na disku
+du -shc //elasticsearch/nodes/*/indices/<index>/*/index/*
+
+# Využití statistik skrz API
+http '<uri>/<index>/_stats' | jq .indices.<index>.primaries.store.size_in_bytes
+\end{Verbatim}
+
+\begin{tt}
+\begin{table}[H]
+\centering
+\begin{tabulary}{\textwidth}{LLL}
+\hline
+\textbf{databáze} & \textbf{implementace} & \textbf{velikost} \\
+\hline
+\multirow{3}{*}{\texttt{csfd\_filmy}} & trigram\_ES & 86\,MB \\
+                                      & cs\_ES      & 37\,MB \\
+                                      & edit        & 42\,MB \\
+\hline
+\multirow{3}{*}{\texttt{csfd\_tvůrci}} & trigram\_ES & 31\,MB \\
+                                       & cs\_ES & 14\,MB \\
+                                       & edit & 15\,MB \\
+\hline
+\multirow{3}{*}{\texttt{cswiki\_titulky}} & trigram\_ES & 135\,MB \\
+                                          & cs\_ES & 63\,MB \\
+                                          & edit & 63\,MB \\
+\hline
+\end{tabulary}
+\caption{Velikosti indexů}
+\label{tab:index_size}
+\end{table}
+\end{tt}
 
 \chapter{Zhodnocení, další postup a otevřené problémy}
 \section{Integrace do existujících systémů}
