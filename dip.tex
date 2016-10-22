@@ -1085,22 +1085,58 @@ množství nevyhovujících záznamů.
     \begin{figure}[H]
     \includegraphics[width=\textwidth]{figures/timings_log.eps}
     \captionsetup{justification=centering}
-    \caption{Rychlost dotazu (log) \bftt{[ms]}}
+    \caption{Rychlost dotazu \bftt{log[y] [ms]}}
     \label{fig:timings_log}
     \end{figure}
     \end{minipage}}
 \mbox{}\\
 
 Pro porovnání výkonu bylo náhodně zvoleno X dotazů s neprázdnou množinou
-výsledků vyhledání v databázi \bftt{csfd\_filmy}. V pořadí jsou to \bftt{ 2005
-2007, ctvrtek patek, dalnice, epizoda 3, godfather, jaromir nohavica, krasneho
-srnce, kriminalka, kukacci hnizdo, live tour, long road, mice men, o vikendu,
-ovoce, praha, pro nej, repeat, s nami, the godfather, the live tour, the of,
-the than then they thel them thun, the they, za pultem, znami lide}. Obrázky
+výsledků vyhledání v databázi \bftt{csfd\_filmy}. Ve stejném pořadí jsou uvedeny v tabulce~\ref{tab:query_list} . Obrázky
 \ref{fig:timings} a \ref{fig:timings_log} porovnávají rychlost běhu dotazu
 mezi systémy \bftt{edit\_dyn} interpretovaného v CPythonu, \bftt{edit\_dyn}
 interpretovaného v PyPy a dvou konfigurací pro ElasticSearch \bftt{trig\_ES} a
 \bftt{cs\_ES}. Časy jsou průměrem 100 běhů dotazu pro každý ze systémů.
+
+\mbox{}
+\begin{tt}
+\begin{table}
+\centering
+\begin{tabulary}{\textwidth}{LR}
+\hline
+\textbf{dotaz} & \textbf{\# výsledků} \\
+\hline
+2005 2007                          & 15      \\
+ctvrtek patek                      & 5       \\
+dalnice                            & 957     \\
+epizoda 3                          & 33      \\
+godfather                          & 95      \\
+jaromir nohavica                   & 3       \\
+krasneho srnce                     & 2       \\
+kriminalka                         & 152     \\
+kukacci hnizdo                     & 4       \\
+live tour                          & 56      \\
+long road                          & 21      \\
+mice men                           & 19      \\
+o vikendu                          & 3       \\
+ovoce                              & 167     \\
+praha                              & 3443    \\
+pro nej                            & 14      \\
+repeat                             & 1048    \\
+s nami                             & 70      \\
+the godfather                      & 43      \\
+the live tour                      & 30      \\
+the of                             & 19526   \\
+the than then they thel them thun  & 0       \\
+the they                           & 7123    \\
+za pultem                          & 9       \\
+znami lide                         & 2      \\
+\hline
+\end{tabulary}
+\caption{Statistiky použitých dotazů}
+\label{tab:query_list}
+\end{table}
+\end{tt}
 
 Podle očekávání je implementace \bftt{edit\_dyn} výkonově nejslabší kvůli
 dynamicky typovanému Pythonu. Znatelný je rozdíl mezi jednotlivými interpretery
@@ -1285,16 +1321,45 @@ tvořené pro potřeby Webových vyhledávačů, které jsou však dnes nejrozš
 \bibliography{ref}
 
 \appendix
-\chapter{Konfigurace porovnaných systémů} \label{appendix:search_config}
+\chapter{Konfigurace porovnaných systémů v ElasticSearch}\label{appendix:search_config}
 \section{ElasticSearch}
 \subsection{trigram\_ES}
 \subsubsection{Analyzér}
+Pro ngramové zaindexování lze použít buď ngramový tokenizér
+\bftt{my\_ngram\_tokenizer}, nebo ngramový filtr \bftt{my\_ngram\_filter}.
+Ngramový tokenizér podporuje zvýrazňování, které se mi s ngramovým filtrem
+nepovedlo nastavit ani po vyčerpávajícím hledání. Ve výpisu konfigurace jsou
+uvedeny oba způsoby nastavení. \bftt{my\_short\_words\_filter} vybírá slova
+zahozená tokenizérem \bftt{my\_ngram\_tokenizer}, proto je v něm nastavena
+maximální délka menší než délka trigramu - 2.
+
 \input{appendix/es_settings/trigram_analyzer.tex}
 
 \subsubsection{Mapování}
+Aby fungoval zvýrazňovač pro ngramové indexy, musí být použit \bftt{Fast
+Vector Highlighter}, který funguje, pokud se pro pole nastaví hodnota
+\bftt{with\_position\_offsets} u parametru \bftt{term\_vector}. Nicméně
+nakonec byl použit externí zvýrazňovač, proto by mohlo být ukládání této
+informace vypnuto. Doporučuje se ji použít pro dlouhé texty, což není
+případ použitých datových sad v této práci.
+
 \input{appendix/es_settings/trigram_mapping.tex}
 
 \subsubsection{Dotaz pro vyhledávání}
+Dotaz je navržen, aby došlo k zásahu, pokud dokument obsahuje alespoň
+$70\%$ trigramů dotazu. Vyšší hodnoty začaly rychle ztrácet výsledky a
+nižší hodnoty vracely příliš šumu.
+
+Dotaz se snaží shodu najít napříč třemi indexy. \bftt{shorts} jsou
+ngramy kratší než $3$, protože je ElasticSearch zahazuje. \bftt{title}
+obsahuje všechny tokeny dokumentu (titulku filmu) a \bftt{trigram} je
+trigramový index. Manipulace s váhami jednotlivých polí nemá velký vliv
+na přesnost výsledku.
+
+Zvýrazňování je nastaveno doporučenou formou pro tento typ dotazu, ale
+přesto vynechává překrývající se dotazy (viz TODO). Zvýrazňování je
+provedeno externím přiloženým programem \bftt{trihigh.py}.
+
 \input{appendix/es_settings/trigram_search.tex}
 
 
