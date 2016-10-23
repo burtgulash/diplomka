@@ -1057,6 +1057,28 @@ Konery}. Musela by být silně zvýšena tolerance editační vzdálenosti pro k
 slova (\bftt{son} a \bftt{sean} se liší vzdáleností 2). Nevýhodou by bylo velké
 množství nevyhovujících záznamů.
 
+\subsection{Technické názvy}
+
+\mbox{}\input{hits/intel_8086.tex}\mbox{}
+
+Fuzzy vlastnost vyhledávače umožňuje explorativní vyhledávání podobných pojmů
+těm, které by uživatel ani nemohl najít, narozdíl od běžných slov, v jiném
+slovníku. Dostal by se k nim třeba přes seznam obdobných pojmů, které se
+uvádějí v encyklopediích, nebo jaké nakupujícím představují eshopy (např.
+\uv{sekce ostatní také koupili}). Příklad v tab.~\ref{tab:result:intel_8086}
+ukazuje tuto situaci na produktu s technickým názvem, který má od stejné firmy
+několik produktů s podobným nebo odvozeným názvem. Příklad v
+tab.~\ref{tab:result:mitsubishi_ki} ukazuje, jak může fuzzy vyhledání u
+\bftt{edit} a \bftt{edit\_dyn} pomoci, když je v databázi název firmy produktu
+ve více jazycích, přestože se data tváří, že jsou pouze v jednom jazyce.
+\bftt{trig\_ES} případ nezvládl, protože nelze jednoduše nakonfigurovat dotaz,
+který by vyžadoval alespoň částečný zásah od každého slova v dotazu.
+
+\mbox{}\input{hits/mitsubishi_ki.tex}\mbox{}
+
+
+
+
 \section{Proximita slov}
 Rozdíl mezi klasickým upřednostňováním počtu shodujících se slov v
 dokumentu a ohodnocením na základě maximální blízkosti slov demonstrují
@@ -1066,6 +1088,13 @@ ten první preferuje delší dokumenty, protože mají větší šanci obsahovat
 shodující se slova, ten druhý je k tomuhle imunní. Pro něj je ideální
 shoda taková, kde jsou slova v dokumentu bezprostředně vedle sebe a ve
 stejném pořadí jako v dotazu.
+
+Pro tento příklad byla záměrně použita slova, která se ve filmových datech
+objevují frekventovaně díky tomu, že se mezi filmy řadí i záznamy hudebních
+koncertů. U běžného dotazu nelze pozorovat, že by proximita měla zásadní dopad
+na kvalitu výsledků právě kvůli krátkosti dokumentů. Smysl by pravděpodobně
+měla při použití na delším textu, kde by se ale projevila její relativně vyšší
+výpočetní náročnost.
 
 %\mbox{}\input{hits/co_nam.tex}\mbox{}
 

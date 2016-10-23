@@ -12,3 +12,4 @@ view: $(TEXFILE).pdf
 	evince $^ 2>/dev/null
 clean:
 	latexmk -C
+	rm -f *.log *.aux
