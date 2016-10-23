@@ -1183,7 +1183,7 @@ obr.~\ref{fig:timings_log} špička dosahující až 4000ms. Tyto dotazy byly
 záměrně zkonstruovány z nefrekventovanějších slov \bftt{the} a \bftt{of}, aby
 ukázaly na nejhorší možný případ. Oproti CPythonu dokáže PyPy rozpoznat
 opakující se kód průchodu invertovanými seznamy a efektivně ho vykonat, jak je
-patrné z relativního rozdílu těchto dotazů oproti ostatním. 
+patrné z relativního rozdílu těchto dotazů oproti ostatním.
 
 \bftt{trig\_ES} je podle očekávání pomalejší než základní \bftt{cs\_ES}, ale do
 takové míry, kdy to pro malou datovou kolekci nevadí.
@@ -1233,7 +1233,7 @@ obrázcích \ref{fig:timings_py_sorted}, \ref{fig:timings_pypy_sorted},
 \ref{fig:timings_py_sorted_log} a~\ref{fig:timings_pypy_sorted_log} je odlišný
 pro různé dotazy. \bftt{ohodnoceni} je přímo závislé na počtu nalezených
 výsledků, protože se pro každý z nich aplikuje stejná ohodnocující funkce a
-následné seřazení. 
+následné seřazení.
 
 Ostatní fáze nejsou na počtu výsledku závislé. \bftt{slouceni} není tolik
 závislé díky předsloučeným invertovaným seznamům hybridního uspořádání. Zvýšení
@@ -1247,6 +1247,48 @@ Za zmínku stojí změna v pořadí fází \bftt{trie} a \bftt{slouceni} mezi
 interpretery CPython a PyPy. PyPy si lehce poradí se sloučením invertovaných
 seznamů a dominující fází se stane ne tak snadno predikovatelné prohledání ve
 slovníku.
+
+
+\subsubsection{Porovnání implementací disjunkce}
+\noindent\makebox[\textwidth][c]{%
+    \begin{minipage}[H]{.5\textwidth}\vspace{0pt}
+    \begin{figure}[H]
+    \includegraphics[width=\textwidth]{figures/timings_union_cpython.eps}
+    \captionsetup{justification=centering}
+    \caption{Rychlost sloučení pro CPython}
+    \label{fig:timings_union_cpython}
+    \end{figure}
+    \end{minipage}
+    \begin{minipage}[H]{.5\textwidth}\vspace{0pt}
+    \begin{figure}[H]
+    \includegraphics[width=\textwidth]{figures/timings_union_pypy3.eps}
+    \captionsetup{justification=centering}
+    \caption{Rychlost sloučení pro PyPy}
+    \label{fig:timings_union_pypy}
+    \end{figure}
+    \end{minipage}}
+\mbox{}\\
+
+Pro srovnání byly naimplementovány čtyři různé druhy vykonání disjunkce
+invertovaných seznamů, které následně figurují v konjunktivním sloučení.
+
+\bftt{heap} je klasické sloučení za pomocí binární haldy, které se hodí, pokud
+je invertovaných seznamů mnoho. Kvůli hybridizaci invertovaných seznamů jich
+tolik není, a proto by měly být minimálně stejně účinné implementace, kde
+prioritní frontu tvoří pouhý lineární seznam - \bftt{list}. \bftt{list-prune}
+je obdobou, pouze s tím, že z prioritní fronty odstraní invertované seznamy,
+které se dostaly do konce. \bftt{skip} je experimentální implementace
+optimalizující přeskakování v invertovaných seznamech oproti postupnému
+posunování po jednom dokumentu.
+
+V obr.~\ref{fig:timings_union_cpython}~a~\ref{fig:timings_union_pypy} jsou
+porovnání těchto implementací pro CPython a Pypy na dotazech \textbf{long road,
+2005 2007, mice men, pro nej, live tour, jaromir nohavica, ovoce, s nami, znami
+lide, repeat, o vikendu, godfather, kriminalka, kukacci hnizdo, ctvrtek patek,
+epizoda 3, za pultem, praha, dalnice, krasneho srnce} ve stejném pořadí.
+
+Žádná ze čtyř implementací nemá dle výsledků v obecném případě zásadní vliv na
+dobu vykonání dotazu.
 
 \subsection{Velikost indexu}
 ElasticSearch nabízí bod API se statistikami, které nám řeknou i velikost místa
