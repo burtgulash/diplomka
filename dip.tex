@@ -1128,52 +1128,12 @@ výpočetní náročnost.
     \end{minipage}}
 \mbox{}\\
 
-Pro porovnání výkonu bylo náhodně zvoleno X dotazů s neprázdnou množinou
-výsledků vyhledání v databázi \bftt{csfd\_filmy}. Ve stejném pořadí jsou uvedeny v tabulce~\ref{tab:query_list} . Obrázky
-\ref{fig:timings} a \ref{fig:timings_log} porovnávají rychlost běhu dotazu
-mezi systémy \bftt{edit\_dyn} interpretovaného v CPythonu, \bftt{edit\_dyn}
-interpretovaného v PyPy a dvou konfigurací pro ElasticSearch \bftt{trig\_ES} a
-\bftt{cs\_ES}. Časy jsou průměrem 100 běhů dotazu pro každý ze systémů.
-
-\mbox{}
-\begin{tt}
-\begin{table}
-\centering
-\begin{tabulary}{\textwidth}{LR}
-\hline
-\textbf{dotaz} & \textbf{\# výsledků} \\
-\hline
-2005 2007                          & 15      \\
-ctvrtek patek                      & 5       \\
-dalnice                            & 957     \\
-epizoda 3                          & 33      \\
-godfather                          & 95      \\
-jaromir nohavica                   & 3       \\
-krasneho srnce                     & 2       \\
-kriminalka                         & 152     \\
-kukacci hnizdo                     & 4       \\
-live tour                          & 56      \\
-long road                          & 21      \\
-mice men                           & 19      \\
-o vikendu                          & 3       \\
-ovoce                              & 167     \\
-praha                              & 3443    \\
-pro nej                            & 14      \\
-repeat                             & 1048    \\
-s nami                             & 70      \\
-the godfather                      & 43      \\
-the live tour                      & 30      \\
-the of                             & 19526   \\
-the than then they thel them thun  & 0       \\
-the they                           & 7123    \\
-za pultem                          & 9       \\
-znami lide                         & 2      \\
-\hline
-\end{tabulary}
-\caption{Statistiky použitých dotazů}
-\label{tab:query_list}
-\end{table}
-\end{tt}
+Pro porovnání výkonu bylo náhodně zvoleno 24 dotazů pro vyhledání v databázi
+\bftt{csfd\_filmy}.  . Obrázky \ref{fig:timings} a \ref{fig:timings_log}
+porovnávají rychlost běhu dotazu mezi systémy \bftt{edit\_dyn} interpretovaného
+v CPythonu, \bftt{edit\_dyn} interpretovaného v PyPy a dvou konfigurací pro
+ElasticSearch \bftt{trig\_ES} a \bftt{cs\_ES}.  Časy jsou průměrem 100 běhů
+dotazu pro každý ze systémů.
 
 Podle očekávání je implementace \bftt{edit\_dyn} výkonově nejslabší kvůli
 dynamicky typovanému Pythonu. Znatelný je rozdíl mezi jednotlivými interpretery
@@ -1249,25 +1209,25 @@ seznamů a dominující fází se stane ne tak snadno predikovatelné prohledán
 slovníku.
 
 
-\subsubsection{Porovnání implementací disjunkce}
-\noindent\makebox[\textwidth][c]{%
-    \begin{minipage}[H]{.5\textwidth}\vspace{0pt}
-    \begin{figure}[H]
-    \includegraphics[width=\textwidth]{figures/timings_union_cpython.eps}
-    \captionsetup{justification=centering}
-    \caption{Rychlost sloučení pro CPython}
-    \label{fig:timings_union_cpython}
-    \end{figure}
-    \end{minipage}
-    \begin{minipage}[H]{.5\textwidth}\vspace{0pt}
-    \begin{figure}[H]
-    \includegraphics[width=\textwidth]{figures/timings_union_pypy3.eps}
-    \captionsetup{justification=centering}
-    \caption{Rychlost sloučení pro PyPy}
-    \label{fig:timings_union_pypy}
-    \end{figure}
-    \end{minipage}}
-\mbox{}\\
+%\subsubsection{Porovnání implementací disjunkce}
+%\noindent\makebox[\textwidth][c]{%
+%    \begin{minipage}[H]{.5\textwidth}\vspace{0pt}
+%    \begin{figure}[H]
+%    \includegraphics[width=\textwidth]{figures/timings_union_cpython.eps}
+%    \captionsetup{justification=centering}
+%    \caption{Rychlost sloučení pro CPython}
+%    \label{fig:timings_union_cpython}
+%    \end{figure}
+%    \end{minipage}
+%    \begin{minipage}[H]{.5\textwidth}\vspace{0pt}
+%    \begin{figure}[H]
+%    \includegraphics[width=\textwidth]{figures/timings_union_pypy3.eps}
+%    \captionsetup{justification=centering}
+%    \caption{Rychlost sloučení pro PyPy}
+%    \label{fig:timings_union_pypy}
+%    \end{figure}
+%    \end{minipage}}
+%\mbox{}\\
 
 Pro srovnání byly naimplementovány čtyři různé druhy vykonání disjunkce
 invertovaných seznamů, které následně figurují v konjunktivním sloučení.
@@ -1281,14 +1241,12 @@ které se dostaly do konce. \bftt{skip} je experimentální implementace
 optimalizující přeskakování v invertovaných seznamech oproti postupnému
 posunování po jednom dokumentu.
 
-V obr.~\ref{fig:timings_union_cpython}~a~\ref{fig:timings_union_pypy} jsou
-porovnání těchto implementací pro CPython a Pypy na dotazech \textbf{long road,
-2005 2007, mice men, pro nej, live tour, jaromir nohavica, ovoce, s nami, znami
-lide, repeat, o vikendu, godfather, kriminalka, kukacci hnizdo, ctvrtek patek,
-epizoda 3, za pultem, praha, dalnice, krasneho srnce} ve stejném pořadí.
-
-Žádná ze čtyř implementací nemá dle výsledků v obecném případě zásadní vliv na
-dobu vykonání dotazu.
+% V obr.~\ref{fig:timings_union_cpython}~a~\ref{fig:timings_union_pypy} jsou
+% porovnání těchto implementací pro CPython a Pypy na dvaceti náhodně
+% vygenerovaných dotazech. Obrázky jsou seřazeny vzestupně podle implementace
+% \bftt{skip}. Žádná ze čtyř implementací nemá dle výsledků v obecném případě
+% zásadní vliv na dobu vykonání dotazu. Každá je v některém případě víceméně tou
+% nejméně vhodnou a naopak.
 
 
 \noindent\makebox[\textwidth][c]{%
@@ -1329,8 +1287,8 @@ dobu vykonání dotazu.
 \mbox{}\\
 
 Obrázky~\ref{fig:timings_prefix_union_x_y},~\ref{fig:timings_prefix_union_x_yy},~\ref{fig:timings_prefix_union_x_yyyy}
-a \ref{fig:timings_prefix_union_xxxx_yyyy} demonstrují stejný případ, kdy je
-vyhledávač nastaven pro prefixové vyhledávání. To má za důsledek více
+a \ref{fig:timings_prefix_union_xxxx_yyyy} demonstrují rychlost vykonání
+náhodných prefixových dotazů. U prefixových dotazů najde slovník velké množství
 odpovídajících slov ke každému dotazovanému slovu. Dotazu typu \bftt{x* yyyy*}
 v obr.~\ref{fig:timings_prefix_union_x_yyyy} znamená dotaz o dvou prefixech.
 \bftt{x} a \bftt{yyyy} znázorňují šablony vygenerovaných slov. Tedy náhodně
