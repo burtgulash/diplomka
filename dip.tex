@@ -1254,7 +1254,7 @@ posunování po jednom dokumentu.
     \begin{figure}[H]
     \includegraphics[width=\textwidth]{figures/prefix_union_dense.eps}
     \captionsetup{justification=centering}
-    \caption{Rychlost sloučení pro Pypy - prefixový dotaz \bftt{[x* y*]}}
+    \caption{Rychlost sloučení pro PyPy - prefixový dotaz \bftt{[x* y*]}}
     \label{fig:timings_prefix_union_x_y}
     \end{figure}
     \end{minipage}
@@ -1272,7 +1272,7 @@ posunování po jednom dokumentu.
     \begin{figure}[H]
     \includegraphics[width=\textwidth]{figures/prefix_union_sparse2.eps}
     \captionsetup{justification=centering}
-    \caption{Rychlost sloučení pro Pypy - prefixový dotaz \bftt{[x* yyyy*]}}
+    \caption{Rychlost sloučení pro PyPy - prefixový dotaz \bftt{[x* yyyy*]}}
     \label{fig:timings_prefix_union_x_yyyy}
     \end{figure}
     \end{minipage}
@@ -1301,6 +1301,50 @@ schopnost implementací přeskakovat dokumenty v kombinaci řídké (\bftt{yyyy*
 husté (\bftt{x*}) disjunkce. Podle očekávání by měla dominovat implementace
 \bftt{skip}, ale není tomu tak. Nejvhodnější implementací se ukázala
 jednoduchost obyčejného seznamu v případech \bftt{list} a \bftt{list-prune}.
+
+\subsection{Hledání ve slovníku}
+\noindent\makebox[\textwidth][c]{%
+    \begin{minipage}[H]{.5\textwidth}\vspace{0pt}
+    \begin{figure}[H]
+    \includegraphics[width=\textwidth]{figures/trie_edit_cpython.eps}
+    \captionsetup{justification=centering}
+    \caption{Rychlost slovníku (v~CPythonu)~\bftt{log[y]}}
+    \label{fig:trie_edit_cpython}
+    \end{figure}
+    \end{minipage}
+    \begin{minipage}[H]{.5\textwidth}\vspace{0pt}
+    \begin{figure}[H]
+    \includegraphics[width=\textwidth]{figures/trie_edit_pypy3.eps}
+    \captionsetup{justification=centering}
+    \caption{Rychlost slovníku (v~PyPy)~\bftt{log[y]}}
+    \label{fig:trie_edit_pypy}
+    \end{figure}
+    \end{minipage}}
+\mbox{}\\
+
+Jedním z důvodů, proč je dynamicky prořezávaná editovací vzdálenost výhodná je
+její časová náročnost, protože se, narozdíl od běžné, vyhýbá drahému průchodu
+podstromy u počátečních znaků.
+Obr.~\ref{fig:trie_edit_pypy}~a~\ref{fig:trie_edit_cpython} znázorňují
+závislost tří variant editovací vzdálenosti při průchodu prefixovým stromem a
+nalezením všech podobných slov. \bftt{edit} je klasická Levenshteinova
+vzdálenost, \bftt{edit-dyn} je dynamicky prořezávaná varianta a
+\bftt{edit-dyn-prefix} je předchozí varianta, která vyhledává prefixově.
+Vertikální čáry znázorňují zvýšení práhu editovací vzdálenosti. Ta začíná na
+nule - tedy nejkratší slova se hledají přesně, a na délkách 2, 4, 6, 8 se
+zvedne o jeden bod (slova o délce 3 se hledají s práhem 1, o délce 5 s práhem
+2, ...). Dlouhé vykonání u krátkých slov u \bftt{edit-dyn-prefix} je způsobeno
+vyčerpávajícím průchodem všemi slovy, které odpovídají prefixu. Dynamické
+prořezávání je výhodné, protože umožňuje bez větší ztráty vyšší toleranci
+editační vzdálenosti s rostoucí délkou slova.
+
+Narozdíl od sloučení invertovaných seznamů není u vyhledání ve slovníku patrná
+výhoda PyPy oproti CPythonu. Dokonce je u \bftt{edit-dyn} a
+\bftt{edit-dyn-prefix} CPython výkonnější, což naznačuje, že JIT kompilace PyPy
+v tomto případě nepřinesla žádný lepší výkon. Implementace slovníku v jazyce s
+překladem do nativního kódu by měla být znatelně rychlejší.
+
+
 
 \subsection{Velikost indexu}
 ElasticSearch nabízí bod API se statistikami, které nám řeknou i velikost místa
