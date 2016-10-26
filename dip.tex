@@ -1290,6 +1290,60 @@ epizoda 3, za pultem, praha, dalnice, krasneho srnce} ve stejném pořadí.
 Žádná ze čtyř implementací nemá dle výsledků v obecném případě zásadní vliv na
 dobu vykonání dotazu.
 
+
+\noindent\makebox[\textwidth][c]{%
+    \begin{minipage}[H]{.5\textwidth}\vspace{0pt}
+    \begin{figure}[H]
+    \includegraphics[width=\textwidth]{figures/prefix_union_dense.eps}
+    \captionsetup{justification=centering}
+    \caption{Rychlost sloučení pro Pypy - prefixový dotaz \bftt{[x* y*]}}
+    \label{fig:timings_prefix_union_x_y}
+    \end{figure}
+    \end{minipage}
+    \begin{minipage}[H]{.5\textwidth}\vspace{0pt}
+    \begin{figure}[H]
+    \includegraphics[width=\textwidth]{figures/prefix_union_sparse.eps}
+    \captionsetup{justification=centering}
+    \caption{Rychlost sloučení pro PyPy - prefixový dotaz \bftt{[x* yy*]}}
+    \label{fig:timings_prefix_union_x_yy}
+    \end{figure}
+    \end{minipage}}
+
+\noindent\makebox[\textwidth][c]{%
+    \begin{minipage}[H]{.5\textwidth}\vspace{0pt}
+    \begin{figure}[H]
+    \includegraphics[width=\textwidth]{figures/prefix_union_sparse2.eps}
+    \captionsetup{justification=centering}
+    \caption{Rychlost sloučení pro Pypy - prefixový dotaz \bftt{[x* yyyy*]}}
+    \label{fig:timings_prefix_union_x_yyyy}
+    \end{figure}
+    \end{minipage}
+    \begin{minipage}[H]{.5\textwidth}\vspace{0pt}
+    \begin{figure}[H]
+    \includegraphics[width=\textwidth]{figures/prefix_union_sparse3.eps}
+    \captionsetup{justification=centering}
+    \caption{Rychlost sloučení pro PyPy - prefixový dotaz \bftt{[xxxx* yyyy*]}}
+    \label{fig:timings_prefix_union_xxxx_yyyy}
+    \end{figure}
+    \end{minipage}}
+\mbox{}\\
+
+Obrázky~\ref{fig:timings_prefix_union_x_y},~\ref{fig:timings_prefix_union_x_yy},~\ref{fig:timings_prefix_union_x_yyyy}
+a \ref{fig:timings_prefix_union_xxxx_yyyy} demonstrují stejný případ, kdy je
+vyhledávač nastaven pro prefixové vyhledávání. To má za důsledek více
+odpovídajících slov ke každému dotazovanému slovu. Dotazu typu \bftt{x* yyyy*}
+v obr.~\ref{fig:timings_prefix_union_x_yyyy} znamená dotaz o dvou prefixech.
+\bftt{x} a \bftt{yyyy} znázorňují šablony vygenerovaných slov. Tedy náhodně
+vygenerovaný dotaz může vypadat například jako \bftt{s* bene*} nebo \bftt{m*
+tolu*}. U dotazu \bftt{x* y*} očekáváme silný vliv disjunkce na dobu vykonání
+sloučení, protože prefix pouze o jednom znaku odpovídá velkému množství slov. V
+kontrastu dotaz typu \bftt{xxxx* yyyy*}  bude obsahovat menší množství seznamů
+v disjunkci. Dotazy typu \bftt{x* yy*} a \bftt{x* yyyy*} slouží k porovnání
+schopnost implementací přeskakovat dokumenty v kombinaci řídké (\bftt{yyyy*}) a
+husté (\bftt{x*}) disjunkce. Podle očekávání by měla dominovat implementace
+\bftt{skip}, ale není tomu tak. Nejvhodnější implementací se ukázala
+jednoduchost obyčejného seznamu v případech \bftt{list} a \bftt{list-prune}.
+
 \subsection{Velikost indexu}
 ElasticSearch nabízí bod API se statistikami, které nám řeknou i velikost místa
 zabraného indexem. Alternativně lze velikost indexu zjistit sečtením velikostí
