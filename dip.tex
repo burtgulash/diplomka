@@ -1302,6 +1302,52 @@ husté (\bftt{x*}) disjunkce. Podle očekávání by měla dominovat implementac
 \bftt{skip}, ale není tomu tak. Nejvhodnější implementací se ukázala
 jednoduchost obyčejného seznamu v případech \bftt{list} a \bftt{list-prune}.
 
+\mbox{}\\
+\noindent\makebox[\textwidth][c]{%
+    \begin{minipage}[H]{.5\textwidth}\vspace{0pt}
+    \begin{figure}[H]
+    \includegraphics[width=\textwidth]{figures/hybrid_union_s_tebou.eps}
+    \captionsetup{justification=centering}
+    \caption{Rychlost sloučení pro PyPy - prefixový dotaz \bftt{[s* tebou*]}}
+    \label{fig:hybrid_union_s_tebou}
+    \end{figure}
+    \end{minipage}
+    \begin{minipage}[H]{.5\textwidth}\vspace{0pt}
+    \begin{figure}[H]
+    \includegraphics[width=\textwidth]{figures/hybrid_union_s_t.eps}
+    \captionsetup{justification=centering}
+    \caption{Rychlost sloučení pro PyPy - prefixový dotaz \bftt{[s* t*]}}
+    \label{fig:hybrid_union_s_t}
+    \end{figure}
+    \end{minipage}}
+\mbox{}\\
+
+Klíčovým srovnáním této práce je závislost rychlosti sloučení invertovaných
+seznamů na velikosti seskupení invertovaných seznamů (TODO ref algorithmus).
+Pro porovnání byla datová sada \bftt{csfd\_filmy} zaindexována pro více
+parametrů seskupení a pro každý takový index byla změřena doba sloučení pro
+prefixové dotazy \bftt{s* tebou*} (reprezentující typ dotazu \bftt{x* yyyyy*},
+obr.~\ref{fig:hybrid_union_s_tebou}), a dotaz \bftt{s* t*} (reprezentující
+\bftt{x* y*}, obr.~\ref{fig:hybrid_union_s_t}). Parametrem seskupení se rozumí
+minimální velikost seskupeného invertovaného seznamu. Tedy klasický invertovaný
+index bez hybridního sloučení odpovídá hodnotě 1. Naopak úplný dopředný index
+má maximálně možně dlouhý invertovaný seznam o velikosti počtu všech slov v
+datové sadě (v tomto případě je v databázi \bftt{csfd\_filmy} 1\,958\,147
+výskytů slov). Lidsky řečeno, čím více vlevo v
+obr.~\ref{fig:hybrid_union_s_tebou}~a~\ref{fig:hybrid_union_s_t}, tím je index
+\uv{více invertovaný}. Naopak, čím více vpravo, tím index více připomíná
+původní datovou kolekci. Křivky jsou v hodnotách 500\,000 a výše téměř totožné,
+protože pro oba dotazy už jsou jejich invertované seznamy předsloučené a při
+průchodu už dochází pouze k jejich filtrování.
+
+Zajímavým pozorováním je absolutní nevhodnost klasického invertovaného seznamu
+pro krátké prefixové dotazy. V takovém případě dochází k masivnímu sloučení
+mnoha krátkých invertovaných seznamů. Podle očekávání zde uplatňuje
+implementace \bftt{heap}, jejíž složitost nalezení následujícího dokumentu je
+$\log n$ oproti ostatním, které procházejí disjunktivní seznam lineárně.
+
+
+
 \subsection{Hledání ve slovníku}
 \noindent\makebox[\textwidth][c]{%
     \begin{minipage}[H]{.5\textwidth}\vspace{0pt}
