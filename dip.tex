@@ -510,12 +510,12 @@ $x$ a $y$ a $|x|$ znamená délku textu $x$.
 Pro vypočtení Levenshteinovy editační vzdálenosti použijeme Wagner-Fischerův
 algoritmus s kvadratickou náročností $O(|x||y|)$.
 
-\subsubsection{Ngramy}
-Pro přibližné vyhledávání můžeme indexovat jiné díly původního textu než slova - ngramy.
-Ngram je posloupnost několika po sobě jdoucích znaků. Např. ngramy slova
-\bftt{podlaha} o délce 3 (trigramy) jsou \bftt{pod}, \bftt{odl}, \bftt{dla},
-\bftt{lah}, \bftt{aha}. V tomto případě se jejich znaky překrývají, a proto
-hovoříme o překrývajících se trigramech. 
+\subsubsection{Ngramová podobnost}
+Pro přibližné vyhledávání můžeme indexovat jiné díly původního textu než slova
+- ngramy.  Ngram je posloupnost několika po sobě jdoucích znaků. Např. ngramy
+slova \bftt{podlaha} o délce 3 (trigramy) jsou \bftt{pod}, \bftt{odl},
+\bftt{dla}, \bftt{lah}, \bftt{aha}. V tomto případě se jejich znaky překrývají,
+a proto hovoříme o překrývajících se trigramech. 
 
 Podobnost dvou textů pomocí ngramů můžeme efektivně zjistit pomocí Jaccardovy
 podobnosti množin. Tu zjistíme jako poměr velikosti průniku ku velikosti
@@ -526,141 +526,21 @@ jejich podobnost jako podobnost těchto množin.
 Tento způsob funguje pro krátké řetězce a malou vzdálenost. Podobná slova budou
 sdílet všechny ngramy vzdálené $n$ pozic od místa, kde mezi nimi došlo ke
 změně. Např. slova \bftt{kremrole} a \bftt{kremrule} se levenshteinovou
-vzdáleností 1 budou mít Jaccardovu vzdálenost trigramů pouze $0.5$. U kratších
-slov způsob selže.
+vzdáleností 1 budou mít Jaccardovu vzdálenost trigramů pouze $0.5$. Aby metoda
+fungovala, musí být text dlouhý alespoň dvakrát delší než velikost ngramu,
+pokud ke změně dojde uprostřed textu. Proto tenhle způsob selhává u kratších
+slov.
 
-
-\subsubsection{Poloinvertovaný index}
-
-
-
-
-\subsection{Jazyková analýza}
-
-\url{https://is.muni.cz/th/256499/fi_m/thesis_sikora.txt}
-
-% Aglutinativní jazyky
-\subsection{Ngramy}
-Alternativou k invertovaným indexům, kde invertovaný seznam odpovídá jednomu
-lidskému slovu, jsou tzv. ngramové (qgram?) invertované indexy. Ngramem je
-posloupnost několika po sobě jdoucích písmen o konstantní velikosti $n$.  Slovo
-\bftt{motorka} obsahuje trigramy (ngram, kde $n = 3$) \bftt{mot, oto, tor,
-ork, rka}.  Ngramový invertovaný index by pak měl invertovaný seznam pro každý
-nalezený ngram. Velikou výhodu oproti slovnímu indexu je jazyková nezávislost a
-podpora přibližného vyhledávání.
-
-% TODO describe trigram indexes
-
-Databázový systém postgres podporuje trigramový index díky jeho univerzálnosti.
-\url{https://swtch.com/~rsc/regexp/regexp4.html}
-
-
-\subsection{Inkrementální vyhledávání}
-Z pohledu uživatele je velmi přívětivé, pokud se mu dostává zpětné vazby ještě
-před tím, než dopíše svůj dotaz. V úplné formě se už během psaní dotazu
-objevují první výsledky které by se objevily při potvrzení dotazu (typeahead
-search, search as you type, real time search, ...). . Pro velké databáze se
-inkrementální vyhledávání nepoužívá kvůli zvýšené výpočetní náročnosti. Namísto
-toho se používá slabší forma inkrementálního vyhledávání - našeptávač
-(autocompletion), který pouze nabízí uživateli nápovědu na dokončení jeho
-dotazu. Pro nápovědu se používaje historie dotazů zadaných všemi uživateli
-(query log) a našeptávač vrátí záznam, který maximalizuje podmíněnou
-pravděpodobnost \bftt{P(<dotaz>|<nedokončený\_dotaz>)}. Pro relativně malé datové
-sady je ale možné použít inkrementální vyhledávání v plné formě za cenu vyšší
-zátěže na vyhledávač. Některé systémy to řeší ukládáním průběžných výsledků
-nedokončených dotazů do mezipaměti s krátkou žívotností (cite tastier,
-completesearch?).
-
-\subsection{Prefixové vyhledávání}
-\subsection{Hranové ngramy} Lze použít techniku hranových ngramů
-(edge ngram), které kromě slova samotného zaindexují ještě všechny jeho
-prefixy. Např. \bftt{motorka} se rozloží na \bftt{m, mo, mot, moto,
-motor, motork, motorka}. Očividně pak i při nedokončeném dotazu
-\bftt{moto} systém snadno dohledá úplné slovo. Jednou nevýhodou této
-metody je náročnost na paměť - počet zaindexovaných slov i velikost
-indexu roste kvadraticky s délkou textu. Proto se často omezuje délka
-zaindexovaných hranových ngramů. Krátké ngramy se odfiltrují, protože
-jich je příliš mnoho.  Vyhledávání jednoznakového ngramu může být
-náročné až jako lineární průchod celou databází. Nevýhodou pak je, že
-inkrementální vyhledávání nezačne fungovat už od prvního zadaného
-písmene. Dlouhé ngramy se mohou odfiltrovat od maximální zvolené délky
-ngramu a obdobná úprava se provede s dotazem. Příklad: indexujeme
-hranové ngramy s délkou 2 až 4 znaků. Ze slova \bftt{motorka}
-zaindexujeme odpovídající ngramy a celé slovo \bftt{mo, mot, moto,
-motorka}. Při dotazu ořízneme slovo na maximální délku, abychom nalezli
-shodu s nejdelším ngramem.  Tedy při vyhledávání slova \bftt{motork}
-bude vyhledávač hledat záznamy, která obsahují buď \bftt{moto} nebo
-\bftt{motorka}.
-
-\subsection{Přibližné vyhledávání}
-% describe ngrams fuzzy
-Jiný způsob kromě ngramů, který umožňuje přibližné vyhledávání, je založený na
-textové vzdálenosti mezi dvěma textovými řetězci. Jednoduchou textovou
-vzdáleností je Hammingova vzdálenost. Ta se rovná počtu změněných znaků mezi
-dvěma texty o stejné délce. Příklad: vzdálenost mezi slovy
-\bftt{\boldred{m}oto\boldred{r}ka} a \bftt{\boldred{h}oto\boldred{v}ka} je 2,
-protože se slova neshodují ve dvou znacích.
-
-Jinou metrikou je editovací vzdálenost, která není omezená tím, že délka obou
-textů musí být shodná. Editovací vzdálenost, stejně jako Hammingova vzdálenost,
-udává počet záměn, ale navíc ještě počet odebraných nebo naopak přidaných
-znaků. Příklad: Mezi slovy \bftt{kremrole} a \bftt{karel} je editovací
-vzdálenost 5, protože slovo \bftt{kre\boldred{mro}l\boldred{e}} obsahuje 4
-znaky navíc a chybí mu 1 znak, který ale slovo \bftt{k\boldred{a}rel} obsahuje.
-
-\section{Prefixové a fuzzy rozšíření indexu}
-Ačkoliv se jedná o dva různé požadavky, prefixové a fuzzy invertované indexy
-mají ve výsledku podobné vlastnosti a tudíž jsou pro ně vhodné stejné datové
-struktury. Pokud na chvíli necháme fuzzy požavky stranou, nastíním, jak lze
-jednoduše rozšířit klasický invertovaný index o podporu prefixového
-vyhledávání.
-
-Nevýhodou hranových ngramů je, že se může zaindexovat zbytečně mnoho ngramů.
-Pokud je paměťová náročnost problém, lze namísto indexování pomocných ngramů
-použít použít abecedně seřazený slovník všech zaindexovaných slov.  Všechna
-slova odpovídající dotazovanému prefixu sa dohledají vybráním všech slov mezi
-prvním a posledním slovem s daným prefixem. Ty lze snadno dohledat dvěma
-binárními vyhledáními. Dotaz je výpočetně náročnější při vykonání, protože se
-nejprve musí provést sjednocení všech invertovaných seznamů odpovídajících
-jednomu prefixu před tím, než se provede průnik.
-
-Díky morfologii, která se vyskytuje hlavně na koncích slov, bude index
-přizpůsobený pro prefixové vyhledávání vhodný zároveň i pro fuzzy vyhledávání.
-Většina podobných slov bude v seřazeném slovníku blízko u sebe. Pokud
-vyhledáváme přibližná slova do editovací vzdálenosti 1, pak několik slov se
-bude lišit v prvním znaku od dotazovaného, ale většina rozdílů bude v
-pozdějších částech slova, a tedy ve výsledku budou relativně blízko u sebe.
-
-
-\subsection{Trie}
-Pro rychlý průchod slovníkem s přibližným prohledáváním je vhodná datová
-struktura \textbf{trie} (radixový, prefixový strom). Trie je n-ární stromová
-struktura, ve které je každé slovo uloženo tak, že se nejprve rozloží na znaky
-a ty se ve stejném pořadí uloží jako jedna cesta ve stromu. Např. slovo
-\bftt{motorka} by se ve stromu uložilo jako cesta \bftt{/m/o/t/o/r/k/a} od
-kořene \bftt{/}, pokud bychom příklad přirovnali k hierarchii adresářů a
-souborů v souborovém systému.
-
-Trii je možné komprimovat (komprimovaná trie, compressed trie) sloučením po
-sobě jdoucích znaků, které mají pouze jednoho potomka. Např. pokud existují
-pouze dvě slova \bftt{motorka} a \bftt{motýl}, pak jejich cesty ve stromu
-budou \bftt{/mot/orka} a \bftt{/mot/ýl} a budou sdílet prefix \bftt{/mot/}.
-Je to vlastně seřazený seznam slov s tím, že všechny společné prefixy jsou
-uloženy jako rodičovské uzly stromu n-árního stromu. Tohle rozložení nám umožní
-rychle dohledat prefix, jehož potomci ve stromu jsou odpovědí na prefixový
-dotaz.
-
-Vyhledání podobných slov podle editovací vzdálenosti využije společných prefixů
-tím, že společný prefix spočítá pouze jednou pro celou skupinu slov. (cite
-Hanov).
-
+\subsection{Reprezentace slovníku}
 \subsection{Jiné reprezentace slovníku}
 \paragraph{Metrické stromy}
 % describe BK, VP-TREE
 \paragraph{Delete algoritmus}
-\paragraph{Signature hashing}
+% Aglutinativní jazyky
 
-\subsection{Hybridní index}
+\subsection{Reprezentace invertovaného souboru}
+
+\subsubsection{Poloinvertovaný index}
 Velkou výpočetní zátěží u prefixových a fuzzy indexů je, pokud musí provést
 disjunktivní sloučení (sloučení, OR) většího množství invertovaných seznamů.
 Většinou v literatuře potkáme konjunktivní sloučení (průnik, AND), které je
