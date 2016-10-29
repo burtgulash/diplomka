@@ -209,115 +209,180 @@ má více dat.
 \subsection{Linked data}
 \subsection{Mobilní zařízení}
 
+\section{Uživatelské rozhraní}
+Základním uživatelským rozhraní pro textové vyhledávání je obyčejný řádek, do
+kterého uživatel napíše svůj dotaz a po potvrzení mu vyhledávač obratem pošle
+sadu dokumentů, které ohodnotí jako nejrelevantnější vzhledem k jeho dotazu.
+Tento koncept se silně osvědčil díky svojí jednoduchosti. Některé vyhledávače
+rozšiřují tento jednoduchý koncept například tím, že s uživatelem reagují už
+během jeho vkládání dotazu a nečekají na potvrzení. Tahle vlastnost se začala
+rozšiřovat v první dekádě tisíciletí, kdy začaly webové stránky více používat
+techniku AJAX - tedy komunikace webové stránky se serverem bez toho, aniž by
+uživatel explicitně vyslal požadavek.
 
+Vyhledávače interpretují dotaz nejčastěji tak, že text rozdělí na slova a
+naleznou všechny dokumenty, které obsahují všechna zároveň. Kdybychom si chtěli
+dotaz představit v explicitní formě, pak by dotaz \bftt{forrest gump} vypadal
+jako \bftt{forrest AND gump}, kde operátor \bftt{AND} označuje konjunkci. 
 
-\section{Textové vyhledávání}
-Vstupem v úloze vyhledávání je \textbf{dotaz} (query), tedy vstupní textový
-řetězec. Výstupem je seznam odpovídajících záznamů (dokumentů) z databáze
-seřazený podle ohodnocení, kterou vyhledávací systém přiřadí dle shody
-(relevance) dotazu s nalezeným záznamem.
+Pak záleží na vyhledávačích, jaké další funkce uživateli poskytnou. Mezi
+populární patří operátory \bftt{NOT} a frázové vyhledávání. \bftt{NOT} se
+vztahuje ke konkrétnímu slovu a má efekt, že tohle slovo nesmí být přítomno ve
+výsledcích. Frázové vyhledávání slouží k odfiltrování výsledků, které nejsou
+těsně vedle sebe. Ačkoliv jsou tyto dva operátory takřka standardem, přesto
+jsou v různých vyhledávačích implementovány různým způsobem, např. symbolem
+\bftt{-} nebo slovem \bftt{NOT}, a frázové vyhledávání se interpretuje různě v
+závislosti na vyhledávači. Navíc samotné vyhledávače obměňují svoji rozšířenou
+funkcionalitu, a proto i operátory, které dříve fungovaly a spousta uživatelů
+si na ně zvykla, buďto už nefungují, nebo nesplňují dřívější očekávání.
 
-Pokud by dotazem bylo například jediné slovo \bftt{Petr}, mohl by výsledek
-vyhledávání v databázi jmen vrátit jména \bftt{Petr Novák, Petr Novotný, Petr
-Klíč, Petr Žel, ...}. Dotazem je povětšinou posloupnost jednoho nebo více slov,
-ale může obsahovat i různé operátory, které upravují povahu dotazu. Například
-booleovské operátory AND, OR a NOT mohou určit zda se musí shodovat všechna
-slova, nebo pouze jedno, nebo se slovo vyskytovat nesmí. Např. dotaz
-\bftt{Pavel OR Petr AND NOT Novák}. Každý vyhledavač implementuje různé
-operátory a kromě těch základních booleovských nejsou jejich funkce nijak
-sjednoceny.
+Ve výsledku jsou rozšiřující funkce vyhledávačů vlastností pro stálé a
+pokročilé uživatele. Pokud tedy implementujeme nový vyhledávač, který nemá
+letitou stálou základnu uživatelů, musíme implementovat pokročilé vlastnosti
+bez použití pokročilých operátorů. Tedy vyhledávač dostane pouze základní
+textovou informaci, kterou pak může inteligentně interpretovat.
 
-Uživatelsky jsou nejpřívětivější vyhledávače, u kterých není třeba speciální
-operátory vůbec používat. Vyhledávač si je buďto sami doplní do čistě textového
-dotazu, nebo se o vysokou přesnost postarají jejich hodnotící funkce.
+\subsubsection{Inkrementální vyhledávání}
+Jednou technikou, kterou může vyhledávací systém implementovat bez nutnosti
+učit uživatele svým pokročilým funkcím, je vyhledávání ještě před tím, než
+uživatel dokončí svůj dotaz. Této technice se říká mnoha způsoby - kromě
+inkrementálního vyhledávání - autocomplete, instant search, typeahead search,
+search as you type, a další. Pro uživatele je tento způsob interakce pohodlný
+jednak v tom, že nemusí dokončovat svůj dotaz, a jednak že dokonce nemusí znát
+svůj dotaz úplně, a přesto mu vyhledávač nalezne odpověď.  Inkrementální
+vyhledávání zkracuje interakční smyčku s uživatelem. Ten namísto opakovaného
+vkládání a potvrzování nového dotazu, pokud mu nevyhovují výsledku, pouze mění
+svůj dotaz a vyhledávač reaguje instantně.
 
-\subsection{Relevance}
-Pro měření relevance existují dvě základní metriky - přesnost (precision) a
-výtěžnost (recall) \url{https://wiki.korpus.cz/doku.php/pojmy:precision}.
+V plné formě by měl inkrementální vyhledáváč totožné rozhraní pro výsledky,
+které uživateli prezentuje ještě před dokončením a zároveň pro ty, které
+uživateli vrátí po potvrzení dotazu. Nejen uživatelské rozhraní by bylo stejné,
+ale i množina výsledků a jejich pořadí, které v obou případech vrátí. Ve slabší
+formě má dvě rozhraní. Kromě běžného rozhraní pro prezentaci výsledků má ještě
+tzv. našeptávač, který reaguje instantně s každým nově zadaným písmenem dotazu.
+Díky oddělení obou rozhraní nemusí našeptávač vracet tytéž výsledky, jaké by
+vyhledávač vrátil po potvrzení - proto je to pouze našeptávač.
 
-Přesnost je poměr počtu relevantních nalezených výsledků ku počtu všech
-nalezených výsledků. Tedy vyhledávač bude vyhledávat přesně, pokud bude
-obsahovat malé množství výsledků¸ které s dotazem nemají nic společného.
-Vyhledávače cílící na přesnost ale mohou trpět tím, že některé záznamy, které
-jsou pro uživatele relevantní, nejsou vůbec nalezeny. To měří právě výtěžnost -
-tedy poměr počtu relevantních nalezených výsledků ku počtu všech relevantních
-záznamů v databázi. Pro relevantní vyhledávání jsou důležité obě hodnoty. Při
-malé výtěžnosti bude uživatel cítit frustraci z toho, že musí hloupému
-vyhledávači podstrčit více podobných dotazů a stále bude mít pocit, že
-vyhledávač nenalezl všechno. Při malé přesnosti bude mít uživatel pocit, že si
-vyhledávač vyhledává, co se mu zlíbí.
+Plná forma inkrementálního vyhledávání je striktně náročnější na výpočetní
+výkon, protože vykonává plný dotaz pro každé písmeno dotazu. Proto je populární
+slabší forma dvou uživatelských rozhraní, která vykoná pouze výpočetně méně
+náročnou verzi dotazu při každém novém písmenu.
 
-U relativně malých datových sad, kterými se tato práce zabývá, je narozdíl od
-webových vyhledávačů velmi důležitá výtěžnost. Při velkém množství výsledků se
-ztratí, že některé dokumenty nebudou nalezeny. V databázi jmen by ale bylo
-velmi frustrující, kdyby při dotazu \bftt{Jan Voštěp} nebylo nic nalezeno,
-přitom by v databázi existoval záznam \bftt{Dr. Voštěp, Jan}.
+Příkladem by mohlo být vyhledávání pouze v titulcích nebo názvech dokumentů při
+našeptávání a plné vyhledání v celé datové sadě po potvrzení dotazu.  Jiným
+způsobem je využití záznamu všech dotazů (query log). Toho využívají rozsáhlé
+webové vyhledávače, díky velkého počtu svých uživatelů a jimi vykonaných
+dotazů.  Statistické informace jsou zpětně zabudovány do našeptávače, který pak
+doplňuje nové dotazy jejich nejpopulárnějším dokončením.
+
+\subsection{Filtrované vyhledávání}
+Textové vyhledávání může být kombinováno s různými filtry pro vlastnosti, které
+výsledky obsahují. Dokonce ještě přes započetím vkládání dotazu může být
+uživateli prezentována omezená množina celé kolekce, seřazená např. podle
+popularity v poslední době. Vedle této množiny mohou být představeny různé
+filtry nebo všechny (nebo alespoň nejpopulárnější) kategorie, kterými lze
+datovou sadu rozdělit. Uživatel pak dokonce nemusí ani vepisovat dotaz a pouze
+se k výsledkům dopracuje postupnou interakcí s nabízenými filtry, které
+postupně reflektují zmenšující se množinu. Tedy např. z nabídky filtrů zmizí
+všechny kategorie, které nemají v omezené množině zastoupení. Pole pro
+vyhledávání pak lze chápat jako pouze další filtr. 
+
+\section{Povaha textových dat}
+% zipf, heaps
+
+\section{Algoritmy pro textové vyhledávání}
+Implementace a výběr algoritmů bude záviset na vlastnostech, které po
+vyhledávači požadujeme a na povaze dat, ve kterých bude vyhledávat. Budeme
+předpokládat, že datová sada, ve které se bude vyhledávat, je dostupná celá
+nebo její většina, ještě před tím, než dojde k prvnímu dotazu. V takovém
+případě nás budou zajímat tzv. offline a statické algoritmy.  Opakem by byla
+situace, kdy text přichází jako proud jednotlivých záznamů, a v tomto případě
+hovoříme o tzv. online problému. Pokud bychom neměli možnost uchovat všechny
+tyto přicházející záznamy v nějaké datové struktuře, pak bychom museli použít
+tzv. streamovací algoritmy. Opačně bychom datovou strukturu budovali postupně.
+Takový algoritmus se v kontrastu ke statickému nazývá dynamický. Oproti
+statickému musí být přizpůsobený na postupné úpravy datové struktury a zároveň
+vykonávat dotazy přícházející od uživatelů.
+
+Dynamické algoritmy jsou obtížné na implementaci, protože musí neustále
+synchronizovat přístup do datových struktur zvlášť pro zápis a pro čtení.
+Naopak statické algoritmy a datové struktury lze maximálně přizpůsobit datům,
+např. provedením těsné komprese dat, která by v případě dynamické datové
+struktury ztěžovala vkládání nových záznamů. Algoritmy pro textové vyhledávání
+mají často statický charakter, protože se velká část dat nemění. Nové záznamy
+nebo úpravy stávajících záznamů lze proto uchovat ve vejdlejší a menší
+dynamické datové struktuře a při dosažení určité velikosti se sloučí s větší
+statickou v jednorázové dávkové operaci. Sloučení nemusí vyústit pouze v jednu
+velkou datovou strukturu, ale může se slučovat postupně. Takové datové
+struktuře říkáme vícegenerační, protože je tvořena několika generacemi, ve
+kterých musíme paralelně provést vstupní dotaz a následně sloučit výsledky.
+
+\subsection{Index}
+Textová data, ve kterých se vyhledává, můžeme ponechat v původní textové
+reprezentaci, nebo ji zakódovat tak, aby se urychlilo vyhledávání. Pokud
+uvažujeme text jako posloupnost slov, pak je jednoduchým indexovacím schématem
+převést každé slovo v textu na nějaké celé číslo a uchovat si k němu pozici, na
+které se v původním textu nachází. Ntici (identifikátor dokumentu,
+identifikátor slova, pozice v dokumentu) bude unikátně označovat jeden výskyt.
+Překlad ze slov na konkrétní číslo (identifikátor) bude uložen v datové
+struktuře, kterou označíme jako slovník. 
+
+Výhodou uchování datové sady v indexovaném formátu bude její menší velikost,
+kterou dosáhneme díky kompresi, která využívá nerovnoměrné povahy textových
+dat. Často se vyskytujícím slovům mohou být přiřazena malá čísla a naopak
+unikátnějším slovům větší čísla. Pozice slov v textu lze zmenšit tak, že
+uchováme pouze rozdíly (delty) mezi po sobě následujícími pozicemi. Tyto
+rozdíly budou vždy kladná čísla, protože pozice v textu tvoří rostoucí
+posloupnost.  Identifikátory i rozdíly pozic je možné zkomprimovat nějakým
+instantním kódem jako Elias Delta nebo VByte. Menší velikost datové struktury
+znamená, že se jí více vejde do paměti, což umožňuje vyhnout se pomalým dotazům
+na externí ůložiště.
+
+Vyhledání slova v takové datové struktuře znamená převod vstupních slov na
+korespondující identifikátory pomocí slovníku a následný průchod celou datovou
+kolekcí. Při průchodu si zaznamenáme všechny dokumenty, které obsahují zároveň
+všechna dotazovaná slova a jejich pozice v dokumentu.
+
+Indexu, který si ponechává informaci o pozicích výskytu, říkáme poziční index.
+Ten je ekvivalentní s původními daty a proto i při zamíchání ntic výskytu
+můžeme data zpětně zrekonstruovat. Pozice ukládat nemusíme, a v takovém případě
+bude index odpovídat množině slov pro každý dokument.
+
+% TODO codes.
 
 \subsection{Invertovaný index}
-Centrální datovou strukturou, která navíc využívá ve svůj prospěch Zipfovy
-distribuce slov, je datová struktura \textbf{invertovaný index} (nebo také
-invertovaný soubor). Princip datové struktury je ten, že pro každé slovo, které
-se vyskytuje v databázi, si uložíme seznam odkazů na všechny záznamy
-(dokumenty), na kterých se slovo nachází.  Invertovaný index by měl být znám
-všem, kdo čtou knihy, protože rejstřík na posledních stránkách není ničím jiným
-než právě invertovaným indexem, kde jedním záznamem je stránka knihy a odkazem
-je číslo stránky.
+Protože je typickým dotazem velmi krátký text v porovnání s dlouhým dokumentem,
+průchod obyčejným indexem od začátku do konce vrátí pouze malé množství
+nalezených dokumentů poměrně k počtu všech dokumentů. Invertovaný index
+(inverted index) je datová struktura, která umožňuje rychle nalézt pouze ty
+dokumenty, které obsahují konkrétní slovo.
+% TODO průměrná délka dotazu google, yahoo, atd.
 
-Invertovaný index jsou ve skutečnosti dvě datové struktury. Tou první je
-takzvaný slovník - tedy seznam všech vyskytujících se slov s odkazem na svůj
-příslušný seznam odkazů, neboli invertovaný seznam. Druhou strukturou je
-samotný invertovaný soubor, což je soubor všech invertovaných seznamů.
+Obyčejný index lze převést na invertovaný index tak, že k sobě sloučíme všechny
+výskyty - tedy páry (id\_dokumentu, id\_slova, pozice) - podle identifikátoru
+slova. Vyhledání dokumentů v takto upraveném indexu proběhne jednoduše tak, že
+pro dotazované slovo vyhledáme jeho konkrétní sloučenou skupinu výskytů. Tyto
+skupiny (invertované seznamy) jsou prakticky množinou dokumentů, ve kterých se
+slovo vyskytuje. Vyhledání více slov znamená pouze dohledání korespondujících
+invertovaných seznamů a jejich sloučení provedením zvolené množinové operace.
+Protože je možné uchovat invertované seznamy seřazené podle identifikátoru
+dokumentu, je sloučení velmi rychlou lineární operací nad více invertovanými
+seznamy.
 
-Obě datové struktury mohou být implementovány různými způsoby podle druhu
-použití a požadovaných vlastností. Kupříkladu obyčejná hashovací tabulka
-poskytne velmi rychlý přístup k hledanému slovu ve slovníku, ale bude zabírat
-relativně mnoho paměti, protože každý záznam v tabulce si musí uchovat samotný
-text uloženého slova. V textovém vyhledávání, které často pracuje s velkými
-objemy dat, bude vhodnější pouhý seřazený seznam slov, na který lze použít
-binární vyhledávání. Odpadne nutnost ukládat pomocná data hashovací tabulky a
-navíc lze použít jednoduchou kompresní metodu - tzv. front coding. Pořadí slova
-v seřazeném seznamu lze použít jako odkaz pro nalezení odpovídajícího
-invertovaného seznamu.
+Indexu se říká invertovaný, protože se efektivně v ntici výskytu zamění pořadí
+dokumentu a slova a obyčejný index se seřadí dle tohoto nového pořadí. Pro k
+invertovanému indexu budeme nazývat obyčejný index jako dopředný index (forward
+index). Invertovaný index by měl být znám všem, kdo čtou knihy, protože
+rejstřík na posledních stránkách není ničím jiným než právě invertovaným
+indexem, kde jedním záznamem je stránka knihy.
 
-Invertovaný index je datová struktura obzvlášť obtížná na úpravy, protože je v
-paměti počítače uchována ve velmi kompaktní formě - často s použitím dalších
-kompresních algoritmů. Právě díky tomu na druhou stranu dosahuje vyšší
-rychlosti čtení oproti obecným vyhledávacím stromům. Index se proto často
-nejprve vytvoří (\textbf{indexování}) a pak se používá jen pro čtení.
+Invertovaný index má ještě lepší kompresní vlastnosti než dopředný index,
+protože může pro používat oproti instantním efektivnější blokové kompresní
+metody, které drasticky sníží velikost invertovaných seznamů odpovídajících
+často se opakujícím slovům. Má však horší kompresní vlastnosti pro záznamy o
+pozicích výskytu, protože se v tomhle schématu nevyskytují striktně za sebou.
 
-%\vspace{1cm}
-%Příklad:
-%
-%\begin{center}
-%\begin{tabular}{lr}
-%\textbf{slovo}   & \textbf{ukazatel} \\
-%\hline
-%anderson          & 3  \\
-%andrea            & 4  \\
-%andulka           & 1  \\
-%andy              & 2  \\
-%kajak             & 13 \\
-%kamna             & 14 \\
-%karafiol          & 6  \\
-%karate            & 12 \\
-%karburátor        & 7  \\
-%karel             & 11 \\
-%karkulka          & 5  \\
-%karma             & 8  \\
-%karta             & 9  \\
-%karty             & 10 \\
-%\end{tabular}
-%\end{center}
 
-Pro ještě kompaktnější uložení se používá kompresní technika Front-Coding,
-která využívá toho, že po sobě následující slova sdílí prefixy. Slovník se
-rozdělí na bloky o konstantním počtu slov a prefix se pro tento blok uloží
-zvlášť. Například při použití velikosti bloku 4 by slovník se slovy
-\bftt{anderson, andrea, andulka, andy, kajak, kamna, karafiol, karate,
-karburátor, karel, karkulka, karma, karta, karty} vypadal:
-\bftt{\{and\}erson, rea, ulka, y | \{ka\}jak, mna, rafiol, rate | \{kar\}burátor, el, kulka, ma | \{kart\}a, y}
-
-% TODO ukázka invertovaného indexu
 
 \subsection{Alternativní datové struktury}
 Invertovaný index je stále nejefektivnější datovou strukturou pro vyhledávání v
