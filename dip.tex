@@ -246,13 +246,13 @@ textovou informaci, kterou pak může inteligentně interpretovat.
 Jednou technikou, kterou může vyhledávací systém implementovat bez nutnosti
 učit uživatele svým pokročilým funkcím, je vyhledávání ještě před tím, než
 uživatel dokončí svůj dotaz. Této technice se říká mnoha způsoby - kromě
-inkrementálního vyhledávání - autocomplete, instant search, typeahead search,
-search as you type, a další. Pro uživatele je tento způsob interakce pohodlný
-jednak v tom, že nemusí dokončovat svůj dotaz, a jednak že dokonce nemusí znát
-svůj dotaz úplně, a přesto mu vyhledávač nalezne odpověď.  Inkrementální
-vyhledávání zkracuje interakční smyčku s uživatelem. Ten namísto opakovaného
-vkládání a potvrzování nového dotazu, pokud mu nevyhovují výsledku, pouze mění
-svůj dotaz a vyhledávač reaguje instantně.
+inkrementálního vyhledávání - instantní vyhledávání, typeahead search, search
+as you type, a další. Pro uživatele je tento způsob interakce pohodlný jednak v
+tom, že nemusí dokončovat svůj dotaz, a jednak že dokonce nemusí znát svůj
+dotaz úplně, a přesto mu vyhledávač nalezne odpověď. Inkrementální vyhledávání
+zkracuje interakční smyčku s uživatelem. Ten namísto opakovaného vkládání a
+potvrzování nového dotazu, pokud mu nevyhovují výsledku, pouze mění svůj dotaz
+a vyhledávač reaguje instantně.
 
 V plné formě by měl inkrementální vyhledáváč totožné rozhraní pro výsledky,
 které uživateli prezentuje ještě před dokončením a zároveň pro ty, které
@@ -263,17 +263,50 @@ tzv. našeptávač, který reaguje instantně s každým nově zadaným písmene
 Díky oddělení obou rozhraní nemusí našeptávač vracet tytéž výsledky, jaké by
 vyhledávač vrátil po potvrzení - proto je to pouze našeptávač.
 
-Plná forma inkrementálního vyhledávání je striktně náročnější na výpočetní
-výkon, protože vykonává plný dotaz pro každé písmeno dotazu. Proto je populární
-slabší forma dvou uživatelských rozhraní, která vykoná pouze výpočetně méně
-náročnou verzi dotazu při každém novém písmenu.
+Plná forma inkrementálního vyhledávání (prefixové vyhledávání) je striktně
+náročnější na výpočetní výkon, protože vykonává plný dotaz pro každé písmeno
+dotazu. Některé systémy to řeší ukládáním průběžných výsledků nedokončených
+dotazů do mezipaměti s krátkou žívotností (cite tastier, completesearch?).
+Populární je slabší forma inkrementálního vyhledávání využívající dvou
+uživatelských rozhraní, která vykoná pouze výpočetně méně náročnou verzi dotazu
+při každém novém písmenu.  Jejím příkladem by mohlo být vyhledávání pouze v
+titulcích nebo názvech dokumentů při našeptávání a plné vyhledání v celé datové
+sadě po potvrzení dotazu.  Jiným způsobem je využití záznamu všech dotazů
+(query log). Toho využívají rozsáhlé webové vyhledávače, díky velkého počtu
+svých uživatelů a jimi vykonaných dotazů. Statistické informace jsou zpětně
+zabudovány do našeptávače, který pak doplňuje nové dotazy jejich
+nejpopulárnějším dokončením.
 
-Příkladem by mohlo být vyhledávání pouze v titulcích nebo názvech dokumentů při
-našeptávání a plné vyhledání v celé datové sadě po potvrzení dotazu.  Jiným
-způsobem je využití záznamu všech dotazů (query log). Toho využívají rozsáhlé
-webové vyhledávače, díky velkého počtu svých uživatelů a jimi vykonaných
-dotazů.  Statistické informace jsou zpětně zabudovány do našeptávače, který pak
-doplňuje nové dotazy jejich nejpopulárnějším dokončením.
+Prefixově interpretovaný dotaz může mít dvě základní varianty. V té první se
+každé zadané slovo dotazu uvažuje jako prefix nedokončeného slova. Např. dotaz
+\bftt{motor pil} bychom interpretovali prefixově v notaci \bftt{motor* pil*} a
+očekávali od něj výsledek \bftt{motorová pila}. V druhé variantě interpretujeme
+prefixově pouze poslední slovo, tedy \bftt{motor pil*}. Odůvodněním je, že
+očekáváme, že uživatel vkládá nová písmena na konec dotazu a ne, že je vkládá
+v náhodném pořadí.
+
+\subsection{Přibližné vyhledávání}
+V některých případech je žádoucí, když vyhledávač pomáhá vyhledávat navzdory
+morfologii jazyka. Při prohledávání celých textových dokumentů je pro užívatele
+frustrující situace, kdy hledá výraz - nejčastěji v prvním mluvnickém pádu -
+ale výskyt fráze je v dokumentu v jiném pádu nebo čísle. Přibližným
+vyhledáváním se také rozumí, pokud dokáže systém napovědět, nebo rovnou
+vyhledat výsledky, přestože dotaz obsahuje překlepy (\bftt{metamatyka} ->
+\bftt{matematika}), zdvojená písmena nebo naopak (\bftt{forest gump} ->
+\bftt{forrest gump}, nesprávné rozdělení slov (\bftt{i phone} ->
+\bftt{iphone}), inteligentní nahrazování některých slov jejich synonymy, nebo
+expanze zkratek na plný výraz (\bftt{U.S. -> United States}).
+
+Některé techniky je obtížné implementovat, protože závisí na podrobné analýze
+dat. Např. přibližná shoda slov na základě morfologie závisí na správné detekci
+jazyka dokumentu, nebo dokonce jednotlivých slov, protože v dnešním
+globalizovaném světě není netypické míchání cizích slov do textu jiného jazyka.
+Nahrazování slov synonymy a expanze zkratek mohou být závislé na oblasti, ze
+které dokumenty pocházejí, a vyžadovat definování nahrazovacích pravidel
+experty z oblasti. Oproti tomu kontrolování překlepů je relativně snadno
+implementovatelné, protože je závislé pouze na znalosti kompletního slovníku
+datové kolekce.
+
 
 \subsection{Filtrované vyhledávání}
 Textové vyhledávání může být kombinováno s různými filtry pro vlastnosti, které
@@ -325,7 +358,7 @@ převést každé slovo v textu na nějaké celé číslo a uchovat si k němu p
 které se v původním textu nachází. Ntici (identifikátor dokumentu,
 identifikátor slova, pozice v dokumentu) bude unikátně označovat jeden výskyt.
 Překlad ze slov na konkrétní číslo (identifikátor) bude uložen v datové
-struktuře, kterou označíme jako slovník. 
+struktuře, kterou označíme jako slovník (lexikon). 
 
 Výhodou uchování datové sady v indexovaném formátu bude její menší velikost,
 kterou dosáhneme díky kompresi, která využívá nerovnoměrné povahy textových
@@ -350,7 +383,7 @@ bude index odpovídat množině slov pro každý dokument.
 
 % TODO codes.
 
-\subsection{Invertovaný index}
+\subsection{Invertovaný index} \label{sec:inverted_index}
 Protože je typickým dotazem velmi krátký text v porovnání s dlouhým dokumentem,
 průchod obyčejným indexem od začátku do konce vrátí pouze malé množství
 nalezených dokumentů poměrně k počtu všech dokumentů. Invertovaný index
@@ -383,9 +416,8 @@ metody, které drasticky sníží velikost invertovaných seznamů odpovídajíc
 pozicích výskytu, protože se v tomhle schématu nevyskytují striktně za sebou.
 
 
-
 \subsection{Alternativní datové struktury}
-Invertovaný index je stále nejefektivnější datovou strukturou pro vyhledávání v
+Invertovaný index je jednou z nejefektivnějších datových struktur pro vyhledávání v
 textu, ale pro některé speciální případy byly navrženy i jiné datové struktury,
 které dokáží být kompaktnější než invertovaný index po kompresi, nebo umožňují
 vícero seřazení při jednom uložení v paměti. Klasický invertovaný index má
@@ -393,42 +425,58 @@ právě jedno seřazení dokumentů - nejčastěji podle vzrůstajícího id dok
 
 Waweletové stromy - dual sorted Index Treap Index
 
-Obě tyto alternativní datové struktury dosahují obrovských úspor díky
-své kompresibilitě, čehož bychom využili, pokud bychom uvažovali
-rozsáhlá vstupní data. Ale protože se zaměřuji na relativně malé objemy
-dat, avšak s vysokou redundancí při prohledávání, nevyužiji tyto datové
-struktury. Dalším velkým důvodem je, že jsem nenašel žádný výzkum, který
-by je aplikoval na prefixové, natož přibližné vyhledávání. Na druhou
-stranu existuje více výzkumných týmů, kteří se zabývají přibližným
-(fuzzy) prohledáváním na modifikovaném invertovaném indexu.
+Obě tyto alternativní datové struktury dosahují obrovských úspor díky své
+kompresibilitě, čehož bychom využili, pokud bychom uvažovali velké objemy dat. 
 
-\section{Techniky pro zvýšení relevance}
-Vyhledávání v čistém invertovaném indexu je náchylné k neposkytování všech
-výsledků. Velkou příčinou ve webových vyhledávačích vždy byla morfologie jazyka
-textu. Dokumenty také mohou obsahovat slova jiného jazyka, který uživatel
-příliš neovládá, nebo pouze neví, jak se slovo píše. V případě češtiny to není
-takový problém díky podobnosti psaní a výslovnosti (vysoká fonémická
-ortografie), ale např. v angličtině se mohou různá slova psát při stejné
-výslovnosti různě (red - read, clothes - close, steal - steel) nebo naopak
-vyslovovat různě při stejném zápisu (lead - olovo nebo vést). Problémem mohou
-být i technické pojmy nebo názvy ( ASUS GTX950-2G, 2GB GDDR5 (grafická karta);
-ADATA XPG Z1 8GB (2x4GB) DDR4 2133 CL13 (paměť DRAM); ETA 0028 90040 Gratus Max
-(Kuchyňský robot)). V dnešní době to mohou být stále více se zvýšeným
-používáním mobilních zařízení (a obtížnějším zadáváním textu) překlepy v
-dotazu.
+\subsection{Prefixové vyhledávání} \label{sec:prefix_search}
+Instantní vyhledávání můžeme implementovat více způsoby. Nejjednodušším je
+zaindexováním všech možných prefixů a slova samotného. Tedy pro slovo
+\bftt{podlaha} se zaindexují výrazy \bftt{p}, \bftt{po}, \bftt{pod},
+\bftt{podl}, \bftt{podla}, \bftt{podlah}, \bftt{podlaha}. Při vyhledávání není
+nutné dotaz nijak upravovat, protože při existující shodě v dokumentech bude
+odpovídající výraz v takovém indexu přítomný. Nevýhodou je násobná velikost
+výsledného indexu, protože se efektivně indexuje kvadratické množství slov.
+Často se velké množství omezuje minimální a maximální délkou prefixů¸ které se
+zaindexují.  Očividně pak vyhledávač nemůže vyhledávat při krátkých dotazech a
+nebude přesný pro delší prefixy.
 
-\subsection{Jazyková analýza}
+Jiným způsobem je použít klasický invertovaný index beze změny a vypočítat
+prefixy až při dotazování.  Docílíme toho přepsáním dotazu do formy konjunkce
+více disjunkcí. Např. dotaz \bftt{motor* pil*} by byl přepsán do tvaru
+\bftt{(motorová OR motorových OR ...) AND (pila OR pil OR pilách OR ...)} podle
+všech odpovídajících slov ve slovníku. 
+
+Pro nalezení všech slov, které odpovídají prefixu můžeme použít reprezentaci
+lexikonu seřazeným seznamem slov. V něm nalezneme první a poslední slovo, které
+odpovídají prefixu. Všechna slova mezi nimi jsou výsledkem hledání.
+Implementace hashovací tabulkou je v tomto případě nevhodná, protože si
+neuchovává informaci o lexikografickém pořadí slov.
+
+Problém nastane u krátkých prefixů, protože odpovídají velkému počtu slov.
+Dotaz s disjunkcí tisíců invertovaných seznamů bude pravděpodobně méně výkonný
+než prostý průchod celou datovou kolekcí.
+
+Další možností je použít poloinvertovaný (hybridní) index, který bude popsán v
+sekci
+% TODO reference na sekci
+ 
+\subsection{Algoritmy pro přibližné vyhledávání}
+V této práci se budeme zabývat pouze technikami, které uvažují slova pouze jako
+posloupnost znaků. Tedy vynecháme hledání synonym nebo expanzi zkratek, které
+silně závisí na kontextu a na obsahu dat.
+
+\subsubsection{Stematizace}
 Velkým problémem textových vyhledávačů je tvarosloví jazyka (morfologie - různé
-tvary slov, např. dobrý, dobrou, dobrému, dobrých).  Například při dotazování vyhledávače
-na výraz \bftt{motorová pila} nás jistě budou zajímat i výsledky, které
-obsahují text \bftt{motorové pile} nebo \bftt{motorových pilách}. Nelze po
-uživateli požadovat, aby vyjmenoval všechny tvary slov, které zadává.
+tvary slov, např. dobrý, dobrou, dobrému, dobrých).  Například při dotazování
+vyhledávače na výraz \bftt{motorová pila} nás jistě budou zajímat i výsledky,
+které obsahují text \bftt{motorové pile} nebo \bftt{motorových pilách}. Nelze
+po uživateli požadovat, aby vyjmenoval všechny tvary slov, které zadává.
 
 V češtině a v dalších indoevropských jazycích dochází k nejvíce morfologickým
-změnám na koncích slov.  Klasickým řešením je před indexováním dat provést
+změnám na koncích slov. Klasickým řešením je před indexováním dat provést
 jazykovou analýzu a převést slova na kmenový tvar (stematizace). Ve výsledku se
-místo slova \bftt{motorových} zaindexuje slovo \bftt{motor} a poté při
-vyhledávání se provede tatáž konverze dotazovaných slov. Vyhledávač by tedy
+místo slova \bftt{motorových} zaindexujeme slovo \bftt{motor} a poté při
+vyhledávání se provede identická konverze dotazovaných slov. Vyhledávač by tedy
 původní výraz \bftt{motorová pila} nejprve převedl na \bftt{motor pil} a
 vykonal dotaz s tímto modifikovaným výrazem. Co se považuje za kmen slova je
 určeno vybraným algoritmem. Kromě stematizace existuje ještě technika
@@ -446,6 +494,48 @@ pro jazykový rozbor, které jsou ale mimo rozsah této práce.
 Problém s lemmatizací je také nejednoznačnost základního tvaru. Například slovo
 \bftt{tancích} může mít základní tvar \bftt{tank} nebo \bftt{tanec} podle
 významu slova, který by člověk určil z kontextu věty.
+
+\subsubsection{Editační vzdálenost}
+Obecně můžeme podobnost dvou textů můžeme měřit pomocí editační vzdálenosti
+(edit distance).  Jednou editační vzdáleností je např. Levenshteinova
+vzdálenost. Ta označuje minimální počet znaků¸ které se z jednoho textu musí
+odebrat, přidat nebo zaměnit, aby vzniknul porovnávaný text. Např. mezi slovy
+\bftt{karel} a \bftt{kremrole} je editační vzdálenost 5, protože bychom první
+slovo transformovali na druhé odebráním znaku \bftt{a} a přidáním znaků
+\bftt{m},~\bftt{r},~\bftt{o}~a~\bftt{l} na patřičná místa. Editační vzdálenost
+můžeme alternativně vypočítat jako $edit(x, y) = |x| + |y| - 2 lcs(x, y)$, kde
+$lcs$ (longest common subsequence) označuje nejdelší společný podřetězec textů
+$x$ a $y$ a $|x|$ znamená délku textu $x$.
+
+Pro vypočtení Levenshteinovy editační vzdálenosti použijeme Wagner-Fischerův
+algoritmus s kvadratickou náročností $O(|x||y|)$.
+
+\subsubsection{Ngramy}
+Pro přibližné vyhledávání můžeme indexovat jiné díly původního textu než slova - ngramy.
+Ngram je posloupnost několika po sobě jdoucích znaků. Např. ngramy slova
+\bftt{podlaha} o délce 3 (trigramy) jsou \bftt{pod}, \bftt{odl}, \bftt{dla},
+\bftt{lah}, \bftt{aha}. V tomto případě se jejich znaky překrývají, a proto
+hovoříme o překrývajících se trigramech. 
+
+Podobnost dvou textů pomocí ngramů můžeme efektivně zjistit pomocí Jaccardovy
+podobnosti množin. Tu zjistíme jako poměr velikosti průniku ku velikosti
+sjednocení obou množin $\bftt{jacc}(X, Y) = |X \cap Y|\ /\ |X \cup Y|$. Pokud
+porovnávané texty reprezentujeme jako dvě množiny jejich ngramů, vypočteme
+jejich podobnost jako podobnost těchto množin. 
+
+Tento způsob funguje pro krátké řetězce a malou vzdálenost. Podobná slova budou
+sdílet všechny ngramy vzdálené $n$ pozic od místa, kde mezi nimi došlo ke
+změně. Např. slova \bftt{kremrole} a \bftt{kremrule} se levenshteinovou
+vzdáleností 1 budou mít Jaccardovu vzdálenost trigramů pouze $0.5$. U kratších
+slov způsob selže.
+
+
+\subsubsection{Poloinvertovaný index}
+
+
+
+
+\subsection{Jazyková analýza}
 
 \url{https://is.muni.cz/th/256499/fi_m/thesis_sikora.txt}
 
@@ -482,23 +572,6 @@ nedokončených dotazů do mezipaměti s krátkou žívotností (cite tastier,
 completesearch?).
 
 \subsection{Prefixové vyhledávání}
-V prefixovém inkrementálním vyhledávání uvažujeme, že dotaz, který uživatel v
-danou chvíli zadává, je pouze část úplného dotazu. Pokud dokáže vyhledávač
-hledat rychleji, než zadavatel píše, pak mu mohou být prezentovány záznamy s
-potentiálním dokončeným dotazem prezentovány dříve, než dotaz dopíše. Např.
-pokud je dotazem slovo \bftt{motor}, může se stát, že uživatel hledá slovo
-\bftt{motorka} a dotaz ještě nedokončil. Pokud dotaz obsahuje více slov, pak
-lze vyhledávač nastavit dvěma způsoby. V prvním případě dochází k prefixovému
-vyhledávání pouze u posledního slova dotazu, pokud uvažujeme, že uživatel vždy
-doplňuje pouze poslední slovo. Druhou variantou je, že umožníme uživateli
-vyhledávat každé slovo jako prefix. Výhodou druhé metody z hlediska uživatele
-je, že má částečně pod kontrolou morfologické změny slov. Protože k nim dochází
-nejčastěji na koncích slov, může uživatel jednoduše vynechat koncovky slov a
-vyhledávač mu je doplní. Např. při hledání slova \bftt{motork} by mohly být
-nalezeny všechny záznamy obsahující tvary stejného slova (\textbf{motorka,
-motorkou, motorkami}) nebo podobných slov (\textbf{motorkem, motorkář}).
-Nevýhodou je velká výpočetní náročnost při vyhledávání krátkých prefixů.
-
 \subsection{Hranové ngramy} Lze použít techniku hranových ngramů
 (edge ngram), které kromě slova samotného zaindexují ještě všechny jeho
 prefixy. Např. \bftt{motorka} se rozloží na \bftt{m, mo, mot, moto,
