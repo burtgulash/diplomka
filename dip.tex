@@ -3,7 +3,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[czech]{babel}
 \usepackage{hyperref}
-\usepackage[left=3.8cm,right=2.8cm,bottom=3.5cm,footskip=1.5cm]{geometry}
+\usepackage[left=3.8cm,right=2.8cm,bottom=2.5cm,footskip=1.5cm]{geometry}
 \usepackage{color}
 \usepackage[numbers]{natbib}
 \usepackage[scaled=0.83]{beramono}
@@ -446,26 +446,19 @@ více disjunkcí. Např. dotaz \bftt{motor* pil*} by byl přepsán do tvaru
 \bftt{(motorová OR motorových OR ...) AND (pila OR pil OR pilách OR ...)} podle
 všech odpovídajících slov ve slovníku. 
 
-Pro nalezení všech slov, které odpovídají prefixu můžeme použít reprezentaci
-lexikonu seřazeným seznamem slov. V něm nalezneme první a poslední slovo, které
-odpovídají prefixu. Všechna slova mezi nimi jsou výsledkem hledání.
-Implementace hashovací tabulkou je v tomto případě nevhodná, protože si
-neuchovává informaci o lexikografickém pořadí slov.
-
 Problém nastane u krátkých prefixů, protože odpovídají velkému počtu slov.
 Dotaz s disjunkcí tisíců invertovaných seznamů bude pravděpodobně méně výkonný
 než prostý průchod celou datovou kolekcí.
 
-Další možností je použít poloinvertovaný (hybridní) index, který bude popsán v
-sekci
+Řešením bude poloinvertovaný index popsaný v sekci ...
 % TODO reference na sekci
  
-\subsection{Algoritmy pro přibližné vyhledávání}
+\section{Algoritmy pro přibližné vyhledávání}
 V této práci se budeme zabývat pouze technikami, které uvažují slova pouze jako
 posloupnost znaků. Tedy vynecháme hledání synonym nebo expanzi zkratek, které
 silně závisí na kontextu a na obsahu dat.
 
-\subsubsection{Stematizace}
+\subsection{Stematizace}
 Velkým problémem textových vyhledávačů je tvarosloví jazyka (morfologie - různé
 tvary slov, např. dobrý, dobrou, dobrému, dobrých).  Například při dotazování
 vyhledávače na výraz \bftt{motorová pila} nás jistě budou zajímat i výsledky,
@@ -495,22 +488,42 @@ Problém s lemmatizací je také nejednoznačnost základního tvaru. Napříkla
 \bftt{tancích} může mít základní tvar \bftt{tank} nebo \bftt{tanec} podle
 významu slova, který by člověk určil z kontextu věty.
 
-\subsubsection{Editační vzdálenost}
-Obecně můžeme podobnost dvou textů můžeme měřit pomocí editační vzdálenosti
-(edit distance).  Jednou editační vzdáleností je např. Levenshteinova
-vzdálenost. Ta označuje minimální počet znaků¸ které se z jednoho textu musí
-odebrat, přidat nebo zaměnit, aby vzniknul porovnávaný text. Např. mezi slovy
-\bftt{karel} a \bftt{kremrole} je editační vzdálenost 5, protože bychom první
-slovo transformovali na druhé odebráním znaku \bftt{a} a přidáním znaků
-\bftt{m},~\bftt{r},~\bftt{o}~a~\bftt{l} na patřičná místa. Editační vzdálenost
-můžeme alternativně vypočítat jako $edit(x, y) = |x| + |y| - 2 lcs(x, y)$, kde
-$lcs$ (longest common subsequence) označuje nejdelší společný podřetězec textů
-$x$ a $y$ a $|x|$ znamená délku textu $x$.
+\subsection{Editační vzdálenost}
+Obecně můžeme podobnost dvou textů můžeme měřit pomocí tzv. editační
+vzdálenosti (edit distance). Základní editační vzdálenost měří minimální počet
+písmen, které musí být odebrány nebo přidány, aby z prvního řetězce vzniknul
+druhý. Např. mezi slovy \bftt{karel} a \bftt{kremrole} je editační vzdálenost
+5, protože bychom první slovo transformovali na druhé odebráním znaku \bftt{a}
+a přidáním znaků \bftt{m},~\bftt{r},~\bftt{o}~a~\bftt{l} na patřičná místa.
+Základní editační vzdálenost můžeme alternativně vypočítat jako $edit(x, y) =
+|x| + |y| - 2 lcs(x, y)$, kde $lcs$ (longest common subsequence) označuje
+nejdelší společný podřetězec textů $x$ a $y$ a $|x|$ znamená délku textu $x$.
 
-Pro vypočtení Levenshteinovy editační vzdálenosti použijeme Wagner-Fischerův
-algoritmus s kvadratickou náročností $O(|x||y|)$.
+Rozšířením je Levenshteinova vzdálenost, která kromě odebrání a přidání uvažuje
+navíc záměnu písmen (substituce) za jednu operaci s váhou 1. Prakticky se liší
+pouze tím, že záměnu písmen penalizuje vahou 1, zatímco základní editační
+vzdálenost bere záměnu jako jedno přidání a jedno odebrání, tedy s penalizací
+2. Pokud se běžně hovoří o editační vzdálenosti, je jí myšlena právě ta
+Levenshteinova, proto budeme označovat pojmem editační vzdálenost právě ji.
 
-\subsubsection{Ngramová podobnost}
+Druhým rozšířením, které navíc uvažuje záměnu dvou sousedících písmen
+(transpozice) jako operaci s vahou 1 se označuje jako Damerau-Levenshteinova
+vzdálenost.
+% TODO damerau paper?
+
+\subsection{Výpočet editační vzdálenosti}
+Pro obyčejnou, Levenshteinovu i Damerau-Levenshteinovu vzdálenost se používá
+Wagner-Fisherův tabulkový algoritmus s kvadratickou náročností $|x||y|$, kde
+$|x|$ a $|y|$ jsou délky dvou porovnávaných řetězců. Obdobný tabulkový
+algoritmus se používá pro výpočet nejdelšího řetězce se stejnou kvadratickou
+náročností, proto nepomůže výpočet přes alternativní formu. Náročnost lze
+snížit, pokud nastavíme strop pro maximální možnou editační vzdálenost pomocí
+Ukkonenova algoritmu nebo Ukkonenova prořezávání.
+
+% TODO ukkonen popsat
+
+
+\subsection{Ngramová podobnost}
 Pro přibližné vyhledávání můžeme indexovat jiné díly původního textu než slova
 - ngramy.  Ngram je posloupnost několika po sobě jdoucích znaků. Např. ngramy
 slova \bftt{podlaha} o délce 3 (trigramy) jsou \bftt{pod}, \bftt{odl},
@@ -532,13 +545,82 @@ pokud ke změně dojde uprostřed textu. Proto tenhle způsob selhává u kratš
 slov.
 
 \subsection{Reprezentace slovníku}
-\subsection{Jiné reprezentace slovníku}
-\paragraph{Metrické stromy}
-% describe BK, VP-TREE
-\paragraph{Delete algoritmus}
-% Aglutinativní jazyky
+Pokud zvolíme fuzzy technikou stematizaci, pak lze implementaci slovníku pro
+invertovaný index provést jednoduchou hashovací tabulkou, která si u
+záznamenaných kmenů slov poznamená všechny původní tvary. V praxi se odvozené
+tvary často zahazují a nerozlišuje se ve výsledcích vyhledávání rozdíl mezi
+přesným zásahem a odvozeným tvarem. Slovník pro index s podporou ngramového
+indexu rovněž postačí obyčejná hashovací tabulka.
 
-\subsection{Reprezentace invertovaného souboru}
+\subsection{Prefixový slovník}
+Pro nalezení všech slov v prefixovém indexu, které odpovídají jednomu prefixu
+můžeme použít reprezentaci slovníku seřazeným seznamem slov. V něm nalezneme
+první a poslední slovo, které odpovídají prefixu. Všechna slova mezi nimi jsou
+výsledkem hledání.  Tuto reprezentaci můžeme efektivně komprimovat technikou
+Front-Coding, která rozdělí seřazený seznam na bloky o konstantní velikosti
+(např. 8) a pro každý blok uloží nejdelší prefix, který sdílí všechna slova
+bloku. Technika funguje pro slova přirozeného jazyka, protože díky tendenci
+výskytu morfologie ke konci slov se ve slovníku bude objevovat značné množství
+silně komprimovatelných úseků jako hody, hodnota, hodnoty, hodný, hodná,
+hodnému, atd. Implementace obyčejnou hashovací tabulkou je pro prefixy
+nevhodná, protože si neuchovává informaci o lexikografickém pořadí slov.
+
+\subsection{Fuzzy slovník}
+U ngramového přibližného vyhledávání se přibližnost vyhodnocuje až po získání
+množiny všech ngramů v dokumentu. Naopak editační vzdálenost se vyhodnotí už ve
+slovníku ještě před přístupem do invertovaných seznamů. Existuje více datových
+struktur, které umožňují efektivní vyhledání všech slov do určité vzdálenosti
+od hledaného - tedy bez vyčerpávajícího průchodu celým slovníkum.
+
+\subsubsection{Metrické stromy}
+Protože editační vzdálenost splňuje trojúhelníkovou nerovnost $\bftt{edit}(x,y)
+\leq \bftt{edit}(x,z) + \bftt{edit}(z,y)$. lze pro hledání v prostoru řetězců
+použít tzv. metrické stromy, které díky ní efektivně prořezávají prostor s
+objekty. Burkhard-Kellerův strom (BK-strom) je metrický strom, který se používá
+pro diskrétní metriky, jakou je právě editační vzdálenost.
+
+Představme si, že strom ve výchozím stavu obsahuje pouze jediné slovo (kořen).
+Vložení druhého proběhne tak, že se mezi těmito slovy vypočte jejich vzdálenost
+\bftt{d} a nové slovo se vloží jako potomek se štítkem \bftt{d}. Další slova se
+vloží stejným způsobem, pouze s rozdílem, že když dojde ke kolizi - tedy
+potomek se štítkem \bftt{d} už existuje - vloží se nové slovo rekurzivně jako
+potomek tohoto slova. Slovník sestavíme obdobným vložením všech slov z datové sady.
+
+Vyhledání začíná porovnáním dotazovaného slova s kořenem stromu. Pokud je
+vzdálenost mezi těmito slovy \bftt{d} menší než zvolený limit \bftt{k}, bude
+vráceno jako jeden ze zásahů. Vyhledávání pokračuje stejným způsobem rekurzivně
+pro všechny potomky tohoto slova, které nesou štítek v rozsahu \bftt{d - k} až
+\bftt{d + k}. Důvod pro tento rozsah vyplývá z trojúhelníkové nerovnosti.
+
+\subsubsection{HashLCS}
+Dvě podobná slova sdílejí netriviální nejdelší společný podřetězec (lcs). Slova
+zaindexujeme tak, že do hashovací tabulky vložíme všechny jejich odvozené lcs
+podřetězce. Ty pro každé slovo získáme odstraněním všech podmnožin písmen do
+požadované velikosti. Např. pokud slovník omezíme pro vyhledávání do
+vzdálenosti 2, pak do tabulky vložíme jako klíč všechna odvozená slova, která
+vzniknou odstraněním všech $n$ písmen a všech ${n \choose 2}$ párů písmen. Jaho
+hodnotu klíče v tabulce použijeme původní slovo. Např. slovo \bftt{ruka}
+zaindexujeme odvozenými podřetězci \bftt{uka}, \bftt{rka}, \bftt{rua},
+\bftt{ruk}, \bftt{ka}, \bftt{ua}, \bftt{uk}, \bftt{ra}, \bftt{rk}, \bftt{ru}.
+Při hledání podobných slov provedeme stejnou operaci s dotazovaným slovem a
+zkusíme najít shodu v tabulce pro každý jeho odvozený podřetězec. Každý
+nalezený zásah prověříme vypočtením vzdálenosti klasickým tabulkým algoritmem,
+protože tahle metoda může přestřelit. Např. $\bftt{edit}(ruka, karu) = 4$,
+přestože by došlo k zásahu na podřetězcích \bftt{ru} a \bftt{ka}.
+
+Tato metoda je jednou z nejrychlejších, ale za cenu obrovské náročnosti na
+paměť, jelikož je pro maximální strop editační vzdálenosti \bftt{k} každé slovo
+zaindexováno $\sum_{i \leq k} {n \choose i}$ krát.
+
+% Refer to FastSS, Mor Fraenkel?, Symmtric Delete, DeleteMax
+
+\subsubsection{Trie}
+
+\subsubsection{Jiné metody}
+% ngram - krátký slova
+% permuterm
+
+\subsection{Reprezentace invertovaných seznamů}
 
 \subsubsection{Poloinvertovaný index}
 Velkou výpočetní zátěží u prefixových a fuzzy indexů je, pokud musí provést
