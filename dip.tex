@@ -70,122 +70,123 @@
 
 \mainmatter
 \chapter{Úvod}
-Díky vzestupu počítačů a především internetu došlo k dramatickému nárustu
-objemu textových informací ve formě snadno přístupné lidem i pro počítačové
-zpracování. Textová data jsou specifická v tom, že jejími tvůrci jsou lidé a ne
-počítačové systémy nebo měřící čidla. Při vyhledávání v takovýchto datech máme
-jako lidé silná očekávání na relevanci výsledků vyhledávání, nicméně kvůli
-charakteristice textových dat je vyhledávání v nich obtížné. Tím, že je úkol
-obtížný, existuje více specifických zaměření, než jedno obecné a použitelné pro
-všechny případy.
 
-S nástupem World Wide Webu v 90. letech došlo k vzestupu Webových vyhledávačů,
-které dnes slouží jako vstupní brána do světa informací.
-...
+% Díky vzestupu počítačů a především internetu došlo k dramatickému nárustu
+% objemu textových informací ve formě snadno přístupné lidem i pro počítačové
+% zpracování. Textová data jsou specifická v tom, že jejími tvůrci jsou lidé a ne
+% počítačové systémy nebo měřící čidla. Při vyhledávání v takovýchto datech máme
+% jako lidé silná očekávání na relevanci výsledků vyhledávání, nicméně kvůli
+% charakteristice textových dat je vyhledávání v nich obtížné. Tím, že je úkol
+% obtížný, existuje více specifických zaměření, než jedno obecné a použitelné pro
+% všechny případy.
+% 
+% S nástupem World Wide Webu v 90. letech došlo k vzestupu Webových vyhledávačů,
+% které dnes slouží jako vstupní brána do světa informací.
+% ...
+% 
+% V této práci se snažím najít alternativní způsoby v tomto širokém oboru, které
+% nejsou velmi známé, a zaměřím se na oblast, která je dle mého názoru jednou z
+% nejžádanějších v praktických aplikacích. V současné době se pro ni ale
+% používají techniky pro příliš obecné a zdrojově náročné prohledávání Webu a
+% nedosahují takových výsledků, jakých by mohly, nebo za příliš vysokou cenu
+% komplikovaných řešení.
+% 
+% Velkým důvodem proč převažují techniky pro Webové vyhledávání je psychologický
+% - většina problémů, se kterými se potýkají firmy i nekomerční projekty, zdaleka
+% nepracuje s takovými objemy dat, se kterým se musí potýkat rozsáhlé webové
+% vyhledávače nebo světové sociální sítě. V praxi jsou tyto problémy často
+% řešitelné s použitím pouze jednoho počítače. Nicméně lidé přehnaně věří, že
+% jejich projekty budou jednou dosahovat obdobných závratných velikostí, a proto
+% volí řešení nevhodné pro jejich problémy.
+% 
+% V ideálním případě by měla být podpora pro efektivní textové vyhledávání
+% zabudována přímo do databázových systémů, ale v současné době není jejich
+% podpora ideální, a proto aplikace s podporou textového vyhledávání používají
+% kromě databáze ještě paralelní systém specializovaný pro text. Důvod je ten, že
+% je obtížné vytvořit vyhledávač v takové formě, aby vyhovoval obecným
+% požadavkům, na které se databáze používají. Techniky představené v této práci
+% by měly být vhodnější pro generické účely, než ty, které používají Webové
+% vyhledávače a ze kterých se čerpá inspirace pro textové indexy vestavěné do
+% databází.
+% 
+% ...
+% 
+% V první části uvedu problém vyhledávání v textu, aby čtenář pochopil z jakého
+% základu tato práce vychází. V druhé části na současný stav v praktickém světě
+% textového vyhledávání a jak jsme se do něj dostali. Pak se zaměřím na algoritmy
+% a datové struktury textového vyhledávání a alternativní techniky, které jsou v
+% některých případech exotické a nepříliš vhodné na obecné použití, ale jiné
+% které by dle mého názoru zasloužily větší pozornost, protože jejich zaměření
+% odpovídá současným potřebám více, než na které je v dnešní době kladen největší
+% důraz. V další části rozeberu vybranou oblast textového vyhledávání více do
+% hloubky a popíšu problémy, které se v ní vyskytují. Zároveň rozeberu jejich
+% řešení různými výzkumnými týmy a můj návrh na řešení. V sekci Analýza
+% kvantitativně poukážu na konkrétní problémy popsané v předchozí sekci a
+% problémy implementace takového systému. Na závěr představím možná budoucí
+% řešení a další kroky k vylepšení, aby bylo možné vyhledávací systém nasadit v
+% praxi.
+% 
+% \chapter{Motivace}
+% 
+% \subsection{Databáze a textové vyhledávání}
+% Textové vyhledávání se často uvádí odděleně od databázových systémů, přestože
+% by v ideálním případě mělo být součástí databází. Důvodem je silně různorodá
+% povaha textových dat s nejednoznačným způsobem zacházení. Pokud v databázích
+% pracujeme například s čísly, pak je situace celkem snadná, protože čísla jsou
+% snadno a jednoznačně porovnatelná, ať už to jsou floating nebo celá čísla. Díky
+% seřaditelnosti pak můžeme použít algoritmus binární vyhledávání, nebo
+% dynamickou obdobu v podobě binárních vyhledávacích stromů.
+% 
+% Jiné datové typy jako třeba intervaly jsou složitější, ale přesto existují
+% pevně definovatelné způsoby pro jejich seřazení a tedy snadné vyhledávání.
+% Intervalovými daty mohou být jednorozměrná časová rozmezí, dvourozměrná
+% geografická data, nebo vícerozměrná data často používaná v počítačové grafice.
+% Existuje pro ně velké množství relativně efektivních algoritmů a aktivní
+% výzkum. Časová data jsou na první pohled lehce seřaditelná, jenže kvůli lidským
+% "obohacením", jako jsou časové zóny, letní čas, nebo více dimenzí času (čas
+% platnosti, čas záznamu) se jejich zacházení v databázích komplikuje. Textová
+% data generovaná lidskou řečí jsou ještě komplikovanější a často se řeší mimo
+% databázové systémy. Ve výsledku používá spousta uživatelských aplikací s
+% databázovou podporou ve skutečnosti dva systémy - kromě klasické databáze ještě
+% speciální systém pro relevantní a efektivní textové vyhledávání.
+% 
+% Problém s textem, který nás zajímá, je jeho nejednoznačná seřaditelnost.
+% Představme si databázi lidských jmen a aplikaci určenou pro vyhledávání v nich.
+% Počítá se s tím, že pokud vyhledáváme konkrétní osobu, nevíme přesně jak je
+% její jméno v databázi uloženo. Kdybychom věděli, že se Jaromír Kobliha v
+% databázi vyskytuje v konkrétním tvaru Jaromír Kobliha nebo Kobliha, Jaromír
+% nebo Dr. Jarda Kobliha, pak jednoduše zadáme dotaz na přesnou shodu a máme
+% vyřešeno. Jenže naše očekávání jsou jiná. Člověk by všechny tyto tvary jména
+% vyhodnotil ekvivalentně, a tím pádem je naším úkolem vytvořit podobně chytrý
+% systém anebo alespoň iluzi takového systému.
+% 
+% Jména mohou být jednoduše rozdělena na více sloupců - křestní jméno, prostřední
+% jméno, příjmení, titul(y), tak jak to známe, pokud vyplňujeme kdejaké
+% formuláře. To umožní systému provést oddělený dotaz v každém tomto sloupci a
+% sloučit výsledky. Nebo jména seřadit nejprve podle příjmení, pak podle jména a
+% titulů naposled (Kobliha, Jaromír, Dr.), protože předpokládáme, že existuje
+% méně příjmení než křestních jmen a ještě méně titulů. Tohle je ovšem jenom
+% heuristika, kterou nelze aplikovat např. ve Vietnamu (Nguyen a Tran tvoří 50\%
+% všech příjmení) nebo v Jižní Korey (Kim, Lee, Park a Choi tvoří 50\% všech
+% příjmení). Jiné kultury nemají ani koncept příjmení, proto je takový systém
+% obecně nedostatečný.
+% 
+% Pro větší záznamy - celé dokumenty o několika stovkách až tisících slov - nelze
+% ani uvažovat seřaditelnost podobně naivním způsobem. Přestože je vyhledávání v
+% textu obtížné, existují možnosti, jak povahu lidského textu využít a vytvořit
+% algoritmy umožňující efektivní vyhledávání.
+% 
+% Statisticky můžeme pozorovat unikátní povahu lidského jazyka v několika statistických pozorováních.
+% % Frekvenční analýza - codebreaking
+% % 1, 2,3 - více jedničěk distribuce
+% % zipf distribuce slov
+% % redundance - deflate a jiný textový komprese
+% 
+% [1] \url{https://en.wikipedia.org/wiki/Information_retrieval#History}
+% [1] \url{https://www.theguardian.com/commentisfree/2015/apr/18/google-eu-monopoly-inquiry-too-late-to-stop}
 
-V této práci se snažím najít alternativní způsoby v tomto širokém oboru, které
-nejsou velmi známé, a zaměřím se na oblast, která je dle mého názoru jednou z
-nejžádanějších v praktických aplikacích. V současné době se pro ni ale
-používají techniky pro příliš obecné a zdrojově náročné prohledávání Webu a
-nedosahují takových výsledků, jakých by mohly, nebo za příliš vysokou cenu
-komplikovaných řešení.
 
-Velkým důvodem proč převažují techniky pro Webové vyhledávání je psychologický
-- většina problémů, se kterými se potýkají firmy i nekomerční projekty, zdaleka
-nepracuje s takovými objemy dat, se kterým se musí potýkat rozsáhlé webové
-vyhledávače nebo světové sociální sítě. V praxi jsou tyto problémy často
-řešitelné s použitím pouze jednoho počítače. Nicméně lidé přehnaně věří, že
-jejich projekty budou jednou dosahovat obdobných závratných velikostí, a proto
-volí řešení nevhodné pro jejich problémy.
-
-V ideálním případě by měla být podpora pro efektivní textové vyhledávání
-zabudována přímo do databázových systémů, ale v současné době není jejich
-podpora ideální, a proto aplikace s podporou textového vyhledávání používají
-kromě databáze ještě paralelní systém specializovaný pro text. Důvod je ten, že
-je obtížné vytvořit vyhledávač v takové formě, aby vyhovoval obecným
-požadavkům, na které se databáze používají. Techniky představené v této práci
-by měly být vhodnější pro generické účely, než ty, které používají Webové
-vyhledávače a ze kterých se čerpá inspirace pro textové indexy vestavěné do
-databází.
-
-...
-
-V první části uvedu problém vyhledávání v textu, aby čtenář pochopil z jakého
-základu tato práce vychází. V druhé části na současný stav v praktickém světě
-textového vyhledávání a jak jsme se do něj dostali. Pak se zaměřím na algoritmy
-a datové struktury textového vyhledávání a alternativní techniky, které jsou v
-některých případech exotické a nepříliš vhodné na obecné použití, ale jiné
-které by dle mého názoru zasloužily větší pozornost, protože jejich zaměření
-odpovídá současným potřebám více, než na které je v dnešní době kladen největší
-důraz. V další části rozeberu vybranou oblast textového vyhledávání více do
-hloubky a popíšu problémy, které se v ní vyskytují. Zároveň rozeberu jejich
-řešení různými výzkumnými týmy a můj návrh na řešení. V sekci Analýza
-kvantitativně poukážu na konkrétní problémy popsané v předchozí sekci a
-problémy implementace takového systému. Na závěr představím možná budoucí
-řešení a další kroky k vylepšení, aby bylo možné vyhledávací systém nasadit v
-praxi.
-
-\chapter{Motivace}
-
-\subsection{Databáze a textové vyhledávání}
-Textové vyhledávání se často uvádí odděleně od databázových systémů, přestože
-by v ideálním případě mělo být součástí databází. Důvodem je silně různorodá
-povaha textových dat s nejednoznačným způsobem zacházení. Pokud v databázích
-pracujeme například s čísly, pak je situace celkem snadná, protože čísla jsou
-snadno a jednoznačně porovnatelná, ať už to jsou floating nebo celá čísla. Díky
-seřaditelnosti pak můžeme použít algoritmus binární vyhledávání, nebo
-dynamickou obdobu v podobě binárních vyhledávacích stromů.
-
-Jiné datové typy jako třeba intervaly jsou složitější, ale přesto existují
-pevně definovatelné způsoby pro jejich seřazení a tedy snadné vyhledávání.
-Intervalovými daty mohou být jednorozměrná časová rozmezí, dvourozměrná
-geografická data, nebo vícerozměrná data často používaná v počítačové grafice.
-Existuje pro ně velké množství relativně efektivních algoritmů a aktivní
-výzkum. Časová data jsou na první pohled lehce seřaditelná, jenže kvůli lidským
-"obohacením", jako jsou časové zóny, letní čas, nebo více dimenzí času (čas
-platnosti, čas záznamu) se jejich zacházení v databázích komplikuje. Textová
-data generovaná lidskou řečí jsou ještě komplikovanější a často se řeší mimo
-databázové systémy. Ve výsledku používá spousta uživatelských aplikací s
-databázovou podporou ve skutečnosti dva systémy - kromě klasické databáze ještě
-speciální systém pro relevantní a efektivní textové vyhledávání.
-
-Problém s textem, který nás zajímá, je jeho nejednoznačná seřaditelnost.
-Představme si databázi lidských jmen a aplikaci určenou pro vyhledávání v nich.
-Počítá se s tím, že pokud vyhledáváme konkrétní osobu, nevíme přesně jak je
-její jméno v databázi uloženo. Kdybychom věděli, že se Jaromír Kobliha v
-databázi vyskytuje v konkrétním tvaru Jaromír Kobliha nebo Kobliha, Jaromír
-nebo Dr. Jarda Kobliha, pak jednoduše zadáme dotaz na přesnou shodu a máme
-vyřešeno. Jenže naše očekávání jsou jiná. Člověk by všechny tyto tvary jména
-vyhodnotil ekvivalentně, a tím pádem je naším úkolem vytvořit podobně chytrý
-systém anebo alespoň iluzi takového systému.
-
-Jména mohou být jednoduše rozdělena na více sloupců - křestní jméno, prostřední
-jméno, příjmení, titul(y), tak jak to známe, pokud vyplňujeme kdejaké
-formuláře. To umožní systému provést oddělený dotaz v každém tomto sloupci a
-sloučit výsledky. Nebo jména seřadit nejprve podle příjmení, pak podle jména a
-titulů naposled (Kobliha, Jaromír, Dr.), protože předpokládáme, že existuje
-méně příjmení než křestních jmen a ještě méně titulů. Tohle je ovšem jenom
-heuristika, kterou nelze aplikovat např. ve Vietnamu (Nguyen a Tran tvoří 50\%
-všech příjmení) nebo v Jižní Korey (Kim, Lee, Park a Choi tvoří 50\% všech
-příjmení). Jiné kultury nemají ani koncept příjmení, proto je takový systém
-obecně nedostatečný.
-
-Pro větší záznamy - celé dokumenty o několika stovkách až tisících slov - nelze
-ani uvažovat seřaditelnost podobně naivním způsobem. Přestože je vyhledávání v
-textu obtížné, existují možnosti, jak povahu lidského textu využít a vytvořit
-algoritmy umožňující efektivní vyhledávání.
-
-Statisticky můžeme pozorovat unikátní povahu lidského jazyka v několika statistických pozorováních.
-% Frekvenční analýza - codebreaking
-% 1, 2,3 - více jedničěk distribuce
-% zipf distribuce slov
-% redundance - deflate a jiný textový komprese
-
-[1] \url{https://en.wikipedia.org/wiki/Information_retrieval#History}
-[1] \url{https://www.theguardian.com/commentisfree/2015/apr/18/google-eu-monopoly-inquiry-too-late-to-stop}
-
-
-\section{Změny v architekturách počítačů a počítačových systémů}
+% \section{Změny v architekturách počítačů a počítačových systémů}
 % Stonebraker o databázích
 % sloupcové a in-memory db
 % něco o nosql
@@ -198,17 +199,18 @@ Statisticky můžeme pozorovat unikátní povahu lidského jazyka v několika st
 % columns needed for each word. If some words have short inverted list, then
 % waste,because blocks have minimum size.
 
-\subsection{Nové potřeby ve vyhledávání}
-\subsection{Vertikální vyhledávání}
-Dle hlavního vedoucího výzkumu v Googlu, Petera Norviga, je úspěch Googlu
-založen ne na lepších algoritmech, než by měli ostatní, ale jednoduše tím, že
-má více dat.
-% přístup googlu - chytré scrapování. Přitom data existují ve zpracované formě.
-% Nedostatek vertikálního a site search? Špatné nebo obtížné open source
-% řešení?
-\subsection{Linked data}
-\subsection{Mobilní zařízení}
+% \subsection{Nové potřeby ve vyhledávání}
+% \subsection{Vertikální vyhledávání}
+% Dle hlavního vedoucího výzkumu v Googlu, Petera Norviga, je úspěch Googlu
+% založen ne na lepších algoritmech, než by měli ostatní, ale jednoduše tím, že
+% má více dat.
+% % přístup googlu - chytré scrapování. Přitom data existují ve zpracované formě.
+% % Nedostatek vertikálního a site search? Špatné nebo obtížné open source
+% % řešení?
+% \subsection{Linked data}
+% \subsection{Mobilní zařízení}
 
+\chapter{Textové vyhledávání}
 \section{Uživatelské rozhraní}
 Základním uživatelským rozhraní pro textové vyhledávání je obyčejný řádek, do
 kterého uživatel napíše svůj dotaz a po potvrzení mu vyhledávač obratem pošle
@@ -293,7 +295,7 @@ ale výskyt fráze je v dokumentu v jiném pádu nebo čísle. Přibližným
 vyhledáváním se také rozumí, pokud dokáže systém napovědět, nebo rovnou
 vyhledat výsledky, přestože dotaz obsahuje překlepy (\bftt{metamatyka} ->
 \bftt{matematika}), zdvojená písmena nebo naopak (\bftt{forest gump} ->
-\bftt{forrest gump}, nesprávné rozdělení slov (\bftt{i phone} ->
+\bftt{forrest gump}), nesprávné rozdělení slov (\bftt{i phone} ->
 \bftt{iphone}), inteligentní nahrazování některých slov jejich synonymy, nebo
 expanze zkratek na plný výraz (\bftt{U.S. -> United States}).
 
@@ -724,11 +726,6 @@ slova na stránce duplikovat pro zvýšení parametru \bftt{tf}.
 
 
 \chapter{Návrh nového systému}
-\section{Podpora v existujících systémech}
-\subsection{Apache Lucene}
-% lucene, elastic, solr, algolia, xapian, mnogosearch, postgres
-
-
 \subsection{Datové struktury}
 Po uvážení běžně používaných a alternativních datových struktur pro index jsem
 zvolil klasický invertovaný index s hybridní materializací. Pro slovník jsem
@@ -865,7 +862,6 @@ požadavek, že výsledek musí mít alespoň tolik výsledků (zde 1), kolik je
 dotazu (zde 2), bude těmto primitivním případům zabráněno.
 
 
-
 \subsection{Ohodnocení výsledků dotazu}
 U dokumentů běžně uvažujeme náhodné pořadí, ale lze ho doupravit nějakým
 preferenčním pořadím (podle času, podle ceny, počtu zhlédnutí, apod.). Přesto
@@ -993,7 +989,6 @@ obsahuje \textbf{907\,094} titulků článků (\bftt{cswiki\_titulky}).
 \begin{table}[H]
 \centering
 \begin{tabulary}{\textwidth}{LRRRR}
-\hline
 \textbf{data} & \textbf{velikost} & \textbf{\# záznamů} & \textbf{\# slov} & \textbf{\# unikátních slov} \\
 \hline
 csfd\_filmy     & 11.2\,MB & 540\,152 & 1\,958\,147 & 231\,452 \\
@@ -1512,17 +1507,14 @@ http '<uri>/<index>/_stats' | jq .indices.<index>.primaries.store.size_in_bytes
 \begin{table}[H]
 \centering
 \begin{tabulary}{\textwidth}{LLRR}
-\hline
 \textbf{databáze} & \textbf{implementace} & \textbf{velikost indexu} \\
 \hline
 \multirow{3}{*}{\texttt{csfd\_filmy}} & trigram\_ES & 86\,MB \\
                                       & cs\_ES      & 37\,MB \\
                                       & edit        & 42\,MB \\
-\hline
 \multirow{3}{*}{\texttt{csfd\_tvůrci}} & trigram\_ES & 31\,MB \\
                                        & cs\_ES & 14\,MB \\
                                        & edit & 15\,MB \\
-\hline
 \multirow{3}{*}{\texttt{cswiki\_titulky}} & trigram\_ES & 135\,MB \\
                                           & cs\_ES & 63\,MB \\
                                           & edit & 63\,MB \\
