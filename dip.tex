@@ -70,6 +70,52 @@
 
 \mainmatter
 \chapter{Úvod}
+Cílem práce je navrhnout praktický vyhledávací systém s vlastnostmi
+odpovídajícími požadavkům a očekáváním dnešní doby, které jsou ale opomíjené,
+protože implementace technik, které by je splňovaly, není jednoduchá, nebo
+dlouho nebyla výpočetně výhodná. Pokrok ve výpočetním výkonu, nových
+počítačových architekturách, vyšších kapacitách pamětí a obecně pokrok v
+hardwaru ale přináší šanci pro problémy, na které nebyl kladen důraz pro jejich
+příliš velkou výpočetní náročnost na dřívější dobu.
+
+Důraz bude kladen především na přibližné vyhledávání, které je považované za
+velmi výpočetně nevýhodné, pokud by se implementovalo do současných populárních
+vyhledávacích systémů. Existují pro něj ale techniky, pro které by
+doimplementace do stávajících systémů znamenala drastický zásah do celkové
+architektury.
+
+Pokud by tyto techniky byly natolik užívatelsky výhodné, pak by bylo podivné,
+že by je dodnes nikdo neimplementoval. Některé výzkumné týmy a komerční řešení
+se jimi přímo zabývají, ale v dnešní době platí v softwaru očekávání, že pokud
+není takový systém distribuován zdarma s otevřeným kódem (open source), nezíská
+si popularitu ani mezi nezávislými jedinci, ani mezi firmami. Snad pouze pokud
+byly osobně osloveny obchodním oddělením dané firmy, a tedy tvoří menšinu.
+Dalším důvodem je, že pokud se nějaký systém snaží být nejlepším pro všechny
+možné případy, pak je šance, že nebude vhodným pro žádný případ. K podobnému
+zjištění podle M.  Stonebrakera dochází v paralelním světě databází, který
+stejně jako svět vyhledávání reaguje na nové architektury počítačů, nové
+požadavky lidí a firem a větší objemy dat. Systém, který bude navrhnut v této
+práci se proto nesnaží být nejlepším řešením pro všechny případy a explicitně
+se zaměřuje na specifičtější případy, ve kterých by přibližné vyhledávání
+přineslo velkou hodnotu. Kompromisem je, že se navrhovaný systém nesnaží jít
+stejnou cestou velkých dat (Big Data), které je v současné době žhavým tématem.
+Přesně opačně by mělo představované řešení nalézt uplatnění pro menší objemy
+dat (Small Data), které jsou dle nejen mého názoru opomíjené.
+
+Existující otevřené projekty, které se vyhledáváním zabývají, postrádají
+techniky zde popsané. Tato práce by pro ně mohla poskytnout vodítko, jak
+techniky implementovat, pokud by to pro ně neznamenalo překopání celé
+architektury.
+
+Práce je koncipována tak, aby přiblížila některé opomíjené příležitosti ve
+vyhledávání, přiblížila dosavadní výzkum v těchto oblastech a na prototypové
+aplikaci demonstrovala praktickou proveditelnost navrhovaného řešení. Prototyp
+bude porovnán s některými populárními open source vyhledávacími systémy, které
+budou konfigurovány tak, aby splňovaly podobné požadavky.
+
+
+\subsection{Motivace}
+
 
 % Díky vzestupu počítačů a především internetu došlo k dramatickému nárustu
 % objemu textových informací ve formě snadno přístupné lidem i pro počítačové
@@ -79,18 +125,18 @@
 % charakteristice textových dat je vyhledávání v nich obtížné. Tím, že je úkol
 % obtížný, existuje více specifických zaměření, než jedno obecné a použitelné pro
 % všechny případy.
-% 
+%
 % S nástupem World Wide Webu v 90. letech došlo k vzestupu Webových vyhledávačů,
 % které dnes slouží jako vstupní brána do světa informací.
 % ...
-% 
+%
 % V této práci se snažím najít alternativní způsoby v tomto širokém oboru, které
 % nejsou velmi známé, a zaměřím se na oblast, která je dle mého názoru jednou z
 % nejžádanějších v praktických aplikacích. V současné době se pro ni ale
 % používají techniky pro příliš obecné a zdrojově náročné prohledávání Webu a
 % nedosahují takových výsledků, jakých by mohly, nebo za příliš vysokou cenu
 % komplikovaných řešení.
-% 
+%
 % Velkým důvodem proč převažují techniky pro Webové vyhledávání je psychologický
 % - většina problémů, se kterými se potýkají firmy i nekomerční projekty, zdaleka
 % nepracuje s takovými objemy dat, se kterým se musí potýkat rozsáhlé webové
@@ -98,7 +144,7 @@
 % řešitelné s použitím pouze jednoho počítače. Nicméně lidé přehnaně věří, že
 % jejich projekty budou jednou dosahovat obdobných závratných velikostí, a proto
 % volí řešení nevhodné pro jejich problémy.
-% 
+%
 % V ideálním případě by měla být podpora pro efektivní textové vyhledávání
 % zabudována přímo do databázových systémů, ale v současné době není jejich
 % podpora ideální, a proto aplikace s podporou textového vyhledávání používají
@@ -108,9 +154,9 @@
 % by měly být vhodnější pro generické účely, než ty, které používají Webové
 % vyhledávače a ze kterých se čerpá inspirace pro textové indexy vestavěné do
 % databází.
-% 
+%
 % ...
-% 
+%
 % V první části uvedu problém vyhledávání v textu, aby čtenář pochopil z jakého
 % základu tato práce vychází. V druhé části na současný stav v praktickém světě
 % textového vyhledávání a jak jsme se do něj dostali. Pak se zaměřím na algoritmy
@@ -125,9 +171,9 @@
 % problémy implementace takového systému. Na závěr představím možná budoucí
 % řešení a další kroky k vylepšení, aby bylo možné vyhledávací systém nasadit v
 % praxi.
-% 
+%
 % \chapter{Motivace}
-% 
+%
 % \subsection{Databáze a textové vyhledávání}
 % Textové vyhledávání se často uvádí odděleně od databázových systémů, přestože
 % by v ideálním případě mělo být součástí databází. Důvodem je silně různorodá
@@ -136,7 +182,7 @@
 % snadno a jednoznačně porovnatelná, ať už to jsou floating nebo celá čísla. Díky
 % seřaditelnosti pak můžeme použít algoritmus binární vyhledávání, nebo
 % dynamickou obdobu v podobě binárních vyhledávacích stromů.
-% 
+%
 % Jiné datové typy jako třeba intervaly jsou složitější, ale přesto existují
 % pevně definovatelné způsoby pro jejich seřazení a tedy snadné vyhledávání.
 % Intervalovými daty mohou být jednorozměrná časová rozmezí, dvourozměrná
@@ -149,7 +195,7 @@
 % databázové systémy. Ve výsledku používá spousta uživatelských aplikací s
 % databázovou podporou ve skutečnosti dva systémy - kromě klasické databáze ještě
 % speciální systém pro relevantní a efektivní textové vyhledávání.
-% 
+%
 % Problém s textem, který nás zajímá, je jeho nejednoznačná seřaditelnost.
 % Představme si databázi lidských jmen a aplikaci určenou pro vyhledávání v nich.
 % Počítá se s tím, že pokud vyhledáváme konkrétní osobu, nevíme přesně jak je
@@ -159,7 +205,7 @@
 % vyřešeno. Jenže naše očekávání jsou jiná. Člověk by všechny tyto tvary jména
 % vyhodnotil ekvivalentně, a tím pádem je naším úkolem vytvořit podobně chytrý
 % systém anebo alespoň iluzi takového systému.
-% 
+%
 % Jména mohou být jednoduše rozdělena na více sloupců - křestní jméno, prostřední
 % jméno, příjmení, titul(y), tak jak to známe, pokud vyplňujeme kdejaké
 % formuláře. To umožní systému provést oddělený dotaz v každém tomto sloupci a
@@ -170,18 +216,18 @@
 % všech příjmení) nebo v Jižní Korey (Kim, Lee, Park a Choi tvoří 50\% všech
 % příjmení). Jiné kultury nemají ani koncept příjmení, proto je takový systém
 % obecně nedostatečný.
-% 
+%
 % Pro větší záznamy - celé dokumenty o několika stovkách až tisících slov - nelze
 % ani uvažovat seřaditelnost podobně naivním způsobem. Přestože je vyhledávání v
 % textu obtížné, existují možnosti, jak povahu lidského textu využít a vytvořit
 % algoritmy umožňující efektivní vyhledávání.
-% 
+%
 % Statisticky můžeme pozorovat unikátní povahu lidského jazyka v několika statistických pozorováních.
 % % Frekvenční analýza - codebreaking
 % % 1, 2,3 - více jedničěk distribuce
 % % zipf distribuce slov
 % % redundance - deflate a jiný textový komprese
-% 
+%
 % [1] \url{https://en.wikipedia.org/wiki/Information_retrieval#History}
 % [1] \url{https://www.theguardian.com/commentisfree/2015/apr/18/google-eu-monopoly-inquiry-too-late-to-stop}
 
@@ -225,7 +271,7 @@ uživatel explicitně vyslal požadavek.
 Vyhledávače interpretují dotaz nejčastěji tak, že text rozdělí na slova a
 naleznou všechny dokumenty, které obsahují všechna zároveň. Kdybychom si chtěli
 dotaz představit v explicitní formě, pak by dotaz \bftt{forrest gump} vypadal
-jako \bftt{forrest AND gump}, kde operátor \bftt{AND} označuje konjunkci. 
+jako \bftt{forrest AND gump}, kde operátor \bftt{AND} označuje konjunkci.
 
 Pak záleží na vyhledávačích, jaké další funkce uživateli poskytnou. Mezi
 populární patří operátory \bftt{NOT} a frázové vyhledávání. \bftt{NOT} se
@@ -320,7 +366,7 @@ datovou sadu rozdělit. Uživatel pak dokonce nemusí ani vepisovat dotaz a pouz
 se k výsledkům dopracuje postupnou interakcí s nabízenými filtry, které
 postupně reflektují zmenšující se množinu. Tedy např. z nabídky filtrů zmizí
 všechny kategorie, které nemají v omezené množině zastoupení. Pole pro
-vyhledávání pak lze chápat jako pouze další filtr. 
+vyhledávání pak lze chápat jako pouze další filtr.
 
 \section{Povaha textových dat}
 % zipf, heaps
@@ -360,7 +406,7 @@ převést každé slovo v textu na nějaké celé číslo a uchovat si k němu p
 které se v původním textu nachází. Ntici (identifikátor dokumentu,
 identifikátor slova, pozice v dokumentu) bude unikátně označovat jeden výskyt.
 Překlad ze slov na konkrétní číslo (identifikátor) bude uložen v datové
-struktuře, kterou označíme jako slovník (lexikon). 
+struktuře, kterou označíme jako slovník (lexikon).
 
 Výhodou uchování datové sady v indexovaném formátu bude její menší velikost,
 kterou dosáhneme díky kompresi, která využívá nerovnoměrné povahy textových
@@ -428,7 +474,7 @@ právě jedno seřazení dokumentů - nejčastěji podle vzrůstajícího id dok
 Waweletové stromy - dual sorted Index Treap Index
 
 Obě tyto alternativní datové struktury dosahují obrovských úspor díky své
-kompresibilitě, čehož bychom využili, pokud bychom uvažovali velké objemy dat. 
+kompresibilitě, čehož bychom využili, pokud bychom uvažovali velké objemy dat.
 
 \subsection{Prefixové vyhledávání} \label{sec:prefix_search}
 Instantní vyhledávání můžeme implementovat více způsoby. Nejjednodušším je
@@ -446,7 +492,7 @@ Jiným způsobem je použít klasický invertovaný index beze změny a vypočí
 prefixy až při dotazování.  Docílíme toho přepsáním dotazu do formy konjunkce
 více disjunkcí. Např. dotaz \bftt{motor* pil*} by byl přepsán do tvaru
 \bftt{(motorová OR motorových OR ...) AND (pila OR pil OR pilách OR ...)} podle
-všech odpovídajících slov ve slovníku. 
+všech odpovídajících slov ve slovníku.
 
 Problém nastane u krátkých prefixů, protože odpovídají velkému počtu slov.
 Dotaz s disjunkcí tisíců invertovaných seznamů bude pravděpodobně méně výkonný
@@ -454,7 +500,7 @@ než prostý průchod celou datovou kolekcí.
 
 Řešením bude poloinvertovaný index popsaný v sekci ...
 % TODO reference na sekci
- 
+
 \section{Algoritmy pro přibližné vyhledávání}
 V této práci se budeme zabývat pouze technikami, které uvažují slova pouze jako
 posloupnost znaků. Tedy vynecháme hledání synonym nebo expanzi zkratek, které
@@ -530,13 +576,13 @@ Pro přibližné vyhledávání můžeme indexovat jiné díly původního textu
 - ngramy.  Ngram je posloupnost několika po sobě jdoucích znaků. Např. ngramy
 slova \bftt{podlaha} o délce 3 (trigramy) jsou \bftt{pod}, \bftt{odl},
 \bftt{dla}, \bftt{lah}, \bftt{aha}. V tomto případě se jejich znaky překrývají,
-a proto hovoříme o překrývajících se trigramech. 
+a proto hovoříme o překrývajících se trigramech.
 
 Podobnost dvou textů pomocí ngramů můžeme efektivně zjistit pomocí Jaccardovy
 podobnosti množin. Tu zjistíme jako poměr velikosti průniku ku velikosti
 sjednocení obou množin $\bftt{jacc}(X, Y) = |X \cap Y|\ /\ |X \cup Y|$. Pokud
 porovnávané texty reprezentujeme jako dvě množiny jejich ngramů, vypočteme
-jejich podobnost jako podobnost těchto množin. 
+jejich podobnost jako podobnost těchto množin.
 
 Tento způsob funguje pro krátké řetězce a malou vzdálenost. Podobná slova budou
 sdílet všechny ngramy vzdálené $n$ pozic od místa, kde mezi nimi došlo ke
@@ -617,6 +663,26 @@ zaindexováno $\sum_{i \leq k} {n \choose i}$ krát.
 % Refer to FastSS, Mor Fraenkel?, Symmtric Delete, DeleteMax
 
 \subsubsection{Trie}
+Populární datovou strukturou, do které lze relativně kompaktně uložit sadu slov
+a která podporuje rychlé vyhledávání je trie, také známá jako radixový nebo
+prefixový strom. Jedno slovo do trie uložíme tak, že ho rozdělíme na písmena a
+každé z nich vložíme jako jeden uzel cesty ve stromu. Např. slovo \bftt{ruka} a
+\bftt{ruda} se uloží jako \bftt{/r/u/k/a} a \bftt{/r/u/d/a}, pokud použijeme
+notaci pro zápis cest v hierarchii souborového systému. V tomto případě budou v
+\uv{adresáři} \bftt{u} dva podadresáře \bftt{k} a \bftt{d}. Trii lze
+komprimovat tím, že se sloučíme všechny cesty, které mají pouze jednoho
+potomka. Stejný příklad by byl v komprimované trii reprezentován cestami
+\bftt{/ru/ka} a \bftt{/ru/da}, kde adresář \bftt{/ru} obsahuje dva podadresáře
+\bftt{ka} a \bftt{da}. Úspory paměti je docíleno sdílením prefixů.
+
+Výpočet editační vzdálenosti mezi dvěma slovy proběhne standardně tabulkovou
+metodou, ale proběhne pouze jednou pro řádky tabulky u všech slov, které
+odpovídají sdílenému prefixu mezi těmito slovy. Např. pokud v trii z příkladu
+hledáme slovo \bftt{luka}, pak můžeme vyhodnotit editační vzdálenost mezi
+prefixy \bftt{lu} a \bftt{ru} pro obě slova \bftt{ruka} a \bftt{ruda} a dokonat
+zbytek výpočtu pro obě slova zvlášť.
+
+
 
 \subsubsection{Jiné metody}
 % ngram - krátký slova
