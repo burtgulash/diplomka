@@ -70,20 +70,27 @@
 
 \mainmatter
 \chapter{Úvod}
-Cílem práce je navrhnout praktický vyhledávací systém s vlastnostmi
-odpovídajícími požadavkům a očekáváním dnešní doby, které jsou ale opomíjené,
-protože implementace technik, které by je splňovaly, není jednoduchá, nebo
-dlouho nebyla výpočetně výhodná. Pokrok ve výpočetním výkonu, nových
-počítačových architekturách, vyšších kapacitách pamětí a obecně pokrok v
-hardwaru ale přináší šanci pro problémy, na které nebyl kladen důraz pro jejich
-příliš velkou výpočetní náročnost na dřívější dobu.
+Textové vyhledávání se stalo populární v 90. letech s nástupem Webu a s ním
+masivního nárůstu informací všeho druhu, které jsou dostupné každému po pár
+kliknutích myši. Toho bylo dosaženo vzestupem velkých webových vyhledávačů
+(Excite, AltaVista, Yahoo, Seznam, Google), které byly schopné exponenciálně
+rostoucí růst informací zkrotit. Alespoň do jisté míry, protože tyto
+vyhledávače umožňují přítup pouze k té části webu, ke které se lze dostat
+následováním hypertextových odkazů. Většina informací není skrze pouhé odkazy
+dostupná (deep web), protože je např. skrytá v interních databázích, k nimž se
+lze dostat pouze interním vyhledávacím systémem.
 
-Důraz bude kladen především na přibližné vyhledávání, které je považované za
-velmi výpočetně nevýhodné, pokud by se implementovalo do současných populárních
-vyhledávacích systémů. Existují pro něj ale techniky, pro které by
-doimplementace do stávajících systémů znamenala drastický zásah do celkové
-architektury.
+Popularita webových vyhledávačů zapříčinila zájem o vyhledávací systémy i u
+jednotlivců a firem. Stejné techniky začaly být dostupné v open source
+systémech, z nichž nejznámějšími jsou Solr a ElasticSearch vycházející ze
+stejné softwarové knihovny pro vyhledávací systémy - Apache Lucene. Někteří
+tvrdí, že knihovna Lucene přinesla komoditizaci a demokratizaci na poli
+specializovaných vyhledávačů.
 
+\url{https://medium.com/ben-and-dion/democratizing-machine-intelligence-758e2b051d1c#.acmdsj1av}
+\url{http://www.javaworld.com/article/2074841/core-java/the-democratization-of-search.html}
+
+% TODO kecej o tom, že nemusí bejt nej
 Pokud by tyto techniky byly natolik užívatelsky výhodné, pak by bylo podivné,
 že by je dodnes nikdo neimplementoval. Některé výzkumné týmy a komerční řešení
 se jimi přímo zabývají, ale v dnešní době platí v softwaru očekávání, že pokud
@@ -94,18 +101,93 @@ Dalším důvodem je, že pokud se nějaký systém snaží být nejlepším pro
 možné případy, pak je šance, že nebude vhodným pro žádný případ. K podobnému
 zjištění podle M.  Stonebrakera dochází v paralelním světě databází, který
 stejně jako svět vyhledávání reaguje na nové architektury počítačů, nové
-požadavky lidí a firem a větší objemy dat. Systém, který bude navrhnut v této
-práci se proto nesnaží být nejlepším řešením pro všechny případy a explicitně
-se zaměřuje na specifičtější případy, ve kterých by přibližné vyhledávání
-přineslo velkou hodnotu. Kompromisem je, že se navrhovaný systém nesnaží jít
-stejnou cestou velkých dat (Big Data), které je v současné době žhavým tématem.
-Přesně opačně by mělo představované řešení nalézt uplatnění pro menší objemy
-dat (Small Data), které jsou dle nejen mého názoru opomíjené.
-
+požadavky lidí a firem a větší objemy dat. 
 Existující otevřené projekty, které se vyhledáváním zabývají, postrádají
 techniky zde popsané. Tato práce by pro ně mohla poskytnout vodítko, jak
 techniky implementovat, pokud by to pro ně neznamenalo překopání celé
 architektury.
+
+\section{Motivace}
+Prozkoumávat oblast alternativních vyhledávacích technik jsem začal po
+frustraci s vytvořením jednoduchého vyhledávače pro položky jako názvy produktů
+eshopu nebo pro vyhledávání v databázi jmen. Vytvoření takového systému je dnes
+považováno za vyřešený problém, protože existuje spousta open source produktů,
+které se dají přizpůsobit téměř každé situaci.
+
+\subsection{Fragmentace systémů}
+Bez použití specializovaného vyhledávacího systému je nejčastějším řešením pro
+vyhledávání v databázi použití technik, které dovolují databázové systémy.
+Časté řešení je rozdělení textových polí na více částí a vyhledávání separátně
+v nich pomocí operátoru \bftt{like}, který umožňuje omezené přibližné
+vyhledávání. U databáze lidských jmen se často rozděluje text jména na části
+jméno, příjmení a někty titul a prostřední jméno. Problémy pak nastávají v méně
+častých případech, kdy osoby např. nemají příjmení, jejich jméno je složeno z
+více slov, než je počet kolonek ve formuláři, apod. Často by přitom stačilo
+modelovat jméno pouze jako jedno textové pole.
+
+\url{https://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/}
+
+Nejčastějším řešením, kdy je požadované pokročilé vyhledávání, které databázové
+systémy neposkytují, je duplikace dat z primární databáze (např. MySQL,
+Postgres) do sekundárního systému pro vyhledávání (Solr, ElasticSearch). Přitom
+by bylo jednodušší, kdyby databázové systémy přímo podporovaly solidní
+vyhledávací systém formou externí komponenty. Např. databázový systém Postgres
+některé vyhledávací doplňky poskytuje, ale očividně ne v takové formě, aby se
+lidem nevyplatilo fragmentovat data do více systémů. 
+
+\subsection{Big Data vs. Small Data}
+% BIg Noise - Silver
+% Gargage In - Garbage Out
+
+\subsection{Jeden systém pro všechny případy}
+V oblasti databázových systémů bylo v posledních několika desetiletích cílem
+vytvořit systémy, který by byly přizpůsobitelné pro každou situaci. Podle M.
+Stonebrakera je tomuto úsilí konec, protože se ukazuje, že specializovaná
+architektura může být řádově výkonnější než tradiční všeobecná architektura.
+Příkladem jsou datové sklady, ve kterých je charakteristická asymetrie mezi
+vkládáním a čtením dat. Zatímco všeobecný systém musí být schopný vykonat
+jakékoliv rozložení zátěže, ale pokud se tomuto požadavku povolí uzda a nastaví
+se nutnost vkládat data dávkově, pak lze změnit uspořádání dat do velmi
+kompaktní formy, která lépe zvládá dotazy používané v analytických aplikacích.
+
+\url{http://www.cs.cmu.edu/~chensm/Big_Data_reading_group/papers/onesizefitsall-1-icde05.pdf}
+
+Jiným příkladem je použití databázového systému, který primárně uchovává data v
+paměti RAM a sekundárně na disku. Tradiční architektura má tohle pořadí
+obrácené, protože v 70. letech, kdy vznikala, bylo typické, že kapacita paměti
+byla silně omezená. Prudký pokles cen paměti, disků a nástup jiných úložných
+formátů (flash) zapříčinil, že toto schéma už není nejvhodnější pro současné
+aplikace, protože většina z nich nepracuje s daty, které by se z většiny
+nevešly do RAM.
+
+Pokles cen a vyšší výkon hardwaru se týká i oblasti vyhledávačů, což přináší
+nové příležitosti pro techniky, které byly doposud opomíjené ze stejných důvodů
+- usoudilo se, že byly příliš výpočetně náročné a existující řešení byla
+dostatečná.
+
+\subsection{Přibližné vyhledávání}
+
+\section{Cíl práce}
+Cílem práce je navrhnout praktický vyhledávací systém s vlastnostmi
+odpovídajícími požadavkům a očekáváním dnešní doby. Některé z popisovaných
+technik jsou opomíjené, protože jejich implementace není jednoduchá, nebo
+dlouho nebyla výpočetně výhodná. Pokrok ve výpočetním výkonu, nových
+počítačových architekturách, vyšších kapacitách pamětí a obecně pokrok v
+hardwaru pro ně ale poskytuje novou příležitost.
+
+Důraz bude kladen především na přibližné vyhledávání, které je považované za
+velmi výpočetně nevýhodné, pokud by se implementovalo do současných populárních
+vyhledávacích systémů. Existují pro něj ale techniky, pro které by
+doimplementace do stávajících systémů znamenala drastický zásah do celkové
+architektury. Jinou technikou je ohodnocení podle blízkosti (proximity) slov ve
+výsledcích.
+
+Systém, který bude navrhnut v této práci se nesnaží být nejlepším řešením pro
+všechny případy a explicitně se zaměřuje na specifičtější případy, ve kterých
+by přibližné vyhledávání přineslo velkou hodnotu. Kompromisem je, že se
+navrhovaný systém nesnaží jít stejnou cestou velkých dat (Big Data), ale přesně
+opačně by mělo představované řešení nalézt uplatnění pro menší objemy dat
+(Small Data).
 
 Práce je koncipována tak, aby přiblížila některé opomíjené příležitosti ve
 vyhledávání, přiblížila dosavadní výzkum v těchto oblastech a na prototypové
@@ -114,7 +196,49 @@ bude porovnán s některými populárními open source vyhledávacími systémy,
 budou konfigurovány tak, aby splňovaly podobné požadavky.
 
 
-\subsection{Motivace}
+\section{Porovnání}
+Protože je dalších vyhledávacích systémů mnoho, bude vytvořeno pouze několik
+konfigurací pro ElasticSearch a Postgres, které v současnosti reprezentují
+nejpoužívanější open source systémy s porovnatelnými schopnostmi.
+
+\subsection{Relevance}
+Vyhodnocení toho, který systém je lepší nebo horší, je z velké míry subjektivní
+záležitost. Existují způsoby, jak hodnotit míru relevance vyhledávače pomocí
+metrik přesnost (precision) a výtěžnost (recall), pokud se výsledky vyhledávání
+uvažují pouze jako množiny.
+% TODO popsat tady precision a recall.
+
+U menších datových nás bude zajímat především robustnost. Pro uživatele je
+frustrující, pokud má vyhledávač vlastnost, že při malé změně dotazu, např.
+změnou koncovky slova, mu systém vrátí naprosto odlišné výsledky, rozdílný
+počet, nebo při této změně dokonce nic nevrátí. U webového vyhledávání to tolik
+nevadí, protože i přes změnu dotazu vyhledávač vrátí velkou množinu výsledků.
+Uživatel nepozná, jestli se výsledky ztratily, nebo byly pouze seřazeny níže. U
+menších dat dojde k tomu, že se záznamy z výsledků ztratí, čehož si uživatel
+ihned všimne.
+
+Porovnání proběhne na několika datových sadách o několika stovkách tisíc
+záznamech, které budou reprezentovat datové sady pro případy, ve kterých by se
+navrhovaný vyhledávač měl nejlépe uplatnit. Porovnáním jsou ukázky interakce a
+zhodnocení několika uživatelů, kterým byl systém prezentován v porovnání s
+ostatními implementovanými vyhledávači.
+
+\subsection{Výkon}
+U instantního vyhledávání platí pravidlo, že dotazy vykonané pod
+hranici 100\,ms jsou lidmi vnímány jako instantní. Do této doby se musí vejít
+jednak samotné vykonání algoritmu, a jednak doba pro přenos dat, která nebude
+zanedbatelná, pokud bude vyhledávací aplikace poskytována jako služba ze
+vzdáleného počítače.
+
+%TODO cite 100ms
+
+Protože bude návrh nového vyhledávače prezentován pouze jako prototyp v
+dynamicky typovaném Pythonu, kvůli čemuž nelze provést objektivní srovnání
+výkonu. Rychlost běhu programu v Pythonu se oproti nativní implementaci se liší
+řádově, a proto použiji hrubé pravidlo jedné vteřiny, tedy pokud očekáváme
+výkon prototypu desetkrát pomalejší, pak by se měla doba běhu vejít do
+desetinásobku kritické hranice pro lidské vnímání.
+
 
 
 % Díky vzestupu počítačů a především internetu došlo k dramatickému nárustu
