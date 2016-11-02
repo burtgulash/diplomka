@@ -239,6 +239,14 @@ výkonu. Rychlost běhu programu v Pythonu se oproti nativní implementaci se li
 výkon prototypu desetkrát pomalejší, pak by se měla doba běhu vejít do
 desetinásobku kritické hranice pro lidské vnímání.
 
+Vyhledávač by rovněž neměl být příliš paměťově náročný. Na jednu stranu tím, že
+se soustřeďuje na malé objemy dat a paměť se neustále zlevňuje, by neměl být
+problém využít volné kapacity pro zvýšení výkonu. Na druhou stranu pokud nebude
+vyhledávač nenasytný, pak se do paměti vejde více dat a nebude nutné zasahovat
+na disk, což je u nízkolatenčního vyhledávání velkou překážkou. Několik
+náhodných zásahů na disk by znamenalo instantní porušení hranice 100\,ms, proto
+by měl být systém schopný pojmout všechna data do paměti.
+
 
 
 % Díky vzestupu počítačů a především internetu došlo k dramatickému nárustu
@@ -1702,9 +1710,11 @@ http '<uri>/<index>/_stats' | jq .indices.<index>.primaries.store.size_in_bytes
 \multirow{3}{*}{\texttt{csfd\_filmy}} & trigram\_ES & 86\,MB \\
                                       & cs\_ES      & 37\,MB \\
                                       & edit        & 42\,MB \\
+\hline
 \multirow{3}{*}{\texttt{csfd\_tvůrci}} & trigram\_ES & 31\,MB \\
                                        & cs\_ES & 14\,MB \\
                                        & edit & 15\,MB \\
+\hline
 \multirow{3}{*}{\texttt{cswiki\_titulky}} & trigram\_ES & 135\,MB \\
                                           & cs\_ES & 63\,MB \\
                                           & edit & 63\,MB \\
