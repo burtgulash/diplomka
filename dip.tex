@@ -163,7 +163,7 @@ Pokles cen a vyšší výkon hardwaru se týká i oblasti vyhledávačů, což p
 nové příležitosti pro techniky, které byly doposud opomíjené z obdobných důvodů
 zavrhované.
 
-\subsection{Big Data vs. Small Data}
+\subsection{Big Data a Small Data}
 Jestliže se díky levnější paměti a silnějším procesorům stává výpočetní výkon
 dostupnějším, existuje více směrů, jak lze tento jev aplikovat. Prvním z nich
 je využít novou výpočetní kapacitu pro zpracování většího množství dat. Druhým
@@ -466,6 +466,11 @@ by měl být systém schopný pojmout všechna data do paměti.
 % \subsection{Mobilní zařízení}
 
 \chapter{Textové vyhledávání}
+V této části práce budou představena teoretická východiska - tedy techniky,
+kolem kterých práce staví. Budou představena pokročilá uživatelská rozhraní pro
+vyhledávací systémy, algoritmy pro vyhledávání v textu a rozšiřující algoritmy
+pro techniky, na které se práce zaměřuje.
+
 \section{Uživatelské rozhraní}
 Základním uživatelským rozhraní pro textové vyhledávání je obyčejný řádek, do
 kterého uživatel napíše svůj dotaz a po potvrzení mu vyhledávač obratem pošle
@@ -1176,6 +1181,12 @@ Pro výpočet blízkosti slov dotazu ve výsledku jsem zvolil variaci na algorit
 
 
 \chapter{Analýza}
+V této části budou nejprve shrnuty vlastnosti alternativních implementovaných
+vyhledávacích systémů a datové soubory použité pro experimentální analýzu.
+První část analýzy je porovnání vlastností implementovaného systému s
+alternativními. Druhá část obsahuje ukázku a shrnutí nonfunkčních vlastností
+(rychlost, paměťová náročnost) systémů.
+
 \section{Implementované systémy}
 Pro demonstraci uvedených technik jsem vytvořil tři vyhledávací systémy. První
 z nich je má implementace hybridního indexu a zbylé dva jsou různé konfigurace
@@ -1802,7 +1813,7 @@ http '<uri>/<index>/_stats' | jq .indices.<index>.primaries.store.size_in_bytes
 \end{table}
 \end{tt}
 
-\chapter{Zhodnocení, další postup a otevřené problémy}
+\chapter{Další postup a otevřené problémy}
 \section{Integrace do existujících systémů}
 \section{Statické a dynamické indexy}
 % static: no locks and latches, compact data structures, cache efficient
@@ -1812,7 +1823,8 @@ http '<uri>/<index>/_stats' | jq .indices.<index>.primaries.store.size_in_bytes
 % share nothing
 \section{Příliš krátký vstupní řetězec}
 \section{Plánování dotazů}
-\subsection{Škálovatelnost}
+\section{Ukládání inkrementálních mezivýsledků}
+\section{Škálovatelnost}
 V této práci je mým cílem poukázat, že pro malá objemy dat je vhodné použít
 adekvátní techniky pro zvýšení relevance vyhledávání za cenu zvýšené výpočetní
 náročnosti. Tím, že jsou počítače stále výkonnější a datové sady se snadno
