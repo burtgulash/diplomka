@@ -1438,7 +1438,7 @@ Konery}. Musela by být silně zvýšena tolerance editační vzdálenosti pro k
 slova (\bftt{son} a \bftt{sean} se liší vzdáleností 2). Nevýhodou by bylo velké
 množství nevyhovujících záznamů.
 
-\subsection{Technické názvy}
+\subsection{Názvy produktů}
 
 \mbox{}\input{hits/intel_8086.tex}\mbox{}
 
@@ -1824,6 +1824,7 @@ http '<uri>/<index>/_stats' | jq .indices.<index>.primaries.store.size_in_bytes
 \section{Příliš krátký vstupní řetězec}
 \section{Plánování dotazů}
 \section{Ukládání inkrementálních mezivýsledků}
+\section{Zvýrazňovač pro editační vzdálenost}
 \section{Škálovatelnost}
 V této práci je mým cílem poukázat, že pro malá objemy dat je vhodné použít
 adekvátní techniky pro zvýšení relevance vyhledávání za cenu zvýšené výpočetní
@@ -1869,10 +1870,35 @@ moderní schopnosti procesorů využívat. (cite completesearch C++).
 
 
 \chapter{Závěr}
-Záměrem této práce je poukázat na alternativní přístupy v oblasti vyhledávání a
-demonstrovat možný vyhledávací systém s alternativními technikami, který by byl
-pro současné firemmní i nekomerční potřeby vhodnější, než systémy navrhované a
-tvořené pro potřeby Webových vyhledávačů, které jsou však dnes nejrozšířenější.
+Záměrem této práce je poukázat na alternativní techniky v oblasti vyhledávání a
+demonstrovat možný vyhledávací systém, který je implementuje. Tento systém by
+měl být vhodnější pro potřeby jednotlivců i firem, které vyžadují od
+vyhledávacího systému robustnost proti malým změnám v dotazu. Uplatnění by měl
+nalézt v menších datových sadách, než na které je dnes kladen důraz, protože
+díky omezené velikosti dat je možné přebytečný výpočetní výkon použít k těmto
+náročnějším technikám.
+
+Navržený vyhledávací systém byl implementován jako prototyp obsahující popsané
+techniky a porovnán s několika dalšími vyhledávači, které byly vytvořeny jako
+různé konfigurace v některých populárních open source vyhledávacích systémech
+tak, aby odpovídaly popsaným požadavkům.
+
+Implementovaný prototyp byl vytvořen tak, aby byl schopný v první řadě
+demonstraci popsaných technik a byl dostatečně flexibilní pro potřeby
+experimentování. Výkonově není reprezentativní kvůli implementaci v zvoleném
+dynamicky typovaném programovacím jazyce Python, ale byla použita stejná
+architektura, kterou by bylo možné pouze přepsat do výkonnějšího jazyka. Bylo
+proto provedeno relativní porovnání výkonu mezi určitými typy dotazů s vyšší
+mírou tolerance pro běh dotazu, které ukázalo že pro běžný dotaz by vyhledávač
+splňoval kritéria pro vyhledávání v reálném čase. 
+
+Analýza nejhorších případů ukázala na typ dotazů, které by mohly být zneužity
+proti vyhledávači. Pro tento případ byl nastíněn způsob, jak ho řešit, ač by
+zkomplikoval původně jednoduchou architekturu.
+
+V porovnání s alternativami založených na ngramové podobnosti není navržený
+systém robustní v případech oddělených slov nebo naopak kompozitních slov.
+Možným dalším rozšířením by byla kombinace navržené architektury s ngramy.
 
 \section*{Odkazy}
 \url{http://www.dcs.gla.ac.uk/~craigm/publications/lacour08efficiency.pdf}
