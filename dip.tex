@@ -99,7 +99,7 @@ si popularitu ani mezi nezávislými jedinci, ani mezi firmami. Snad pouze pokud
 byly osobně osloveny obchodním oddělením dané firmy, a tedy tvoří menšinu.
 Dalším důvodem je, že pokud se nějaký systém snaží být nejlepším pro všechny
 možné případy, pak je šance, že nebude vhodným pro žádný případ. K podobnému
-zjištění podle M.  Stonebrakera dochází v paralelním světě databází, který
+zjištění podle M. Stonebrakera dochází v paralelním světě databází, který
 stejně jako svět vyhledávání reaguje na nové architektury počítačů, nové
 požadavky lidí a firem a větší objemy dat. 
 Existující otevřené projekty, které se vyhledáváním zabývají, postrádají
@@ -135,7 +135,6 @@ vyhledávací systém formou externí komponenty. Např. databázový systém Po
 některé vyhledávací doplňky poskytuje, ale očividně ne v takové formě, aby se
 lidem nevyplatilo fragmentovat data do více systémů. 
 
-\subsection{Big Data vs. Small Data}
 % BIg Noise - Silver
 % Gargage In - Garbage Out
 
@@ -161,11 +160,89 @@ aplikace, protože většina z nich nepracuje s daty, které by se z většiny
 nevešly do RAM.
 
 Pokles cen a vyšší výkon hardwaru se týká i oblasti vyhledávačů, což přináší
-nové příležitosti pro techniky, které byly doposud opomíjené ze stejných důvodů
-- usoudilo se, že byly příliš výpočetně náročné a existující řešení byla
-dostatečná.
+nové příležitosti pro techniky, které byly doposud opomíjené z obdobných důvodů
+zavrhované.
+
+\subsection{Big Data vs. Small Data}
+Jestliže se díky levnější paměti a silnějším procesorům stává výpočetní výkon
+dostupnějším, existuje více směrů, jak lze tento jev aplikovat. Prvním z nich
+je využít novou výpočetní kapacitu pro zpracování většího množství dat. Druhým
+způsobem je výkon jednoduše vyplýtvat. Třetím je použít novou kapacitu pro
+komplikovanější problémy.
+
+První z těchto směrů se stal v poslední době velmi populární z několika důvodů.
+Jednak se zvýšila dostupnost výpočetní kapacity díky firmám pronajímajícím
+volnou kapacitu ve svých datových centrech (cloud). Vzestup tzv. NoSQL databází
+a distribuovaného výpočetního modelu MapReduce přinesl běžným uživatelům
+možnost používat distribuované algoritmy a datové struktury pro rozsáhlé datové
+sady přesahující kapacity jednoho počítače (Big Data), bez větší námahy.  Podle
+Stonebrakera jsou tato řešení nevhodná a jejich uživatelé postupně znovuobjeví
+stejné problémy, kterým se databázoví výzkumníci věnují posledních několik
+desetiletí.
+
+Druhý směr je viditelný např. ve vzestupu dynamicky typovaných programovacích
+jazyků, které silně odstiňují programátora od složitostí hardwaru za cenu
+řádově pomalejšího výkonu. Tím, že je výpočetní výkon natolik levný, nejedná se
+tolik o plýtvání, pokud se efektivně využije dražší čas programátora. 
+
+Třetí směr je Opačným jevem k fenoménu Big Data, který by se odvozeně z názvu
+jmenoval Small Data, znamená soustředit se na relativně malé objemy dat, ale s
+použitím vlastností, které byly při minulých výpočetních kapacitách vyhodnoceny
+jako příliš náročné pro praktické použití. Pojem Small Data není tolik
+rozšířený jako Big Data a byl několikrát použit v různých významech. V jednom
+případě se ale shoduje s významem, v jakém je v této práci zamýšlen. Autor
+navrhuje použití nadbytečného výkonu např. pro interaktivitu v publikovaných
+vědeckých pracích. 
+
+
+\url{https://www.youtube.com/watch?v=O7Qgo6RSzmE&index=5&list=FLsQrpCWFBcd2Gqr456bJfAg}
 
 \subsection{Přibližné vyhledávání}
+Motivaci této práce charakterizuje pojem small data, protože hlavní myšlenkou
+je, že spousta problémů firem nepotřebuje produkty pro manipulaci s terabyty
+dat, ale často jsou to pouze datové objemy, které dnešní počítače zvládnou
+hravě bez opuštění rychlé paměti RAM. Například přibližné vyhledávání v textu
+je jednou z oblastí, které není věnováno příliš pozornosti, ačkoliv je jeho
+využití nesmírné.
+
+Znatelný rozdíl je v požadavcích pro vyhledávání ve full-textu, tedy rozsáhlých
+dokumentech (webové stránky, pdf soubory) a v relativně krátkých textových
+řetězcích, jakými jsou např. jména lidí, názvy produktů, geografické lokace,
+krátkých reklamních sděleních, apod. Rozdíl je především ten, že full-text je
+tvořen celými větami jednoho jazyka, zatímco názvy a pojmenování jsou tvořeny
+často jen několika málo slovy, které netvoří větu, a často nejsou tvořená slovy
+jednoho jazyka. 
+
+U názvů produktů často nelze rozlišit jazyk, protože jsou slova unikátní a tím,
+že obsahují číslice, nelze o nich ani hovořit jako o slovech. Např. \bftt{MSI
+GeForce GTX 1060 GAMING X 6G, 6GB GDDR5} je název grafické karty, \bftt{Bosch
+TDA502412E} a \bftt{Tefal Autoclean ANTI CALC FV9640} jsou příklady názvů pro
+žehličku a \bftt{55" LG OLED55E6V} a \bftt{55" HISENSE H55M3300} jsou názvy
+televizorů. 
+
+V databázích jmen se často vyskytují jména osob různých národností a i přes
+znalost národnosti nelze správně určit jazyk jména. Např. Jakými jazyky by byla
+vyhodnocena jména \bftt{Keira Knightley}, \bftt{Keira Knightleyová} nebo
+\bftt{Jessica Nováková}? Cílem je pouze poukázat, že vyhledávač jmen by měl být
+robustní a nespoléhat pouze na jednoduchou analýzu textu podle detekovaného
+jazyka. Jazyková detekce je často možná pouze v dlouhém textu, protože se opírá
+o statistické metody (např. frekvenční analýza písmen, párů písmen, slov),
+která u krátkého textu selže.
+
+Aplikace přibližného vyhledávání by mohla být pro hypotetický vyhledávač v
+počítačově generovaných transkripcích mluveného textu nebo textu vygenerovaného
+strojem z obrázků nebo videa. U obou případů můžeme předpokládat určitou
+chybovost stroje a náročný proces, který by musel opravit tyto chyby před
+vložením do databáze. Robustnost přibližného vyhledávače by se s chybami
+vypořádala až během vyhledávání. Možná právě absence efektivního přibližného
+vyhledávacího systému je důvodem, proč ještě neexistuje populární vyhledávač v
+textech zaznamenaných v audio nebo video souborech.
+
+%  Full-text obsahuje celé věty a tedy obsahuje tzv. stop slova
+% (a, já, jsem, tu, k, nebo, ...), která pomáhají plynulosti jazyka a navazování
+% myšlenek. Názvy stop slova neobsahují.
+
+% Spousta interních databází vyžaduje efektivní a robustní vyhledávání, které 
 
 \section{Cíl práce}
 Cílem práce je navrhnout praktický vyhledávací systém s vlastnostmi
