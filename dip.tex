@@ -895,10 +895,8 @@ postupně je dávkově slučuje s hlavním. Hlavní index je přizpůsobem pro v
 výkon a kompaktnost a vedlejší je přizpůsobem pro zápis. Efektivní způsob, jak
 zabránit nákladné rekonstrukci hlavního indexu je použít množství menších
 indexů ve vzrůstající velikosti a změny z dynamického indexu postupně s těmito
-slučovat od nejmenšího po největší. Tenhle přístup používá knihovna Apache
-Lucene.
-
-\url{http://nlp.stanford.edu/IR-book/html/htmledition/dynamic-indexing-1.html}
+slučovat od nejmenšího po největší~\citep[kap.~4]{Manning:2008:IIR:1394399}.
+Tenhle přístup používá knihovna Apache Lucene~\cite{lsm_lucene}.
 
 \subsubsection{Komprese}
 Invertované seznamy jsou pouze seznamy identifikátorů dokumentů - tedy celých
@@ -947,8 +945,8 @@ dané slovo, ale neřeší dodatečné informace o multiciplitě a pozici výsky
 
 \subsubsection{Poloinvertovaný index}
 Velkou výpočetní zátěží u prefixových a fuzzy indexů je, pokud musí provést
-disjunktivní sloučení (sloučení, OR) většího množství invertovaných seznamů.
-Většinou v literatuře potkáme konjunktivní sloučení (průnik, AND), které je
+disjunktivní sloučení (sloučení - OR) většího množství invertovaných seznamů.
+Většinou v literatuře potkáme konjunktivní sloučení (průnik - AND), které je
 naopak tím efektivnější, čím více invertovaných seznamů v něm učinkuje.
 Analogicky ke konjunkci množin - čím více náhodných množin, tím menší je
 pravděpodobnost, že bude jejich prvek ve všech najednou. U disjunkce platí, že
