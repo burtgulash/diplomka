@@ -730,20 +730,32 @@ písmen, které musí být odebrány nebo přidány, aby z prvního řetězce vz
 druhý. Např. mezi slovy \bftt{karel} a \bftt{kremrole} je editační vzdálenost
 5, protože bychom první slovo transformovali na druhé odebráním znaku \bftt{a}
 a přidáním znaků \bftt{m},~\bftt{r},~\bftt{o}~a~\bftt{l} na patřičná místa.
-Základní editační vzdálenost můžeme alternativně vypočítat jako $edit(x, y) =
-|x| + |y| - 2 lcs(x, y)$, kde $lcs$ (longest common subsequence) označuje
-nejdelší společný podřetězec textů $x$ a $y$ a $|x|$ znamená délku textu $x$.
+Základní editační vzdálenost můžeme alternativně vypočítat jako $\bftt{edit}(x,
+y) = |x| + |y| - 2\,\bftt{lcs}(x, y)$, kde $\bftt{lcs}$ (longest common
+subsequence) označuje nejdelší společný podřetězec textů $x$ a $y$ a $|x|$
+znamená délku textu $x$.  Tato metrika se proto také označuje jako vzdálenost
+největších společných podřetězců.
 
-Rozšířením je Levenshteinova vzdálenost, která kromě odebrání a přidání uvažuje
-navíc záměnu písmen (substituce) za jednu operaci s váhou 1. Prakticky se liší
-pouze tím, že záměnu písmen penalizuje vahou 1, zatímco základní editační
-vzdálenost bere záměnu jako jedno přidání a jedno odebrání, tedy s penalizací
-2. Pokud se běžně hovoří o editační vzdálenosti, je jí myšlena právě ta
-Levenshteinova, proto budeme označovat pojmem editační vzdálenost právě ji.
+\paragraph{Levenshteinova vzdálenost} je rozšířením, které kromě odebrání a
+přidání uvažuje navíc záměnu písmen (substituce) za jednu operaci s váhou 1.
+Prakticky se liší pouze tím, že záměnu písmen penalizuje vahou 1, zatímco
+základní editační vzdálenost bere záměnu jako jedno přidání a jedno odebrání,
+tedy s penalizací 2. Pokud se běžně hovoří o editační vzdálenosti, je jí
+myšlena právě ta Levenshteinova, proto budeme označovat pojmem editační
+vzdálenost právě ji.
 
-Druhým rozšířením, které navíc uvažuje záměnu dvou sousedících písmen
-(transpozice) jako operaci s vahou 1 se označuje jako Damerau-Levenshteinova
-vzdálenost.
+\paragraph{Damerau-Levenshteinova} vzdálenost je druhým rozšířením, které navíc
+uvažuje záměnu dvou sousedících písmen (transpozice) jako operaci s vahou 1.
+Bez této podmínky by byla vzdálenost transpozice vypočtena jako jedno odebrání
+a jedno přidání celkem s váhou 2.
+
+\paragraph{Prefixovou editační vzdálenost} definujeme abychom mohli zkombinovat
+inkrementální vyhledávání s tolerancí překlepů. Vypočteme ji jako nejmenší
+editační vzdálenost prvního řetězce k prefixům druhého $\bftt{p\_edit}(x, y) =
+\min_{p \in prefix(y)} \bftt{edit}(x, p)$, kde $prefix(y)$ označuje množinu
+všech prefixů řetězce $y$. Př. $\bftt{p\_edit}(ker, karel) = 1$, protože
+\bftt{edit}(ker, kar) = 1. Oproti předchozím metrikám není symetrická. 
+
 % TODO damerau paper?
 
 \subsection{Výpočet editační vzdálenosti}
@@ -771,13 +783,22 @@ sjednocení obou množin $\bftt{jacc}(X, Y) = |X \cap Y|\ /\ |X \cup Y|$. Pokud
 porovnávané texty reprezentujeme jako dvě množiny jejich ngramů, vypočteme
 jejich podobnost jako podobnost těchto množin.
 
-Tento způsob funguje pro krátké řetězce a malou vzdálenost. Podobná slova budou
-sdílet všechny ngramy vzdálené $n$ pozic od místa, kde mezi nimi došlo ke
-změně. Např. slova \bftt{kremrole} a \bftt{kremrule} se levenshteinovou
-vzdáleností 1 budou mít Jaccardovu vzdálenost trigramů pouze $0.5$. Aby metoda
-fungovala, musí být text dlouhý alespoň dvakrát delší než velikost ngramu,
-pokud ke změně dojde uprostřed textu. Proto tenhle způsob selhává u kratších
-slov.
+Tento způsob funguje pro krátké řetězce a nízkou toleranci odlišnosti. Podobná
+slova budou sdílet všechny ngramy vzdálené $n$ pozic od místa, kde mezi nimi
+došlo ke změně. Např. slova \bftt{kremrole} a \bftt{kremrule} se
+levenshteinovou vzdáleností 1 budou mít Jaccardovu vzdálenost trigramů pouze
+$0.5$. Aby metoda fungovala, musí být text dlouhý alespoň dvakrát delší než
+velikost ngramu, pokud ke změně dojde uprostřed textu. Proto tenhle způsob
+selhává u kratších slov.
+
+Kromě Jaccardovy podobnosti můžeme použít i další metriky pro podobnost množin
+jako euklidovskou, kosínovou nebo Jaro-Winklerovu vzdálenost, pokud převedeme
+množiny na vektory, kde jedna dimenze označuje přítomnost jednoho znaku nebo
+ngramu textu.
+
+% Vztah mezi Jaccardovou metrikou a základní editační vzdáleností je
+% $\bftt{jacc}(x, y) = 1 - |\bftt{lcs}(x, y)|\ /\ (|\bftt{lcs}(x, y)| +
+% \bftt{edit}(x, y))$, pokud jsou prvky množiny jednotlivá písmena textu.
 
 \subsection{Reprezentace slovníku}
 Pokud zvolíme fuzzy technikou stematizaci, pak lze implementaci slovníku pro
@@ -901,16 +922,28 @@ Tenhle přístup používá knihovna Apache Lucene~\cite{lsm_lucene}.
 \subsubsection{Komprese}
 Invertované seznamy jsou pouze seznamy identifikátorů dokumentů - tedy celých
 čísel, které bývají uloženy v seřazeném pořadí. To umožňuje efektivní kompresi
-tím, že uložíme pouze rozdíly mezi identifikátory, které budou vždy nezáporné,
-protože je posloupnost vzrůstající. Tyto rozdíly budou oproti původním
-identifikátorům pouze poměrně malá čísla, které můžeme zmenšit kompresními kódy
-pro celá čísla.
+tím, že uložíme pouze rozdíly mezi identifikátory (delta komprese), které budou
+vždy nezáporné, protože je posloupnost vzrůstající. Tyto rozdíly budou oproti
+původním identifikátorům pouze poměrně malá čísla, které můžeme zmenšit
+kompresními kódy pro celá čísla.
+
+Komprese invertovaných seznamů má několik opodstatnění. Zmenšením velikosti
+indexu docílíme, že větší množství dat může být obslouženo bez jejich hledání
+na pomalém persistentním úložišti, ať už je to pevný disk nebo ssd. Pokud už k
+zásahu do externího úložiště dojde, pak komprimovaný seznam bude přenesen do
+RAM rychleji i přes čas strávený dekódováním. Vysvětlením je úzké hrdlo při
+přenosu dat (I/O bottleneck) oproti rychlosti dnešních procesorů. Algoritmy pro
+dekompresi mohou být velmi rychlé a tento jev zaznamenáme i na rychlejších ssd
+úložištích a dokonce i pokud uvažujeme celou operaci výhradně v paměti
+počítače. Dekódování může být díky několika úrovním vyrovnávací paměti
+procesoru rychlejší než přístup k nekomprimovaným datům v RAM. 
+% TODO cite ssd, memory hierarchy model, atd?
 
 \paragraph{Instantní kódy} uvažují každé číslo samostatně a snaží se
 zkomprimovat menší čísla na úkor větších. Příkladem jsou bitově orientované
-kódy Elias-Gamma a Elias-Delta, nebo bytově orientované schéma VarByte. Bitové
-kódy jsou kompaktnější, ale bytové rychlejší pro dekódování na současných
-procesorových architekturách.
+kódy Elias $\gamma$ a $\delta$ a Golomb/Rice, nebo bytově orientované schéma
+VByte. Bitové kódy jsou kompaktnější, ale bytové rychlejší pro dekódování na
+současných procesorových architekturách.
 
 \paragraph{Blokové kódy} naopak počítají při kompresi s celými bloky, které se
 snaží maximálně zkomprimovat jako celek. Výhodou je vyšší komprese, protože se
@@ -1001,6 +1034,15 @@ ke každému výskytu dokumentu, zabírá v paměti stejně místa jako obyčejn
 invertovaný index
 
 \subsubsection{Invertované seznamy v externím systému}
+
+\section{Algoritmy pro sloučení invertových seznamů}
+\subsection{Zipper}
+\subsection{Skipper}
+\subsection{Binary search}
+\subsection{Gallop}
+Exponential search
+\subsection{Přeskakovací tabulka}
+\url{http://algo2.iti.kit.edu/documents/Algorithmentechnik/alenex07_2.pdf}
 
 
 \section{Ohodnocovací funkce}
