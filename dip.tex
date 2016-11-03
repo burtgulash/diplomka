@@ -90,7 +90,7 @@ stejné softwarové knihovny pro vyhledávací systémy - Apache Lucene. Někte�
 tvrdí, že knihovna Lucene přinesla komoditizaci a demokratizaci na poli
 specializovaných vyhledávačů~\cite{dion_almaer,javaworld}.
 
-Vyhledávání by se tedy mohlo jevit jako vyřešený problém. V této práci bude
+Vyhledávání by se tedy mohlo jevit jako vyřešený problém. V této práci bude ale
 představeno několik méně známých technik, které pokud by se více
 popularizovaly, mohly by změnit tenhle pohled a zapříčinit vznik nových
 vyhledávacích systémů.
@@ -109,14 +109,14 @@ možné případy, pak je šance, že nebude nejlepším pro žádný z nich. To
 Prozkoumávat oblast alternativních vyhledávacích technik jsem začal po
 frustraci s vytvořením jednoduchého vyhledávače pro položky jako názvy produktů
 eshopu nebo pro vyhledávání v databázi jmen. Vytvoření takového systému je dnes
-považováno za vyřešený problém, protože existuje spousta open source produktů,
-které se dají přizpůsobit téměř každé situaci.
+považováno za vyřešený problém, protože existuje spousta open source databází a
+jiných produktů, které se dají přizpůsobit téměř každé situaci.
 
 \subsection{Fragmentace systémů}
 Bez použití specializovaného vyhledávacího systému je nejčastějším řešením pro
-vyhledávání v databázi použití technik, které dovolují databázové systémy.
+vyhledávání v databázi použití technik, které poskytují databázové systémy.
 Časté řešení je rozdělení textových polí na více částí a vyhledávání separátně
-v nich pomocí operátoru \bftt{like}, který umožňuje omezené přibližné
+v každé z nich pomocí operátoru \bftt{like}, který umožňuje omezené přibližné
 vyhledávání. U databáze lidských jmen se často rozděluje text jména na části
 jméno, příjmení a někty titul a prostřední jméno. Problémy pak nastávají v méně
 častých případech, kdy osoby např. nemají příjmení, jejich jméno je složeno z
@@ -125,11 +125,11 @@ více slov, než je počet kolonek ve formuláři, apod~\cite{name_falsehoods}.
 
 Nejčastějším řešením, kdy je požadované pokročilé vyhledávání, které databázové
 systémy neposkytují, je duplikace dat z primární databáze (např. MySQL,
-Postgres) do sekundárního systému pro vyhledávání (Solr, ElasticSearch). Přitom
-by bylo jednodušší, kdyby databázové systémy přímo podporovaly solidní
-vyhledávací systém formou externí komponenty. Např. databázový systém Postgres
-některé vyhledávací doplňky poskytuje, ale očividně ne v takové formě, aby se
-lidem nevyplatilo fragmentovat data do více systémů. 
+Postgres) do sekundárního systému pro vyhledávání (Solr, ElasticSearch,
+Sphinx). Přitom by bylo jednodušší, kdyby databázové systémy přímo podporovaly
+solidní vyhledávací systém formou externí komponenty. Např. databázový systém
+Postgres některé vyhledávací doplňky poskytuje, ale očividně ne v takové formě,
+aby se lidem nevyplatilo fragmentovat data do více systémů. 
 
 % BIg Noise - Silver
 % Gargage In - Garbage Out
@@ -274,15 +274,15 @@ nejpoužívanější open source systémy s porovnatelnými schopnostmi.
 Vyhodnocení toho, který systém je lepší nebo horší, je z velké míry subjektivní
 záležitost. Existují způsoby, jak hodnotit míru relevance vyhledávače pomocí
 metrik přesnost (precision) a výtěžnost (recall), pokud se výsledky vyhledávání
-uvažují pouze jako množiny. Pro srovnání výsledků vyhledávačů nás bude zajímat
-pořadí, ve kterém se relevantní výsledky vyskytnou a robustnost vyhledávače při
-změnách dotazu. Pro uživatele je frustrující, pokud má vyhledávač vlastnost, že
-při malé změně dotazu, např.  změnou koncovky slova, mu systém vrátí naprosto
-odlišné výsledky, rozdílný počet, nebo při této změně dokonce nic nevrátí. U
-webového vyhledávání to tolik nevadí, protože i přes změnu dotazu vyhledávač
-vrátí velkou množinu výsledků.  Uživatel nepozná, jestli se výsledky ztratily,
-nebo byly pouze seřazeny níže. U menších dat dojde k tomu, že se záznamy z
-výsledků ztratí, čehož si uživatel ihned všimne.
+uvažují pouze jako množiny. Pro srovnání výsledků vyhledávačů nás bude více
+zajímat pořadí, ve kterém se relevantní výsledky vyskytnou a robustnost
+vyhledávače při změnách dotazu. Pro uživatele je frustrující, pokud má
+vyhledávač vlastnost, že při malé změně dotazu, např.  změnou koncovky slova,
+mu systém vrátí naprosto odlišné výsledky, rozdílný počet, nebo při této změně
+dokonce nic nevrátí. U webového vyhledávání to tolik nevadí, protože i přes
+změnu dotazu vyhledávač vrátí velkou množinu výsledků.  Uživatel nepozná,
+jestli se výsledky ztratily, nebo byly pouze seřazeny níže. U menších dat dojde
+k tomu, že se záznamy z výsledků ztratí, čehož si uživatel ihned všimne.
 
 Porovnání proběhne na několika datových sadách o několika stovkách tisíc
 záznamech, které budou reprezentovat datové sady pro případy, ve kterých by se
@@ -452,6 +452,7 @@ by měl být systém schopný pojmout všechna data do paměti.
 % % řešení?
 % \subsection{Linked data}
 % \subsection{Mobilní zařízení}
+
 
 \chapter{Textové vyhledávání}
 V této části práce budou představena teoretická východiska - tedy techniky,
