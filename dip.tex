@@ -612,13 +612,9 @@ Překlad ze slov na konkrétní číslo (identifikátor) bude uložen v datové
 struktuře, kterou označíme jako slovník (lexikon).
 
 Výhodou uchování datové sady v indexovaném formátu bude její menší velikost,
-kterou dosáhneme díky kompresi, která využívá nerovnoměrné povahy textových
-dat. Často se vyskytujícím slovům mohou být přiřazena malá čísla a naopak
-unikátnějším slovům větší čísla. Pozice slov v textu lze zmenšit tak, že
-uchováme pouze rozdíly (delty) mezi po sobě následujícími pozicemi. Tyto
-rozdíly budou vždy kladná čísla, protože pozice v textu tvoří rostoucí
-posloupnost.  Identifikátory i rozdíly pozic je možné zkomprimovat nějakým
-instantním kódem jako Elias Delta nebo VByte. Menší velikost datové struktury
+čehož dosáhneme navíc díky kompresi, která využívá nerovnoměrné povahy
+textových dat. Často se vyskytujícím slovům mohou být přiřazena malá čísla a
+naopak unikátnějším slovům větší čísla. Menší velikost datové struktury
 znamená, že se jí více vejde do paměti, což umožňuje vyhnout se pomalým dotazům
 na externí ůložiště.
 
@@ -666,18 +662,6 @@ metody, které drasticky sníží velikost invertovaných seznamů odpovídajíc
 často se opakujícím slovům. Má však horší kompresní vlastnosti pro záznamy o
 pozicích výskytu, protože se v tomhle schématu nevyskytují striktně za sebou.
 
-
-\subsection{Alternativní datové struktury}
-Invertovaný index je jednou z nejefektivnějších datových struktur pro vyhledávání v
-textu, ale pro některé speciální případy byly navrženy i jiné datové struktury,
-které dokáží být kompaktnější než invertovaný index po kompresi, nebo umožňují
-vícero seřazení při jednom uložení v paměti. Klasický invertovaný index má
-právě jedno seřazení dokumentů - nejčastěji podle vzrůstajícího id dokumentu.
-
-Waweletové stromy - dual sorted Index Treap Index
-
-Obě tyto alternativní datové struktury dosahují obrovských úspor díky své
-kompresibilitě, čehož bychom využili, pokud bychom uvažovali velké objemy dat.
 
 \subsection{Prefixové vyhledávání} \label{sec:prefix_search}
 Instantní vyhledávání můžeme implementovat více způsoby. Nejjednodušším je
@@ -892,6 +876,74 @@ zbytek výpočtu pro obě slova zvlášť.
 % permuterm
 
 \subsection{Reprezentace invertovaných seznamů}
+Nejjednodušším způsobem, jak uložit invertované seznamy je vytvořit jeden
+soubor pro každé vyskytující se slovo. Po zaindexování celé kolekce je poměrně
+snadné index upravovat, protože stačí pozměnit jen ty invertované seznamy,
+které odpovídají změnám v datech. Současné operační a souborové systémy ale
+nejsou přizpůsobené pro miliony malých souborů a navíc by došlo k plýtvání
+místem, protože i soubory obsahující pouze jeden znak si uchovávají větší
+strukturu s metadaty. Řešením je invertované seznamy uchovat sekvenčně v jednom
+velkém souboru. Tenhle způsob je kompromis mezi efektivitou při vyhledávání a
+možností modifikovat index. Jeden velký soubor lze prakticky modifikovat pouze
+jako celek. Za každým blokem invertovaného seznamu je mozné nechat nějaké volné
+místo, a předpokládat, že úpravy budou přicházet rovnoměrně, ale i přesto bude
+občas nutné provést změnu celého souboru.
+
+Index může být rozdělen na dva podindexy. Hlavní statický a neefektivní pro
+jednotlivé úpravy a vedlejší dynamický, který přijímá změny v reálném čase a
+postupně je dávkově slučuje s hlavním. Hlavní index je přizpůsobem pro vysoký
+výkon a kompaktnost a vedlejší je přizpůsobem pro zápis. Efektivní způsob, jak
+zabránit nákladné rekonstrukci hlavního indexu je použít množství menších
+indexů ve vzrůstající velikosti a změny z dynamického indexu postupně s těmito
+slučovat od nejmenšího po největší. Tenhle přístup používá knihovna Apache
+Lucene.
+
+\url{http://nlp.stanford.edu/IR-book/html/htmledition/dynamic-indexing-1.html}
+
+\subsubsection{Komprese}
+Invertované seznamy jsou pouze seznamy identifikátorů dokumentů - tedy celých
+čísel, které bývají uloženy v seřazeném pořadí. To umožňuje efektivní kompresi
+tím, že uložíme pouze rozdíly mezi identifikátory, které budou vždy nezáporné,
+protože je posloupnost vzrůstající. Tyto rozdíly budou oproti původním
+identifikátorům pouze poměrně malá čísla, které můžeme zmenšit kompresními kódy
+pro celá čísla.
+
+\paragraph{Instantní kódy} uvažují každé číslo samostatně a snaží se
+zkomprimovat menší čísla na úkor větších. Příkladem jsou bitově orientované
+kódy Elias-Gamma a Elias-Delta, nebo bytově orientované schéma VarByte. Bitové
+kódy jsou kompaktnější, ale bytové rychlejší pro dekódování na současných
+procesorových architekturách.
+
+\paragraph{Blokové kódy} naopak počítají při kompresi s celými bloky, které se
+snaží maximálně zkomprimovat jako celek. Výhodou je vyšší komprese, protože se
+využívá charakter distribuce čísel. Nevýhodou je pomalejší přístup, pokud
+chceme získat pouze jeden prvek, pak musí být prakticky dekódován celý blok.
+Proto se volí kompromis a velikost bloku je omezená pouze na několik stovek až
+tisíců prvků. Při sekvenčním přístupu u slučování invertovaných seznamů se ale
+využije velká část prvků bloku, proto jsou bloková schémata pro invertované
+indexy efektivní. Příkladem jsou např. kompresní rodiny Frame of Reference (bit
+packing, FOR, PFor, PForDelta, ...) a v poslední době u vyhledávačů populární a
+velmi efektivní kódování Elias-Fano.
+
+\subsubsection{Bitmapy}
+Protože představuje jeden invertovaný seznam množinu všech dokumentů, ve
+kterých se vyskytuje jedno slovo, existuje jiná technika pro uložení této
+množiny - bitmapa. Bitmapové kódování množiny použije jeden kladný bit na
+pozici dané identifikátorem dokumentu, pokud se slovo v seznamu vyskytuje, a
+záporný, pokud nikoliv. Bitmapy poskytují velmi rychlé algoritmy přesně pro ty
+množinové operace, se kterými invertovaný index operuje - tedy konjunktivní
+(AND) a disjunktivní (OR) sloučení. Pro jejich vykonání existují extrémně
+rychlé bitově-paralelní operace zabudované přímo v instrukčních sadách
+procesorů.
+
+Tato reprezentace množiny poskytuje vysokou kompresi pro množiny s vysokou
+hustotou. Velikost reprezentace je přesně $\bftt{n}\ /\ 8 bytů$, kde \bftt{n}
+je počet dokumentů. Bohužel kvůli zipfově distribuci slov je většina
+invertovaných seznamů velmi řídká, a proto nejsou bitmapy pro invertované
+indexy používány. Navíc řeší pouze množinový problém, jestli dokument obsahuje
+dané slovo, ale neřeší dodatečné informace o multiciplitě a pozici výskytů.
+
+\subsubsection{Waveletové stromy}
 
 \subsubsection{Poloinvertovaný index}
 Velkou výpočetní zátěží u prefixových a fuzzy indexů je, pokud musí provést
@@ -949,6 +1001,8 @@ budou figurovat, protože závisí na dotazu. Tohle schéma by navíc bylo velmi
 paměťově náročné. HYB oproti tomu, až na nutnost uložení identifikátoru slova
 ke každému výskytu dokumentu, zabírá v paměti stejně místa jako obyčejný
 invertovaný index
+
+\subsubsection{Invertované seznamy v externím systému}
 
 
 \section{Ohodnocovací funkce}
