@@ -6,10 +6,10 @@ FIGURES=$(wildcard figures/*.eps)
 all: pdf view
 pdf: $(TEXFILE).pdf
 
-$(TEXFILE).pdf: $(TEXFILE).tex $(HITS) $(FIGURES)
-	latexmk -pdf $<
+$(TEXFILE).pdf: $(TEXFILE).tex $(HITS) $(FIGURES) ref.bib
+	latexmk -bibtex -pdf $<
 view: $(TEXFILE).pdf
 	evince $^ 2>/dev/null
 clean:
 	latexmk -C
-	rm -f *.log *.aux
+	rm -f *.log *.aux *.bbl

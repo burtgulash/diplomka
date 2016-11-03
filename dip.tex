@@ -2,11 +2,14 @@
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[czech]{babel}
-\usepackage{hyperref}
 \usepackage[left=3.8cm,right=2.8cm,bottom=2.5cm,footskip=1.5cm]{geometry}
 \usepackage{color}
-\usepackage[numbers]{natbib}
 \usepackage[scaled=0.83]{beramono}
+
+\usepackage[sort,numbers]{natbib}
+
+\PassOptionsToPackage{hyphens}{url}
+\usepackage{hyperref}
 
 \usepackage{tabulary}
 \usepackage{subcaption}
@@ -33,7 +36,7 @@
     citecolor=blue,
     filecolor=blue,
     linkcolor=blue,
-    urlcolor=Darkgreen
+    urlcolor=blue,
 }
 
 % \usepackage{sectsty}
@@ -71,26 +74,26 @@
 \mainmatter
 \chapter{Úvod}
 Textové vyhledávání se stalo populární v 90. letech s nástupem Webu a s ním
-masivního nárůstu informací všeho druhu, které jsou dostupné každému po pár
+masivního nárůstu informací, které jsou dostupné prakticky každému po pár
 kliknutích myši. Toho bylo dosaženo vzestupem velkých webových vyhledávačů
 (Excite, AltaVista, Yahoo, Seznam, Google), které byly schopné exponenciálně
-rostoucí růst informací zkrotit. Alespoň do jisté míry, protože tyto
-vyhledávače umožňují přítup pouze k té části webu, ke které se lze dostat
-následováním hypertextových odkazů. Většina informací není skrze pouhé odkazy
-dostupná (deep web), protože je např. skrytá v interních databázích, k nimž se
-lze dostat pouze interním vyhledávacím systémem.
+rostoucí růst informací zkrotit~\cite{search_history}. Alespoň do jisté míry,
+protože tyto vyhledávače umožňují přítup pouze k té části webu, ke které se lze
+dostat následováním hypertextových odkazů. Většina informací není skrze pouhé
+odkazy dostupná (deep web), protože je např. skrytá v interních databázích, k
+nimž se lze dostat pouze interním vyhledávacím systémem.
 
 Popularita webových vyhledávačů zapříčinila zájem o vyhledávací systémy i u
 jednotlivců a firem. Stejné techniky začaly být dostupné v open source
 systémech, z nichž nejznámějšími jsou Solr a ElasticSearch vycházející ze
 stejné softwarové knihovny pro vyhledávací systémy - Apache Lucene. Někteří
 tvrdí, že knihovna Lucene přinesla komoditizaci a demokratizaci na poli
-specializovaných vyhledávačů.
+specializovaných vyhledávačů~\cite{dion_almaer,javaworld}.
 
-\url{https://medium.com/ben-and-dion/democratizing-machine-intelligence-758e2b051d1c#.acmdsj1av}
-\url{http://www.javaworld.com/article/2074841/core-java/the-democratization-of-search.html}
+Vyhledávání by se tedy mohlo jevit jako vyřešený problém. V této práci bude
+představeno několik méně známých technik, které kdyby se více popularizovaly,
+by mohly změnit tenhle pohled a zapříčinit vznik nových vyhledávacích systémů.
 
-% TODO kecej o tom, že nemusí bejt nej
 Pokud by tyto techniky byly natolik užívatelsky výhodné, pak by bylo podivné,
 že by je dodnes nikdo neimplementoval. Některé výzkumné týmy a komerční řešení
 se jimi přímo zabývají, ale v dnešní době platí v softwaru očekávání, že pokud
@@ -98,14 +101,8 @@ není takový systém distribuován zdarma s otevřeným kódem (open source), n
 si popularitu ani mezi nezávislými jedinci, ani mezi firmami. Snad pouze pokud
 byly osobně osloveny obchodním oddělením dané firmy, a tedy tvoří menšinu.
 Dalším důvodem je, že pokud se nějaký systém snaží být nejlepším pro všechny
-možné případy, pak je šance, že nebude vhodným pro žádný případ. K podobnému
-zjištění podle M. Stonebrakera dochází v paralelním světě databází, který
-stejně jako svět vyhledávání reaguje na nové architektury počítačů, nové
-požadavky lidí a firem a větší objemy dat. 
-Existující otevřené projekty, které se vyhledáváním zabývají, postrádají
-techniky zde popsané. Tato práce by pro ně mohla poskytnout vodítko, jak
-techniky implementovat, pokud by to pro ně neznamenalo překopání celé
-architektury.
+možné případy, pak je šance, že nebude vhodným pro žádný případ. To otvírá
+šanci pro nová řešení.
 
 \section{Motivace}
 Prozkoumávat oblast alternativních vyhledávacích technik jsem začal po
@@ -122,10 +119,8 @@ v nich pomocí operátoru \bftt{like}, který umožňuje omezené přibližné
 vyhledávání. U databáze lidských jmen se často rozděluje text jména na části
 jméno, příjmení a někty titul a prostřední jméno. Problémy pak nastávají v méně
 častých případech, kdy osoby např. nemají příjmení, jejich jméno je složeno z
-více slov, než je počet kolonek ve formuláři, apod. Často by přitom stačilo
-modelovat jméno pouze jako jedno textové pole.
-
-\url{https://www.kalzumeus.com/2010/06/17/falsehoods-programmers-believe-about-names/}
+více slov, než je počet kolonek ve formuláři, apod~\cite{name_falsehoods}.
+Často by přitom stačilo modelovat jméno pouze jako jedno textové pole.
 
 Nejčastějším řešením, kdy je požadované pokročilé vyhledávání, které databázové
 systémy neposkytují, je duplikace dat z primární databáze (např. MySQL,
@@ -142,14 +137,13 @@ lidem nevyplatilo fragmentovat data do více systémů.
 V oblasti databázových systémů bylo v posledních několika desetiletích cílem
 vytvořit systémy, který by byly přizpůsobitelné pro každou situaci. Podle M.
 Stonebrakera je tomuto úsilí konec, protože se ukazuje, že specializovaná
-architektura může být řádově výkonnější než tradiční všeobecná architektura.
-Příkladem jsou datové sklady, ve kterých je charakteristická asymetrie mezi
-vkládáním a čtením dat. Zatímco všeobecný systém musí být schopný vykonat
-jakékoliv rozložení zátěže, ale pokud se tomuto požadavku povolí uzda a nastaví
-se nutnost vkládat data dávkově, pak lze změnit uspořádání dat do velmi
-kompaktní formy, která lépe zvládá dotazy používané v analytických aplikacích.
-
-\url{http://www.cs.cmu.edu/~chensm/Big_Data_reading_group/papers/onesizefitsall-1-icde05.pdf}
+architektura může být řádově výkonnější než tradiční všeobecná
+architektura~\cite{Stonebraker:2005:OSF:1053724.1054024}. Příkladem jsou datové
+sklady, ve kterých je charakteristická asymetrie mezi vkládáním a čtením dat.
+Zatímco všeobecný systém musí být schopný vykonat jakékoliv rozložení zátěže,
+ale pokud se tomuto požadavku povolí uzda a nastaví se nutnost vkládat data
+dávkově, pak lze změnit uspořádání dat do velmi kompaktní formy, která lépe
+zvládá dotazy používané v analytických aplikacích.
 
 Jiným příkladem je použití databázového systému, který primárně uchovává data v
 paměti RAM a sekundárně na disku. Tradiční architektura má tohle pořadí
@@ -190,12 +184,9 @@ jmenoval Small Data, znamená soustředit se na relativně malé objemy dat, ale
 použitím vlastností, které byly při minulých výpočetních kapacitách vyhodnoceny
 jako příliš náročné pro praktické použití. Pojem Small Data není tolik
 rozšířený jako Big Data a byl několikrát použit v různých významech. V jednom
-případě se ale shoduje s významem, v jakém je v této práci zamýšlen. Autor
-navrhuje použití nadbytečného výkonu např. pro interaktivitu v publikovaných
-vědeckých pracích. 
-
-
-\url{https://www.youtube.com/watch?v=O7Qgo6RSzmE&index=5&list=FLsQrpCWFBcd2Gqr456bJfAg}
+případě se ale shoduje s významem, v jakém je v této práci
+zamýšlen~\cite{small_data}. Autor navrhuje použití nadbytečného výkonu např.
+pro interaktivitu v publikovaných vědeckých pracích. 
 
 \subsection{Přibližné vyhledávání}
 Motivaci této práce charakterizuje pojem small data, protože hlavní myšlenkou
@@ -282,17 +273,15 @@ nejpoužívanější open source systémy s porovnatelnými schopnostmi.
 Vyhodnocení toho, který systém je lepší nebo horší, je z velké míry subjektivní
 záležitost. Existují způsoby, jak hodnotit míru relevance vyhledávače pomocí
 metrik přesnost (precision) a výtěžnost (recall), pokud se výsledky vyhledávání
-uvažují pouze jako množiny.
-% TODO popsat tady precision a recall.
-
-U menších datových nás bude zajímat především robustnost. Pro uživatele je
-frustrující, pokud má vyhledávač vlastnost, že při malé změně dotazu, např.
-změnou koncovky slova, mu systém vrátí naprosto odlišné výsledky, rozdílný
-počet, nebo při této změně dokonce nic nevrátí. U webového vyhledávání to tolik
-nevadí, protože i přes změnu dotazu vyhledávač vrátí velkou množinu výsledků.
-Uživatel nepozná, jestli se výsledky ztratily, nebo byly pouze seřazeny níže. U
-menších dat dojde k tomu, že se záznamy z výsledků ztratí, čehož si uživatel
-ihned všimne.
+uvažují pouze jako množiny. Pro srovnání výsledků vyhledávačů nás bude zajímat
+pořadí, ve kterém se relevantní výsledky vyskytnou a robustnost vyhledávače při
+změnách dotazu. Pro uživatele je frustrující, pokud má vyhledávač vlastnost, že
+při malé změně dotazu, např.  změnou koncovky slova, mu systém vrátí naprosto
+odlišné výsledky, rozdílný počet, nebo při této změně dokonce nic nevrátí. U
+webového vyhledávání to tolik nevadí, protože i přes změnu dotazu vyhledávač
+vrátí velkou množinu výsledků.  Uživatel nepozná, jestli se výsledky ztratily,
+nebo byly pouze seřazeny níže. U menších dat dojde k tomu, že se záznamy z
+výsledků ztratí, čehož si uživatel ihned všimne.
 
 Porovnání proběhne na několika datových sadách o několika stovkách tisíc
 záznamech, které budou reprezentovat datové sady pro případy, ve kterých by se
@@ -301,13 +290,11 @@ zhodnocení několika uživatelů, kterým byl systém prezentován v porovnán�
 ostatními implementovanými vyhledávači.
 
 \subsection{Výkon}
-U instantního vyhledávání platí pravidlo, že dotazy vykonané pod
-hranici 100\,ms jsou lidmi vnímány jako instantní. Do této doby se musí vejít
-jednak samotné vykonání algoritmu, a jednak doba pro přenos dat, která nebude
-zanedbatelná, pokud bude vyhledávací aplikace poskytována jako služba ze
+U instantního vyhledávání platí pravidlo, že dotazy vykonané pod hranici
+100\,ms jsou lidmi vnímány jako instantní~\cite{sto_ms}. Do této doby se musí
+vejít jednak samotné vykonání algoritmu, a jednak doba pro přenos dat, která
+nebude zanedbatelná, pokud bude vyhledávací aplikace poskytována jako služba ze
 vzdáleného počítače.
-
-%TODO cite 100ms
 
 Protože bude návrh nového vyhledávače prezentován pouze jako prototyp v
 dynamicky typovaném Pythonu, kvůli čemuž nelze provést objektivní srovnání
@@ -1815,6 +1802,10 @@ http '<uri>/<index>/_stats' | jq .indices.<index>.primaries.store.size_in_bytes
 
 \chapter{Další postup a otevřené problémy}
 \section{Integrace do existujících systémů}
+Existující otevřené projekty, které se vyhledáváním zabývají, postrádají zde
+popsané techniky. Tato práce by pro ně mohla poskytnout vodítko, jak techniky
+implementovat, pokud by to pro ně neznamenalo překopání celé architektury.
+
 \section{Statické a dynamické indexy}
 % static: no locks and latches, compact data structures, cache efficient
 % 2 level data structure + bulk updates
@@ -1903,9 +1894,8 @@ Možným dalším rozšířením by byla kombinace navržené architektury s ngr
 \section*{Odkazy}
 \url{http://www.dcs.gla.ac.uk/~craigm/publications/lacour08efficiency.pdf}
 
-\newpage
-\section*{Reference}
-\bibliographystyle{csplainnat}
+\medskip
+\bibliographystyle{myplainnat}
 \bibliography{ref}
 
 \appendix
