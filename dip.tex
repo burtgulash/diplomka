@@ -736,65 +736,70 @@ subsequence) označuje nejdelší společný podřetězec textů $x$ a $y$ a $|x
 znamená délku textu $x$.  Tato metrika se proto také označuje jako vzdálenost
 největších společných podřetězců.
 
-\paragraph{Levenshteinova vzdálenost} je rozšířením, které kromě odebrání a
-přidání uvažuje navíc záměnu písmen (substituce) za jednu operaci s váhou 1.
-Prakticky se liší pouze tím, že záměnu písmen penalizuje vahou 1, zatímco
-základní editační vzdálenost bere záměnu jako jedno přidání a jedno odebrání,
-tedy s penalizací 2. Pokud se běžně hovoří o editační vzdálenosti, je jí
-myšlena právě ta Levenshteinova, proto budeme označovat pojmem editační
-vzdálenost právě ji.
+\paragraph{Levenshteinova vzdálenost} je rozšířením~\cite{Levenshtein66}, které
+kromě odebrání a přidání uvažuje navíc záměnu písmen (substituce) za jednu
+operaci s váhou 1.  Prakticky se liší pouze tím, že záměnu písmen penalizuje
+vahou 1, zatímco základní editační vzdálenost bere záměnu jako jedno přidání a
+jedno odebrání, tedy s penalizací 2. Pokud se běžně hovoří o editační
+vzdálenosti, je jí myšlena právě ta Levenshteinova, proto budeme označovat
+pojmem editační vzdálenost právě ji.
 
-\paragraph{Damerau-Levenshteinova} vzdálenost je druhým rozšířením, které navíc
-uvažuje záměnu dvou sousedících písmen (transpozice) jako operaci s vahou 1.
-Bez této podmínky by byla vzdálenost transpozice vypočtena jako jedno odebrání
-a jedno přidání celkem s váhou 2.
+\paragraph{Damerau-Levenshteinova vzdálenost} je druhým
+rozšířením~\cite{Damerau:1964:TCD:363958.363994}, které navíc uvažuje záměnu
+dvou sousedících písmen (transpozice) jako operaci s vahou 1.  Bez této
+podmínky by byla vzdálenost transpozice vypočtena jako jedno odebrání a jedno
+přidání celkem s váhou 2.
 
 \paragraph{Prefixovou editační vzdálenost} definujeme abychom mohli zkombinovat
 inkrementální vyhledávání s tolerancí překlepů. Vypočteme ji jako nejmenší
 editační vzdálenost prvního řetězce k prefixům druhého $\bftt{p\_edit}(x, y) =
 \min_{p \in prefix(y)} \bftt{edit}(x, p)$, kde $prefix(y)$ označuje množinu
-všech prefixů řetězce $y$. Př. $\bftt{p\_edit}(ker, karel) = 1$, protože
-\bftt{edit}(ker, kar) = 1. Oproti předchozím metrikám není symetrická. 
+všech prefixů řetězce $y$~\cite{Bast:2013:EFS:2457465.2457470}. Př.
+$\bftt{p\_edit}(ker, karel) = 1$, protože \bftt{edit}(ker, kar) = 1. Oproti
+předchozím metrikám není symetrická. 
 
 % TODO damerau paper?
 
 \subsection{Výpočet editační vzdálenosti}
 Pro obyčejnou, Levenshteinovu i Damerau-Levenshteinovu vzdálenost se používá
 Wagner-Fisherův tabulkový algoritmus s kvadratickou náročností $|x||y|$, kde
-$|x|$ a $|y|$ jsou délky dvou porovnávaných řetězců. Obdobný tabulkový
-algoritmus se používá pro výpočet nejdelšího řetězce se stejnou kvadratickou
-náročností, proto nepomůže výpočet přes alternativní formu. Náročnost lze
-snížit, pokud nastavíme strop pro maximální možnou editační vzdálenost pomocí
-Ukkonenova algoritmu nebo Ukkonenova prořezávání.
+$|x|$ a $|y|$ jsou délky dvou porovnávaných řetězců. Algoritmus byl nezávisle
+objeven více lidmi (např. Vintsyuk, Needleman - Wunsch, a
+další)~\cite{Navarro:2001:GTA:375360.375365}.
+
+Obdobný tabulkový algoritmus se používá pro výpočet nejdelšího řetězce se
+stejnou kvadratickou náročností, proto nepomůže výpočet přes alternativní
+formu. Náročnost lze snížit, pokud nastavíme strop pro maximální možnou
+editační vzdálenost pomocí Ukkonenova algoritmu nebo Ukkonenova prořezávání.
 
 % TODO ukkonen popsat
 
 
-\subsection{Ngramová podobnost}
+\subsection{N-gramová podobnost}
 Pro přibližné vyhledávání můžeme indexovat jiné díly původního textu než slova
-- ngramy.  Ngram je posloupnost několika po sobě jdoucích znaků. Např. ngramy
-slova \bftt{podlaha} o délce 3 (trigramy) jsou \bftt{pod}, \bftt{odl},
-\bftt{dla}, \bftt{lah}, \bftt{aha}. V tomto případě se jejich znaky překrývají,
-a proto hovoříme o překrývajících se trigramech.
+- n-gramy (nebo také q-gramy). N-gram je posloupnost několika po sobě jdoucích
+znaků. Např. n-gramy slova \bftt{podlaha} o délce 3 (trigramy) jsou \bftt{pod},
+\bftt{odl}, \bftt{dla}, \bftt{lah}, \bftt{aha}. V tomto případě se jejich znaky
+překrývají, a proto hovoříme o překrývajících se trigramech.
 
-Podobnost dvou textů pomocí ngramů můžeme efektivně zjistit pomocí Jaccardovy
+Podobnost dvou textů pomocí n-gramů můžeme efektivně zjistit pomocí Jaccardovy
 podobnosti množin. Tu zjistíme jako poměr velikosti průniku ku velikosti
 sjednocení obou množin $\bftt{jacc}(X, Y) = |X \cap Y|\ /\ |X \cup Y|$. Pokud
-porovnávané texty reprezentujeme jako dvě množiny jejich ngramů, vypočteme
+porovnávané texty reprezentujeme jako dvě množiny jejich n-gramů, vypočteme
 jejich podobnost jako podobnost těchto množin.
 
 Tento způsob funguje pro krátké řetězce a nízkou toleranci odlišnosti. Podobná
-slova budou sdílet všechny ngramy vzdálené $n$ pozic od místa, kde mezi nimi
+slova budou sdílet všechny n-gramy vzdálené $n$ pozic od místa, kde mezi nimi
 došlo ke změně. Např. slova \bftt{kremrole} a \bftt{kremrule} se
 levenshteinovou vzdáleností 1 budou mít Jaccardovu vzdálenost trigramů pouze
 $0.5$. Aby metoda fungovala, musí být text dlouhý alespoň dvakrát delší než
-velikost ngramu, pokud ke změně dojde uprostřed textu. Proto tenhle způsob
+velikost n-gramu, pokud ke změně dojde uprostřed textu. Proto tenhle způsob
 selhává u kratších slov.
 
 Kromě Jaccardovy podobnosti můžeme použít i další metriky pro podobnost množin
 jako euklidovskou, kosínovou nebo Jaro-Winklerovu vzdálenost, pokud převedeme
 množiny na vektory, kde jedna dimenze označuje přítomnost jednoho znaku nebo
-ngramu textu.
+n-gramu textu.
 
 % Vztah mezi Jaccardovou metrikou a základní editační vzdáleností je
 % $\bftt{jacc}(x, y) = 1 - |\bftt{lcs}(x, y)|\ /\ (|\bftt{lcs}(x, y)| +
@@ -805,7 +810,7 @@ Pokud zvolíme fuzzy technikou stematizaci, pak lze implementaci slovníku pro
 invertovaný index provést jednoduchou hashovací tabulkou, která si u
 záznamenaných kmenů slov poznamená všechny původní tvary. V praxi se odvozené
 tvary často zahazují a nerozlišuje se ve výsledcích vyhledávání rozdíl mezi
-přesným zásahem a odvozeným tvarem. Slovník pro index s podporou ngramového
+přesným zásahem a odvozeným tvarem. Slovník pro index s podporou n-gramového
 indexu rovněž postačí obyčejná hashovací tabulka.
 
 \subsection{Prefixový slovník}
@@ -822,8 +827,8 @@ hodnému, atd. Implementace obyčejnou hashovací tabulkou je pro prefixy
 nevhodná, protože si neuchovává informaci o lexikografickém pořadí slov.
 
 \subsection{Fuzzy slovník}
-U ngramového přibližného vyhledávání se přibližnost vyhodnocuje až po získání
-množiny všech ngramů v dokumentu. Naopak editační vzdálenost se vyhodnotí už ve
+U n-gramového přibližného vyhledávání se přibližnost vyhodnocuje až po získání
+množiny všech n-gramů v dokumentu. Naopak editační vzdálenost se vyhodnotí už ve
 slovníku ještě před přístupem do invertovaných seznamů. Existuje více datových
 struktur, které umožňují efektivní vyhledání všech slov do určité vzdálenosti
 od hledaného - tedy bez vyčerpávajícího průchodu celým slovníkum.
@@ -832,8 +837,9 @@ od hledaného - tedy bez vyčerpávajícího průchodu celým slovníkum.
 Protože editační vzdálenost splňuje trojúhelníkovou nerovnost $\bftt{edit}(x,y)
 \leq \bftt{edit}(x,z) + \bftt{edit}(z,y)$. lze pro hledání v prostoru řetězců
 použít tzv. metrické stromy, které díky ní efektivně prořezávají prostor s
-objekty. Burkhard-Kellerův strom (BK-strom) je metrický strom, který se používá
-pro diskrétní metriky, jakou je právě editační vzdálenost.
+objekty. Burkhard-Kellerův strom
+(BK-strom)~\cite{Burkhard:1973:ABF:362003.362025} je metrický strom, který se
+používá pro diskrétní metriky, jakou je právě editační vzdálenost.
 
 Představme si, že strom ve výchozím stavu obsahuje pouze jediné slovo (kořen).
 Vložení druhého proběhne tak, že se mezi těmito slovy vypočte jejich vzdálenost
@@ -848,7 +854,7 @@ vráceno jako jeden ze zásahů. Vyhledávání pokračuje stejným způsobem re
 pro všechny potomky tohoto slova, které nesou štítek v rozsahu \bftt{d - k} až
 \bftt{d + k}. Důvod pro tento rozsah vyplývá z trojúhelníkové nerovnosti.
 
-\subsubsection{HashLCS}
+\subsubsection{Hashovací metoda}
 Dvě podobná slova sdílejí netriviální nejdelší společný podřetězec (lcs). Slova
 zaindexujeme tak, že do hashovací tabulky vložíme všechny jejich odvozené lcs
 podřetězce. Ty pro každé slovo získáme odstraněním všech podmnožin písmen do
@@ -868,7 +874,13 @@ Tato metoda je jednou z nejrychlejších, ale za cenu obrovské náročnosti na
 paměť, jelikož je pro maximální strop editační vzdálenosti \bftt{k} každé slovo
 zaindexováno $\sum_{i \leq k} {n \choose i}$ krát.
 
-% Refer to FastSS, Mor Fraenkel?, Symmtric Delete, DeleteMax
+Původní algoritmus  využívající tuto techniku pro překlepy do vzdálenosti 1
+(Mor - Fraenkel) byl popsán v~\cite{Mor:1982:HCM:358728.358752}. Zobecnění pro
+větší vzdálenosti bylo popsáno nezávisle na sobě jako FastSS~\cite{FastSS},
+Boytsov~\cite{Boytsov:2011:IMA:1963190.1963191} a Symmetric
+Delete~\cite{Faroo_symmetric_delete}. Několik variant algoritmu je popsáno
+v~\cite{FastSS} a~\cite{Bast:2013:EFS:2457465.2457470} popisuje modifikovanou
+kompaktnější verzi s názvem DeleteMax, která řeší problém s velikostí.
 
 \subsubsection{Trie}
 Populární datovou strukturou, do které lze relativně kompaktně uložit sadu slov
@@ -954,7 +966,7 @@ tisíců prvků. Při sekvenčním přístupu u slučování invertovaných sezn
 využije velká část prvků bloku, proto jsou bloková schémata pro invertované
 indexy efektivní. Příkladem jsou např. kompresní rodiny Frame of Reference (bit
 packing, FOR, PFor, PForDelta, ...) a v poslední době u vyhledávačů populární a
-velmi efektivní kódování Elias-Fano.
+velmi efektivní kódování Elias-Fano~\cite{DBLP:journals/corr/abs-1206-4300}.
 
 \subsubsection{Bitmapy}
 Protože představuje jeden invertovaný seznam množinu všech dokumentů, ve
@@ -988,7 +1000,7 @@ pravděpodobnost, že bude jejich prvek ve všech najednou. U disjunkce platí, 
 Sloučení invertovaných seznamů je problém, pokud jejich množství narůstá.
 Zejména to platí pro krátké prefixy, protože ve slovníku k nim budou
 korespondovat tisíce slov. Problém velkého množství slov u krátkých prefixů je
-i u hranových ngramů, jenže u nich jsou invertované seznamy předsloučeny během
+i u hranových n-gramů, jenže u nich jsou invertované seznamy předsloučeny během
 indexování. Právě zde přichází myšlenka hybridního indexu, který během
 indexování spolu předsloučí ty invertované seznamy, které mají velkou šanci, že
 by byly sloučeny během vykonání dotazu (materializace invertovaných seznamů).
@@ -1285,19 +1297,19 @@ textových dokumentech. Text je stematizován zabudovaným stematizérem pro
 datovou sadou, jmény a s některými případy morfologie v češtině.
 
 \subsection{Trigramový vyhledávač}
-Pro ukázku fuzzy vyhledávání pomocí ngramů jsem vytvořil další konfiguraci pro
-Elasticsearch, která používá ngramy o minimální a maximální velikosti 3.
+Pro ukázku fuzzy vyhledávání pomocí n-gramů jsem vytvořil další konfiguraci pro
+Elasticsearch, která používá n-gramy o minimální a maximální velikosti 3.
 
-Pokud se použije ngramový filtr, pak není podporováno ngramové zvýrazňování
-výsledků. Musí se použít ngramový tokenizér, který ale zahazuje všechny ngramy,
-které jsou kratší než minimální délka ngramu. Řešením je vytvořit dodatečný
+Pokud se použije n-gramový filtr, pak není podporováno n-gramové zvýrazňování
+výsledků. Musí se použít n-gramový tokenizér, který ale zahazuje všechny n-gramy,
+které jsou kratší než minimální délka n-gramu. Řešením je vytvořit dodatečný
 index se zahozenými krátkými slovy a při dotazování provést disjunkci
-ngramového a tohoto indexu. Pro zpřesnění výsledků, pokud dojde k přesné shodě
+n-gramového a tohoto indexu. Pro zpřesnění výsledků, pokud dojde k přesné shodě
 slova v dotazu a v dokumentu, je do disjunkce přidán ještě třetí index s
 původními neořezanými slovy.
 
-Zvýrazňovač pro ngramy funguje, pouze pokud se použije \textit{Fast Vector
-Highlighter}. Bohužel nezvýrazňuje správně, když se ngramy ve výsledku
+Zvýrazňovač pro n-gramy funguje, pouze pokud se použije \textit{Fast Vector
+Highlighter}. Bohužel nezvýrazňuje správně, když se n-gramy ve výsledku
 překrývají. Je možné, že je chyba pouze ve verzi Elasticsearch, kterou
 používám. Protože jsem nikde nenašel, jak tohle vyřešit, vytvořil jsem v
 Pythonu dodatečný zvýrazňovač, aby zde prezentované výsledky byly srovnatelné s
@@ -1990,7 +2002,7 @@ Možným dalším rozšířením by byla kombinace navržené architektury s ngr
 \section*{Odkazy}
 \url{http://www.dcs.gla.ac.uk/~craigm/publications/lacour08efficiency.pdf}
 
-\medskip
+%\medskip
 \bibliographystyle{myplainnat}
 \bibliography{ref}
 
