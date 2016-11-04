@@ -2061,47 +2061,47 @@ Možným dalším rozšířením by byla kombinace navržené architektury s ngr
 \bibliographystyle{myplainnat}
 \bibliography{ref}
 
-\appendix
-\chapter{Konfigurace porovnaných systémů v ElasticSearch}\label{appendix:search_config}
-\section{ElasticSearch}
-\subsection{trigram\_ES}
-\subsubsection{Analyzér}
-Pro ngramové zaindexování lze použít buď ngramový tokenizér
-\bftt{my\_ngram\_tokenizer}, nebo ngramový filtr \bftt{my\_ngram\_filter}.
-Ngramový tokenizér podporuje zvýrazňování, které se mi s ngramovým filtrem
-nepovedlo nastavit ani po vyčerpávajícím hledání. Ve výpisu konfigurace jsou
-uvedeny oba způsoby nastavení. \bftt{my\_short\_words\_filter} vybírá slova
-zahozená tokenizérem \bftt{my\_ngram\_tokenizer}, proto je v něm nastavena
-maximální délka menší než délka trigramu - 2.
-
-\input{appendix/es_settings/trigram_analyzer.tex}
-
-\subsubsection{Mapování}
-Aby fungoval zvýrazňovač pro ngramové indexy, musí být použit \bftt{Fast
-Vector Highlighter}, který funguje, pokud se pro pole nastaví hodnota
-\bftt{with\_position\_offsets} u parametru \bftt{term\_vector}. Nicméně
-nakonec byl použit externí zvýrazňovač, proto by mohlo být ukládání této
-informace vypnuto. Doporučuje se ji použít pro dlouhé texty, což není
-případ použitých datových sad v této práci.
-
-\input{appendix/es_settings/trigram_mapping.tex}
-
-\subsubsection{Dotaz pro vyhledávání}
-Dotaz je navržen, aby došlo k zásahu, pokud dokument obsahuje alespoň
-$70\%$ trigramů dotazu. Vyšší hodnoty začaly rychle ztrácet výsledky a
-nižší hodnoty vracely příliš šumu.
-
-Dotaz se snaží shodu najít napříč třemi indexy. \bftt{shorts} jsou
-ngramy kratší než $3$, protože je ElasticSearch zahazuje. \bftt{title}
-obsahuje všechny tokeny dokumentu (titulku filmu) a \bftt{trigram} je
-trigramový index. Manipulace s váhami jednotlivých polí nemá velký vliv
-na přesnost výsledku.
-
-Zvýrazňování je nastaveno doporučenou formou pro tento typ dotazu, ale
-přesto vynechává překrývající se dotazy (viz TODO). Zvýrazňování je
-provedeno externím přiloženým programem \bftt{trihigh.py}.
-
-\input{appendix/es_settings/trigram_search.tex}
+%\appendix
+%\chapter{Konfigurace porovnaných systémů v ElasticSearch}\label{appendix:search_config}
+%\section{ElasticSearch}
+%\subsection{trigram\_ES}
+%\subsubsection{Analyzér}
+%Pro ngramové zaindexování lze použít buď ngramový tokenizér
+%\bftt{my\_ngram\_tokenizer}, nebo ngramový filtr \bftt{my\_ngram\_filter}.
+%Ngramový tokenizér podporuje zvýrazňování, které se mi s ngramovým filtrem
+%nepovedlo nastavit ani po vyčerpávajícím hledání. Ve výpisu konfigurace jsou
+%uvedeny oba způsoby nastavení. \bftt{my\_short\_words\_filter} vybírá slova
+%zahozená tokenizérem \bftt{my\_ngram\_tokenizer}, proto je v něm nastavena
+%maximální délka menší než délka trigramu - 2.
+%
+%\input{appendix/es_settings/trigram_analyzer.tex}
+%
+%\subsubsection{Mapování}
+%Aby fungoval zvýrazňovač pro ngramové indexy, musí být použit \bftt{Fast
+%Vector Highlighter}, který funguje, pokud se pro pole nastaví hodnota
+%\bftt{with\_position\_offsets} u parametru \bftt{term\_vector}. Nicméně
+%nakonec byl použit externí zvýrazňovač, proto by mohlo být ukládání této
+%informace vypnuto. Doporučuje se ji použít pro dlouhé texty, což není
+%případ použitých datových sad v této práci.
+%
+%\input{appendix/es_settings/trigram_mapping.tex}
+%
+%\subsubsection{Dotaz pro vyhledávání}
+%Dotaz je navržen, aby došlo k zásahu, pokud dokument obsahuje alespoň
+%$70\%$ trigramů dotazu. Vyšší hodnoty začaly rychle ztrácet výsledky a
+%nižší hodnoty vracely příliš šumu.
+%
+%Dotaz se snaží shodu najít napříč třemi indexy. \bftt{shorts} jsou
+%ngramy kratší než $3$, protože je ElasticSearch zahazuje. \bftt{title}
+%obsahuje všechny tokeny dokumentu (titulku filmu) a \bftt{trigram} je
+%trigramový index. Manipulace s váhami jednotlivých polí nemá velký vliv
+%na přesnost výsledku.
+%
+%Zvýrazňování je nastaveno doporučenou formou pro tento typ dotazu, ale
+%přesto vynechává překrývající se dotazy (viz TODO). Zvýrazňování je
+%provedeno externím přiloženým programem \bftt{trihigh.py}.
+%
+%\input{appendix/es_settings/trigram_search.tex}
 
 
 \backmatter
