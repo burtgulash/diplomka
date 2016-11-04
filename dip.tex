@@ -1134,14 +1134,15 @@ Kromě invertovaného indexu existují i alternativní datové struktury umožň
 rychlé vykonání dotazu a v některých případech i kompaktnější index. V poslední
 době se rozšířila popularita tzv. stručných (succint) datových struktur, které
 uchovávají data velmi kompaktně za použití bitových polí a bitových algoritmů.
-Takovou datovou strukturou je např. waveletový strom~\cite{FERRAGINA2009849},
-který našel uplatnění i jako reprezentace invertovaného indexu. Tento přístup
-je poměrně nový a neprobádaný a má proti klasickému invertovanému řadu výhod
-(kompaktnost, možnost více seřazení), ale ten stále zůstává dle rychlosti
-vykonání dotazu nepokořen. Důvodem je zejména jeho uspořádání v paměti
-umožňující téměř perfektní sekvenční přístup, který současné hardwarové
-architektury silně zvýhodňují. Obdoba waveletového stromu s aplikací pro
-prefixové dotazy je AutoTree~\cite{Weber2007}.
+Takovou datovou strukturou je např. waveletový
+strom~\cite{Grossi:2003:HET:644108.644250}, který našel uplatnění i jako
+reprezentace invertovaného indexu. Tento přístup je poměrně nový a neprobádaný
+a má proti klasickému invertovanému řadu výhod (kompaktnost, možnost více
+seřazení), ale ten stále zůstává dle rychlosti vykonání dotazu nepokořen.
+Důvodem je zejména jeho uspořádání v paměti umožňující téměř perfektní
+sekvenční přístup, který současné hardwarové architektury silně zvýhodňují.
+Obdoba waveletového stromu s aplikací pro prefixové dotazy je
+AutoTree~\cite{Weber2007}.
 
 % TODO
 
