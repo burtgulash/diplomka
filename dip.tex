@@ -1,4 +1,4 @@
-\documentclass[11pt,letterpaper,oneside,openright]{book}
+\documentclass[10pt,letterpaper,oneside,openright]{book}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[czech]{babel}
@@ -875,6 +875,11 @@ vráceno jako jeden ze zásahů. Vyhledávání pokračuje stejným způsobem re
 pro všechny potomky tohoto slova, které nesou štítek v rozsahu \bftt{d - k} až
 \bftt{d + k}. Důvod pro tento rozsah vyplývá z trojúhelníkové nerovnosti.
 
+Metody využívající rozdělování metrického prostoru jsou pro Levenshteinovu
+vzdálenost méně časově i podle paměťové náročnosti výkonné než jiné algoritmy,
+které budou představeny
+dále~\cite{Celikik:2009:FES:1529282.1529669,Boytsov:2011:IMA:1963190.1963191}.
+
 \subsubsection{Hashovací metoda}
 Dvě podobná slova sdílejí netriviální nejdelší společný podřetězec (lcs). Slova
 zaindexujeme tak, že do hashovací tabulky vložíme všechny jejich odvozené lcs
@@ -932,17 +937,18 @@ překlepu. Prohledání stromu od druhého písmene je o poznání efektivnějš
 protože už se uvažuje pouze podstrom, který odpovídá stejnému prvnímu písmenu,
 které má dotazované slovo. Tento jev může být využit více způsoby. 
 
-Prvním je datová struktura pojmenovaná FB-trie (Forward - Backward), která
-vytvoří dvě trie. První je stejná jako ta výše popsaná a druhá pouze s
-rozdílem, že zaindexuje slova v obráceném pořadí. Díky tomu, že prohledávání v
-trii je výhodné až od několikátého písmene, využije se druhé trie, která
-nalezne zbylá slova po odřezání větví prvního písmene v první trii. Jiný
-používaný přístup je penalizovat neshodu na prvních pozicích vyšší vahou.
+Prvním je datová struktura pojmenovaná FB-trie (Forward -
+Backward)~\cite{Boytsov:2011:IMA:1963190.1963191}, která vytvoří dvě trie.
+První je stejná jako ta výše popsaná a druhá pouze s rozdílem, že zaindexuje
+slova v obráceném pořadí. Díky tomu, že prohledávání v trii je výhodné až od
+několikátého písmene, využije se druhé trie, která nalezne zbylá slova po
+odřezání větví prvního písmene v první trii. Jiný používaný přístup je
+penalizovat neshodu na prvních pozicích vyšší vahou.
 
 Druhým způsobem je nalezení slov editační vzdáleností s prefixově dynamickým
 prořezáváním. Při omezení limitu pro editační vzdálenost podle délky slova
 budeme pro slova delší než 4 znaky prohledávat celou trii do nějaké konstantní
-vzdálenosti, např. 2. Pro slova delší než 7 znaků s limitem např. 3.  Tenhle
+vzdálenosti, např. 2. Pro slova delší než 7 znaků s limitem např. 3. Tenhle
 způsob povoluje odlišnosti na začátku i na koncích slov se stejnou penalizací.
 Využijeme toho, že v trii procházíme postupně prefixy dotazovaného slova, pro
 které stanovíme stejné prořezávací limity, jako kdybychom postupně prohledávali
@@ -961,6 +967,13 @@ uvažujeme jazyk, který má většinu morfologie na koncích slov, jakým je ze
 
 
 \subsubsection{Jiné metody}
+Kromě několika populárních metod zde popsaných poskytuje
+\cite{Boytsov:2011:IMA:1963190.1963191} taxonomii algoritmů zabývající se
+obecným problémem přibližného hledání v lexikonu.
+\cite{Bast:2013:EFS:2457465.2457470} některé tyto metody rozšiřuje a zabývá se
+algoritmy pro prefixové hledání v lexikonu.
+
+
 % ngram - krátký slova
 % permuterm
 
@@ -1155,31 +1168,35 @@ slova na stránce duplikovat pro zvýšení parametru \bftt{tf}.
 
 
 
-\chapter{Návrh nového systému}
-\subsection{Datové struktury}
-Po uvážení běžně používaných a alternativních datových struktur pro index jsem
-zvolil klasický invertovaný index s hybridní materializací. Pro slovník jsem
-použil prefixovou trii, díky její podpoře pro efektivní prefixové i fuzzy
-vyhledání slov. Invertovaný index je hybridní, protože se díky jeho
-předsloučeným invertovaným seznamům hodí právě na prefixové a fuzzy dotazy,
-které jsou klíčovou vlastností mého návrhu.
+\chapter{Implementace}
+%\subsection{Datové struktury}
+%Po uvážení běžně používaných a alternativních datových struktur pro index jsem
+%zvolil klasický invertovaný index s hybridní materializací. Pro slovník jsem
+%použil prefixovou trii, díky její podpoře pro efektivní prefixové i fuzzy
+%vyhledání slov. Invertovaný index je hybridní, protože se díky jeho
+%předsloučeným invertovaným seznamům hodí právě na prefixové a fuzzy dotazy,
+%které jsou klíčovou vlastností mého návrhu.
+%
+%Vzdálenostní funkcí pro fuzzy vyhledávání ve slovníku jsem použil vzdálenostně
+%adaptovanou Levenshteinovu metriku kvůli lepšímu výkonu za cenu o něcoméně
+%přesných výsledků při překlepech na začátcích slov. Ve výsledku to není
+%problém, protože většina odlišností je až na konci slov kvůli povaze
+%morfologie.
+%
+%Uvážil jsem i alternativní datové struktury pro index. Waveletové stromy jsou
+%vhodné pro velmi kompaktní uložení indexu a navíc mohou podporovat více pořadí
+%bez nutnosti ukládat index vícekrát. (cite dualsorted index). Protože se
+%soustředím na menší objemy dat, není kompaktnost až tak důležitá. Za druhé jsem
+%nenašel způsob, jak v něm uložit hybridní index, který má pro mé účely velkou
+%výhodu.
 
-Vzdálenostní funkcí pro fuzzy vyhledávání ve slovníku jsem použil vzdálenostně
-adaptovanou Levenshteinovu metriku kvůli lepšímu výkonu za cenu o něcoméně
-přesných výsledků při překlepech na začátcích slov. Ve výsledku to není
-problém, protože většina odlišností je až na konci slov kvůli povaze
-morfologie.
+V této kapitole budou popsány konkrétní detaily implementací porovnaných
+systémů. V první sekci bude rozebrána implementace prototypu navrhovaného
+systému a v pozdějších částech stručně popsány konfigurace v systémech
+ElasticSearch a Postgres.
 
-Uvážil jsem i alternativní datové struktury pro index. Waveletové stromy jsou
-vhodné pro velmi kompaktní uložení indexu a navíc mohou podporovat více pořadí
-bez nutnosti ukládat index vícekrát. (cite dualsorted index). Protože se
-soustředím na menší objemy dat, není kompaktnost až tak důležitá. Za druhé jsem
-nenašel způsob, jak v něm uložit hybridní index, který má pro mé účely velkou
-výhodu.
-
-\subsection{Rozložení materializovaných skupin}
-Pro hybridní materializaci jsem použil variaci na techniku popsanou
-(completesearch) týmem. Rozložení skupin invertovaným seznamů u rozložení HYB
+\subsection{Navrhovaný systém}
+Rozložení skupin invertovaným seznamů u rozložení HYB
 obecně nerespektuje abecední hranice. Důvodem je ten, že sloučené skupiny
 invertovaných seznamů by měly být ideálně stejně dlouhé. Není to ale
 jednoduché, protože se různá písmena objevují různě často. Např. obecně bude
@@ -1214,8 +1231,7 @@ všechny uzly se původně jedna skupina rozpadne na více skupin. Jediným
 parametrem je hranice určující rozpadnutí skupiny, která může být staticky
 daná, nebo být odvozená od dat. Zatím jsem ideální způsob, jak ji stanovit.
 
-
-\subsection{Indexace}
+\subsubsection{Indexace}
 Metody pro indexování u klasických invertovaných indexů se snaží vyhnout se
 více průchody vstupní datovou sadou. Čtení vstupu z disku, parsování a
 převádění na identifikátory je při velkých datových objemech časově náročné.
@@ -1245,7 +1261,7 @@ seznamů v řádu stovek - okolo 256. Díky tomu by nemělo být takovým probl�
 vytvořit pro každý invertovaný seznam jeden soubor a vyhnout se slučovacímu
 kroku.
 
-\subsection{Problém korelovaných slov}
+\subsubsection{Problém korelovaných slov}
 Jednou příčinou pomalých dotazů ve fuzzy vyhledávači je výskyt více podobných
 slov v dotazu. Jednoduchým případem pro ilustraci je, pokud dotaz obsahuje více
 totožných slov. Jejich invertované seznamy, případně disjunkce více
@@ -1292,7 +1308,7 @@ požadavek, že výsledek musí mít alespoň tolik výsledků (zde 1), kolik je
 dotazu (zde 2), bude těmto primitivním případům zabráněno.
 
 
-\subsection{Ohodnocení výsledků dotazu}
+\subsubsection{Ohodnocení výsledků dotazu}
 U dokumentů běžně uvažujeme náhodné pořadí, ale lze ho doupravit nějakým
 preferenčním pořadím (podle času, podle ceny, počtu zhlédnutí, apod.). Přesto
 by měla mít textová shoda největší význam, jinak by mohl mít uživatel pocit, že
@@ -1308,7 +1324,7 @@ Předdefinované pořadí navíc ulehčuje předčasné ukončení vykonání do
 termination), protože nejdůležitější dokumenty budou nalezeny hned na začátku
 invertovaných seznamů.
 
-\subsection{Zvolení vah}
+\subsubsection{Zvolení vah}
 Celkové ohodnocení shody se vypočte jako součet všech dílčích faktorů
 ohodnocených různými vahami. Důležitost textové shody by měla v první řadě být
 určena vzdáleností výsledku od dotazu podle editační vzdálenosti. V druhé řadě
@@ -1325,24 +1341,12 @@ dotazu od dotazu 0 - tedy přesná shoda, pak teprve se přistoupí k
 ohodnocení podle předdefinovaného pořadí, blízkosti, nebo jiného
 faktoru. (cite algolia blog post).
 
-\subsection{Blízkost}
+\subsubsection{Blízkost}
 Pro výpočet blízkosti slov dotazu ve výsledku jsem zvolil variaci na algoritmus
 (plane sweep proximity match).
 
-
-\chapter{Analýza}
-V této části budou nejprve shrnuty vlastnosti alternativních implementovaných
-vyhledávacích systémů a datové soubory použité pro experimentální analýzu.
-První část analýzy je porovnání vlastností implementovaného systému s
-alternativními. Druhá část obsahuje ukázku a shrnutí nonfunkčních vlastností
-(rychlost, paměťová náročnost) systémů.
-
-\section{Implementované systémy}
-Pro demonstraci uvedených technik jsem vytvořil tři vyhledávací systémy. První
-z nich je má implementace hybridního indexu a zbylé dva jsou různé konfigurace
-pro Elasticsearch sloužící k porovnání. Všechny porovnávané systémy odstraňují
-diakritiku a převádějí velká písmena na malá při indexování i dotazování.
-Všechny konfigurace jsou v příloze \ref{appendix:search_config}.
+\subsection{Konfigurace v ElasticSearch}
+Pro systém ElasticSearch byly nakonfigurovány dva systémy.
 
 \subsection{Naivní řešení}
 Jako základní řešení sloužící pro porovnání jsem nakonfiguroval Elasticsearch
@@ -1369,6 +1373,52 @@ překrývají. Je možné, že je chyba pouze ve verzi Elasticsearch, kterou
 používám. Protože jsem nikde nenašel, jak tohle vyřešit, vytvořil jsem v
 Pythonu dodatečný zvýrazňovač, aby zde prezentované výsledky byly srovnatelné s
 ostatními systémy.
+
+\subsubsection{Analyzér, mapování a konfigurace dotazu}
+Pro ngramové zaindexování lze použít buď ngramový tokenizér
+\bftt{my\_ngram\_tokenizer}, nebo ngramový filtr \bftt{my\_ngram\_filter}.
+Ngramový tokenizér podporuje zvýrazňování, které se mi s ngramovým filtrem
+nepovedlo nastavit ani po vyčerpávajícím hledání. Ve výpisu konfigurace jsou
+uvedeny oba způsoby nastavení. \bftt{my\_short\_words\_filter} vybírá slova
+zahozená tokenizérem \bftt{my\_ngram\_tokenizer}, proto je v něm nastavena
+maximální délka menší než délka trigramu - 2.
+
+Aby fungoval zvýrazňovač pro ngramové indexy, musí být použit \bftt{Fast
+Vector Highlighter}, který funguje, pokud se pro pole nastaví hodnota
+\bftt{with\_position\_offsets} u parametru \bftt{term\_vector}. Nicméně
+nakonec byl použit externí zvýrazňovač, proto by mohlo být ukládání této
+informace vypnuto. Doporučuje se ji použít pro dlouhé texty, což není
+případ použitých datových sad v této práci.
+
+Dotaz je navržen tak, aby došlo k zásahu, pokud dokument obsahuje alespoň
+$70\%$ trigramů dotazu. Vyšší hodnoty začaly rychle ztrácet výsledky a nižší
+hodnoty vracely příliš šumu.
+
+Dotaz se snaží shodu najít napříč třemi indexy. \bftt{shorts} jsou ngramy
+kratší než $3$, protože je ElasticSearch zahazuje. \bftt{title} obsahuje
+všechny tokeny dokumentu (titulku filmu) a \bftt{trigram} je trigramový index.
+Manipulace s váhami jednotlivých polí nemá velký vliv na přesnost výsledku.
+
+Zvýrazňování je nastaveno doporučenou formou pro tento typ dotazu, ale přesto
+vynechává překrývající se dotazy (viz TODO). Zvýrazňování je provedeno externím
+přiloženým programem \bftt{trihigh.py}.
+
+\subsection{Konfigurace v Postgres}
+
+
+\chapter{Analýza}
+V této části budou nejprve shrnuty vlastnosti alternativních implementovaných
+vyhledávacích systémů a datové soubory použité pro experimentální analýzu.
+První část analýzy je porovnání vlastností implementovaného systému s
+alternativními. Druhá část obsahuje ukázku a shrnutí nonfunkčních vlastností
+(rychlost, paměťová náročnost) systémů.
+
+%\section{Implementované systémy}
+%Pro demonstraci uvedených technik jsem vytvořil tři vyhledávací systémy. První
+%z nich je má implementace hybridního indexu a zbylé dva jsou různé konfigurace
+%pro Elasticsearch sloužící k porovnání. Všechny porovnávané systémy odstraňují
+%diakritiku a převádějí velká písmena na malá při indexování i dotazování.
+%Všechny konfigurace jsou v příloze \ref{appendix:search_config}.
 
 \subsection{Vlastní implementace}
 Můj systém vychází z výše popsaného návrhu vyhledávacího systému. Implementace
