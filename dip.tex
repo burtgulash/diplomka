@@ -1135,14 +1135,15 @@ rychlé vykonání dotazu a v některých případech i kompaktnější index. V
 době se rozšířila popularita tzv. stručných (succint) datových struktur, které
 uchovávají data velmi kompaktně za použití bitových polí a bitových algoritmů.
 Takovou datovou strukturou je např. waveletový
-strom~\cite{Grossi:2003:HET:644108.644250}, který našel uplatnění i jako
-reprezentace invertovaného indexu. Tento přístup je poměrně nový a neprobádaný
-a má proti klasickému invertovanému řadu výhod (kompaktnost, možnost více
-seřazení), ale ten stále zůstává dle rychlosti vykonání dotazu nepokořen.
-Důvodem je zejména jeho uspořádání v paměti umožňující téměř perfektní
-sekvenční přístup, který současné hardwarové architektury silně zvýhodňují.
-Obdoba waveletového stromu s aplikací pro prefixové dotazy je
-AutoTree~\cite{Weber2007}.
+strom~\cite{Grossi:2003:HET:644108.644250} který našel uplatnění i jako
+reprezentace invertovaného
+indexu~\cite{Ferragina:2007:CRS:1240233.1240243,FERRAGINA2009849}. Tento
+přístup je poměrně nový a neprobádaný a má proti klasickému invertovanému řadu
+výhod (kompaktnost, možnost více seřazení), ale ten stále zůstává dle rychlosti
+vykonání dotazu nepokořen.  Důvodem je zejména jeho uspořádání v paměti
+umožňující téměř perfektní sekvenční přístup, který současné hardwarové
+architektury silně zvýhodňují.  Obdoba waveletového stromu s aplikací pro
+prefixové dotazy je AutoTree~\cite{Weber2007}.
 
 % TODO
 
@@ -1195,6 +1196,43 @@ slova na stránce duplikovat pro zvýšení parametru \bftt{tf}.
 
 % TODO Fuzzy a idf! článek od elasticsearch
 % SEO - exploit of google's algorithms. Více vyhledávačů ztěžuje SEO
+
+\subsubsection{Ohodnocení výsledků dotazu}
+U dokumentů běžně uvažujeme náhodné pořadí, ale lze ho doupravit nějakým
+preferenčním pořadím (podle času, podle ceny, počtu zhlédnutí, apod.). Přesto
+by měla mít textová shoda největší význam, jinak by mohl mít uživatel pocit, že
+si buď vyhledávač vymýšlí, má nízkou přesnost, nebo se mu někdo snaží něco
+vnutit (např. upřednostněné produkty v eshopu).
+
+Výpočetně by bylo výhodnější, pokud by se uvažovalo pouze předdefinované
+pořadí, protože by bylo možné ho předpočítat během indexování a invertovaný
+index seřadit podle něj. Případně ho uložit ve více pořadích za cenu více
+potřebného úložného prostoru.
+
+Předdefinované pořadí navíc ulehčuje předčasné ukončení vykonání dotazu (early
+termination), protože nejdůležitější dokumenty budou nalezeny hned na začátku
+invertovaných seznamů.
+
+\subsubsection{Zvolení vah}
+Celkové ohodnocení shody se vypočte jako součet všech dílčích faktorů
+ohodnocených různými vahami. Důležitost textové shody by měla v první řadě být
+určena vzdáleností výsledku od dotazu podle editační vzdálenosti. V druhé řadě
+by to měla být minimální vzdálenost mezi slovy ve výsledku.  Tohle pořadí pak
+může doupravit uživatelem zvolené pořadí, ale mělo by mít menší váhu než
+textová shoda.
+
+\subsubsection{Tie-breaking}
+Jiný způsob výpočtu důležitosti používá implementace vyhledávače algolia
+(tie-breaking). V něm se určí pořadí jednotlivých faktorů podle
+důležitosti a nižší faktory se uvažují pouze pokud dojde ke shodě ve
+vyšších faktorech. Např.  pokud je vzdálenost několika prvních výsledků
+dotazu od dotazu 0 - tedy přesná shoda, pak teprve se přistoupí k
+ohodnocení podle předdefinovaného pořadí, blízkosti, nebo jiného
+faktoru. (cite algolia blog post).
+
+\subsubsection{Blízkost}
+Pro výpočet blízkosti slov dotazu ve výsledku jsem zvolil variaci na algoritmus
+(plane sweep proximity match).
 
 
 
@@ -1338,42 +1376,6 @@ požadavek, že výsledek musí mít alespoň tolik výsledků (zde 1), kolik je
 dotazu (zde 2), bude těmto primitivním případům zabráněno.
 
 
-\subsubsection{Ohodnocení výsledků dotazu}
-U dokumentů běžně uvažujeme náhodné pořadí, ale lze ho doupravit nějakým
-preferenčním pořadím (podle času, podle ceny, počtu zhlédnutí, apod.). Přesto
-by měla mít textová shoda největší význam, jinak by mohl mít uživatel pocit, že
-si buď vyhledávač vymýšlí, má nízkou přesnost, nebo se mu někdo snaží něco
-vnutit (např. upřednostněné produkty v eshopu).
-
-Výpočetně by bylo výhodnější, pokud by se uvažovalo pouze předdefinované
-pořadí, protože by bylo možné ho předpočítat během indexování a invertovaný
-index seřadit podle něj. Případně ho uložit ve více pořadích za cenu více
-potřebného úložného prostoru.
-
-Předdefinované pořadí navíc ulehčuje předčasné ukončení vykonání dotazu (early
-termination), protože nejdůležitější dokumenty budou nalezeny hned na začátku
-invertovaných seznamů.
-
-\subsubsection{Zvolení vah}
-Celkové ohodnocení shody se vypočte jako součet všech dílčích faktorů
-ohodnocených různými vahami. Důležitost textové shody by měla v první řadě být
-určena vzdáleností výsledku od dotazu podle editační vzdálenosti. V druhé řadě
-by to měla být minimální vzdálenost mezi slovy ve výsledku.  Tohle pořadí pak
-může doupravit uživatelem zvolené pořadí, ale mělo by mít menší váhu než
-textová shoda.
-
-\subsubsection{Tie-breaking}
-Jiný způsob výpočtu důležitosti používá implementace vyhledávače algolia
-(tie-breaking). V něm se určí pořadí jednotlivých faktorů podle
-důležitosti a nižší faktory se uvažují pouze pokud dojde ke shodě ve
-vyšších faktorech. Např.  pokud je vzdálenost několika prvních výsledků
-dotazu od dotazu 0 - tedy přesná shoda, pak teprve se přistoupí k
-ohodnocení podle předdefinovaného pořadí, blízkosti, nebo jiného
-faktoru. (cite algolia blog post).
-
-\subsubsection{Blízkost}
-Pro výpočet blízkosti slov dotazu ve výsledku jsem zvolil variaci na algoritmus
-(plane sweep proximity match).
 
 \subsection{Konfigurace v ElasticSearch}
 Pro systém ElasticSearch byly nakonfigurovány dva systémy.
