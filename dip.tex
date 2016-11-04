@@ -1037,8 +1037,6 @@ indexy efektivní. Příkladem jsou např. kompresní rodiny Frame of Reference 
 packing, FOR, PFor, PForDelta, ...) a v poslední době se rožšiřující velmi
 efektivní kódování Elias-Fano~\cite{DBLP:journals/corr/abs-1206-4300}.
 
-\subsubsection{Waveletové stromy}
-
 \subsubsection{Poloinvertovaný index}
 Velkou výpočetní zátěží u prefixových a fuzzy indexů je, pokud musí provést
 disjunktivní sloučení (sloučení - OR) většího množství invertovaných seznamů.
@@ -1115,6 +1113,32 @@ indexy používány. Navíc řeší pouze množinový problém, jestli dokument 
 dané slovo, ale neřeší dodatečné informace o multiciplitě a pozici výskytů.
 
 % popiš kompresi bitmapy tabulky s hustotou
+
+\subsubsection{Jiné přístupy}
+Invertované indexy jsou použitelné zejména pro lidský jazyk, který odpovídá
+vlastnostem zipfova a heapsa zákona. Text je modifikován odstraněním
+neabecedních znaků a rozdělením na slova. V důsledku odstranění některých částí
+textu není možné text z indexu zpětně rekonstruovat. 
+
+Jiné přístupy, které jsou vhodné i pro text neodpovídající lidské řeči (např.
+biologické sekvence) jsou založené na suffixových stromech, suffixových polích
+nebo waveletových stromech.
+
+
+Kromě invertovaného indexu existují i alternativní datové struktury umožňující
+rychlé vykonání dotazu a v některých případech i kompaktnější index. V poslední
+době se rozšířila popularita tzv. stručných (succint) datových struktur, které
+uchovávají data velmi kompaktně za použití bitových polí a bitových algoritmů.
+Takovou datovou strukturou je např. waveletový strom~\cite{FERRAGINA2009849},
+který našel uplatnění i jako reprezentace invertovaného indexu. Tento přístup
+je poměrně nový a neprobádaný a má proti klasickému invertovanému řadu výhod
+(kompaktnost, možnost více seřazení), ale ten stále zůstává dle rychlosti
+vykonání dotazu nepokořen. Důvodem je zejména jeho uspořádání v paměti
+umožňující téměř perfektní sekvenční přístup, který současné hardwarové
+architektury silně zvýhodňují. Obdoba waveletového stromu s aplikací pro
+prefixové dotazy je AutoTree~\cite{Weber2007}.
+
+% TODO
 
 \subsection{Invertované seznamy v externím systému}
 
