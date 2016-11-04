@@ -1,4 +1,4 @@
-\documentclass[10pt,letterpaper,oneside,openright]{book}
+\documentclass[11pt,letterpaper,oneside,openright]{book}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[czech]{babel}
@@ -1111,6 +1111,11 @@ je počet dokumentů. Bohužel kvůli zipfově distribuci slov je většina
 invertovaných seznamů velmi řídká, a proto nejsou bitmapy pro invertované
 indexy používány. Navíc řeší pouze množinový problém, jestli dokument obsahuje
 dané slovo, ale neřeší dodatečné informace o multiciplitě a pozici výskytů.
+
+Bitmapy ukládají pouze množinovou informaci o existenci slova v dokumentu, ale
+takto jednoduše v nich nelze uložit pozicovou informaci. To z nich dělá
+nevhodného kandidáta pro potřeby vyhledávače, který ohodnocuje výsledky podle
+blízkosti slov a zvýrazňuje výsledky na základě právě pozicové informace.
 
 % popiš kompresi bitmapy tabulky s hustotou
 
