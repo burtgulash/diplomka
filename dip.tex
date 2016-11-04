@@ -678,8 +678,8 @@ nebude přesný pro delší prefixy.
 Jiným způsobem je použít klasický invertovaný index beze změny a vypočítat
 prefixy až při dotazování.  Docílíme toho přepsáním dotazu do formy konjunkce
 více disjunkcí. Např. dotaz \bftt{motor* pil*} by byl přepsán do tvaru
-\bftt{(motorová OR motorových OR ...) AND (pila OR pil OR pilách OR ...)} podle
-všech odpovídajících slov ve slovníku.
+\[\bftt{(motorová OR motorových OR ...) AND (pila OR pil OR pilách OR ...)}\]
+podle všech odpovídajících slov ve slovníku.
 
 Problém nastane u krátkých prefixů, protože odpovídají velkému počtu slov.
 Dotaz s disjunkcí tisíců invertovaných seznamů bude pravděpodobně méně výkonný
@@ -730,8 +730,8 @@ písmen, které musí být odebrány nebo přidány, aby z prvního řetězce vz
 druhý. Např. mezi slovy \bftt{karel} a \bftt{kremrole} je editační vzdálenost
 5, protože bychom první slovo transformovali na druhé odebráním znaku \bftt{a}
 a přidáním znaků \bftt{m},~\bftt{r},~\bftt{o}~a~\bftt{l} na patřičná místa.
-Základní editační vzdálenost můžeme alternativně vypočítat jako $\bftt{edit}(x,
-y) = |x| + |y| - 2\,\bftt{lcs}(x, y)$, kde $\bftt{lcs}$ (longest common
+Základní editační vzdálenost můžeme alternativně vypočítat jako \[\bftt{edit}(x,
+y) = |x| + |y| - 2\,\bftt{lcs}(x, y)\], kde $\bftt{lcs}$ (longest common
 subsequence) označuje nejdelší společný podřetězec textů $x$ a $y$ a $|x|$
 znamená délku textu $x$.  Tato metrika se proto také označuje jako vzdálenost
 největších společných podřetězců.
@@ -752,8 +752,8 @@ přidání celkem s váhou 2.
 
 \paragraph{Prefixovou editační vzdálenost} definujeme abychom mohli zkombinovat
 inkrementální vyhledávání s tolerancí překlepů. Vypočteme ji jako nejmenší
-editační vzdálenost prvního řetězce k prefixům druhého $\bftt{p\_edit}(x, y) =
-\min_{p \in prefix(y)} \bftt{edit}(x, p)$, kde $prefix(y)$ označuje množinu
+editační vzdálenost prvního řetězce k prefixům druhého \[\bftt{p\_edit}(x, y) =
+\min_{p \in prefix(y)} \bftt{edit}(x, p)\], kde $prefix(y)$ označuje množinu
 všech prefixů řetězce $y$~\cite{Bast:2013:EFS:2457465.2457470}. Př.
 $\bftt{p\_edit}(ker, karel) = 1$, protože \bftt{edit}(ker, kar) = 1. Oproti
 předchozím metrikám není symetrická. 
@@ -772,7 +772,28 @@ stejnou kvadratickou náročností, proto nepomůže výpočet přes alternativn
 formu. Náročnost lze snížit, pokud nastavíme strop pro maximální možnou
 editační vzdálenost pomocí Ukkonenova algoritmu nebo Ukkonenova prořezávání.
 
+\subsection{Hranice pro editační vzdálenost}
+Ohodnocení všech položek slovníku editační vzdáleností ku dotazovanému slovu je
+zbytečně obecný problém. Nám bude stačit nalezení slov do určité vzdálenosti,
+jehož výpočet je efektivnější a hlavně při správně zvolené datové struktuře
+nemusí vypočítávat vzdálenost ke všem slovům.
+
+Omezení se provádí adaptivně podle délky slova. Vysoká tolerance pro krátká
+slova by znamenala spoustu shod, které by uživatel nevyhodnotil jako podobné.
+Např. vzdálenost mezi krátkými slovy \bftt{na} a \bftt{ty} je 2, přitom spolu
+nemají slova pranic společného. Naopak u delších slov je větší šance, že dojde
+k překlepům, proto práh můžeme zvýšit. Dokonce pro velmi dlouhá slova bude
+platit, že ve slovníku bude pouze omezené množství dlouhých a zároveň podobných
+slov, proto si můžeme dovolit limit nastavit poměrně vysoko. 
+
+Jako řešení můžeme definovat relativní editační vzdálenost jako
+\[\bftt{edit\_rel}(x, y) = \frac{\max (|x|, |y|) - edit(x, y)}{\min (|x|,
+|y|)}\], která zohledňuje délku obou slov. Nebo jednoduše nastavit
+konfigurovatelnou hranici podle délky vyhledávaného slova. Např. pro slovo
+delší než 10 znaků se použije limit 4, pro slova delší než 7 limit 3, apod.
+
 % TODO ukkonen popsat
+
 
 
 \subsection{N-gramová podobnost}
@@ -784,7 +805,7 @@ překrývají, a proto hovoříme o překrývajících se trigramech.
 
 Podobnost dvou textů pomocí n-gramů můžeme efektivně zjistit pomocí Jaccardovy
 podobnosti množin. Tu zjistíme jako poměr velikosti průniku ku velikosti
-sjednocení obou množin $\bftt{jacc}(X, Y) = |X \cap Y|\ /\ |X \cup Y|$. Pokud
+sjednocení obou množin \[\bftt{jacc}(X, Y) = |X \cap Y|\ /\ |X \cup Y|\]. Pokud
 porovnávané texty reprezentujeme jako dvě množiny jejich n-gramů, vypočteme
 jejich podobnost jako podobnost těchto množin.
 
@@ -834,10 +855,10 @@ struktur, které umožňují efektivní vyhledání všech slov do určité vzd�
 od hledaného - tedy bez vyčerpávajícího průchodu celým slovníkum.
 
 \subsubsection{Metrické stromy}
-Protože editační vzdálenost splňuje trojúhelníkovou nerovnost $\bftt{edit}(x,y)
-\leq \bftt{edit}(x,z) + \bftt{edit}(z,y)$. lze pro hledání v prostoru řetězců
-použít tzv. metrické stromy, které díky ní efektivně prořezávají prostor s
-objekty. Burkhard-Kellerův strom
+Protože editační vzdálenost splňuje trojúhelníkovou nerovnost
+\[\bftt{edit}(x,y) \leq \bftt{edit}(x,z) + \bftt{edit}(z,y)\]. lze pro hledání
+v prostoru řetězců použít tzv. metrické stromy, které díky ní efektivně
+prořezávají prostor s objekty. Burkhard-Kellerův strom
 (BK-strom)~\cite{Burkhard:1973:ABF:362003.362025} je metrický strom, který se
 používá pro diskrétní metriky, jakou je právě editační vzdálenost.
 
@@ -872,7 +893,7 @@ přestože by došlo k zásahu na podřetězcích \bftt{ru} a \bftt{ka}.
 
 Tato metoda je jednou z nejrychlejších, ale za cenu obrovské náročnosti na
 paměť, jelikož je pro maximální strop editační vzdálenosti \bftt{k} každé slovo
-zaindexováno $\sum_{i \leq k} {n \choose i}$ krát.
+zaindexováno $\sum_{i \leq k} {n \choose i}$~krát.
 
 Původní algoritmus  využívající tuto techniku pro překlepy do vzdálenosti 1
 (Mor - Fraenkel) byl popsán v~\cite{Mor:1982:HCM:358728.358752}. Zobecnění pro
@@ -896,12 +917,47 @@ potomka. Stejný příklad by byl v komprimované trii reprezentován cestami
 \bftt{ka} a \bftt{da}. Úspory paměti je docíleno sdílením prefixů.
 
 Výpočet editační vzdálenosti mezi dvěma slovy proběhne standardně tabulkovou
-metodou, ale proběhne pouze jednou pro řádky tabulky u všech slov, které
-odpovídají sdílenému prefixu mezi těmito slovy. Např. pokud v trii z příkladu
-hledáme slovo \bftt{luka}, pak můžeme vyhodnotit editační vzdálenost mezi
-prefixy \bftt{lu} a \bftt{ru} pro obě slova \bftt{ruka} a \bftt{ruda} a dokonat
-zbytek výpočtu pro obě slova zvlášť.
+metodou. U vyhledání všech podobných slov ale proběhne pouze jednou pro řádky
+tabulky u všech slov, které odpovídají sdílenému prefixu mezi těmito slovy.
+Např. pokud v trii z příkladu hledáme slovo \bftt{luka}, pak můžeme vyhodnotit
+editační vzdálenost mezi prefixy \bftt{lu} a \bftt{ru} pro obě slova
+\bftt{ruka} a \bftt{ruda} a dokonat zbytek výpočtu pro obě slova zvlášť.
 
+Při průchodu trií jsou jednotlivé větve postupně prořezávány, pokud hodnota
+editační vzdálenosti v tabulce překročí pro danou větev stanovenou hranici.
+Nejefektivnější je algoritmus v případě, pokud nevyhledáváme slova od prvního
+písmene slova. Pokud začíná vyhledání od prvního písemene, musí se otestovat
+všechny větve odpovídající prvním písmenům, protože i na nich může dojít k
+překlepu. Prohledání stromu od druhého písmene je o poznání efektivnější,
+protože už se uvažuje pouze podstrom, který odpovídá stejnému prvnímu písmenu,
+které má dotazované slovo. Tento jev může být využit více způsoby. 
+
+Prvním je datová struktura pojmenovaná FB-trie (Forward - Backward), která
+vytvoří dvě trie. První je stejná jako ta výše popsaná a druhá pouze s
+rozdílem, že zaindexuje slova v obráceném pořadí. Díky tomu, že prohledávání v
+trii je výhodné až od několikátého písmene, využije se druhé trie, která
+nalezne zbylá slova po odřezání větví prvního písmene v první trii. Jiný
+používaný přístup je penalizovat neshodu na prvních pozicích vyšší vahou.
+
+Druhým způsobem je nalezení slov editační vzdáleností s prefixově dynamickým
+prořezáváním. Při omezení limitu pro editační vzdálenost podle délky slova
+budeme pro slova delší než 4 znaky prohledávat celou trii do nějaké konstantní
+vzdálenosti, např. 2. Pro slova delší než 7 znaků s limitem např. 3.  Tenhle
+způsob povoluje odlišnosti na začátku i na koncích slov se stejnou penalizací.
+Využijeme toho, že v trii procházíme postupně prefixy dotazovaného slova, pro
+které stanovíme stejné prořezávací limity, jako kdybychom postupně prohledávali
+prefixy jako celá slova. Tedy při délce prefixu 3 budou prořezány všechny větve
+s prefixovou editační vzdáleností vyšší než 1, při délce prefixu 5 vyšší než 2,
+apod.
+
+Tenhle způsob je omezený pro překlepy na začátcích slov, ale díky vyššímu
+prořezávání můžeme stanovit vyšší limity pro delší slova. Efektem bude vyšší
+tolerance překlepů na koncích slov. Změny slov, které se vyskytují v nejvyšší
+míře na koncích slov v důsledku morfologie, můžeme uvažovat jako překlepy.
+Tenhle způsob bude pro tyto případy výpočetně efektivní a můžeme ho použít jako
+náhradu stematizace, která je nezávislá na jazyce. Podmínkou je pouze, že
+uvažujeme jazyk, který má většinu morfologie na koncích slov, jakým je zejména
+čeština.
 
 
 \subsubsection{Jiné metody}
@@ -965,26 +1021,8 @@ Proto se volí kompromis a velikost bloku je omezená pouze na několik stovek a
 tisíců prvků. Při sekvenčním přístupu u slučování invertovaných seznamů se ale
 využije velká část prvků bloku, proto jsou bloková schémata pro invertované
 indexy efektivní. Příkladem jsou např. kompresní rodiny Frame of Reference (bit
-packing, FOR, PFor, PForDelta, ...) a v poslední době u vyhledávačů populární a
-velmi efektivní kódování Elias-Fano~\cite{DBLP:journals/corr/abs-1206-4300}.
-
-\subsubsection{Bitmapy}
-Protože představuje jeden invertovaný seznam množinu všech dokumentů, ve
-kterých se vyskytuje jedno slovo, existuje jiná technika pro uložení této
-množiny - bitmapa. Bitmapové kódování množiny použije jeden kladný bit na
-pozici dané identifikátorem dokumentu, pokud se slovo v seznamu vyskytuje, a
-záporný, pokud nikoliv. Bitmapy poskytují velmi rychlé algoritmy přesně pro ty
-množinové operace, se kterými invertovaný index operuje - tedy konjunktivní
-(AND) a disjunktivní (OR) sloučení. Pro jejich vykonání existují extrémně
-rychlé bitově-paralelní operace zabudované přímo v instrukčních sadách
-procesorů.
-
-Tato reprezentace množiny poskytuje vysokou kompresi pro množiny s vysokou
-hustotou. Velikost reprezentace je přesně $\bftt{n}\ /\ 8 bytů$, kde \bftt{n}
-je počet dokumentů. Bohužel kvůli zipfově distribuci slov je většina
-invertovaných seznamů velmi řídká, a proto nejsou bitmapy pro invertované
-indexy používány. Navíc řeší pouze množinový problém, jestli dokument obsahuje
-dané slovo, ale neřeší dodatečné informace o multiciplitě a pozici výskytů.
+packing, FOR, PFor, PForDelta, ...) a v poslední době se rožšiřující velmi
+efektivní kódování Elias-Fano~\cite{DBLP:journals/corr/abs-1206-4300}.
 
 \subsubsection{Waveletové stromy}
 
@@ -1045,7 +1083,27 @@ paměťově náročné. HYB oproti tomu, až na nutnost uložení identifikátor
 ke každému výskytu dokumentu, zabírá v paměti stejně místa jako obyčejný
 invertovaný index
 
-\subsubsection{Invertované seznamy v externím systému}
+\subsubsection{Bitmapy}
+Protože představuje jeden invertovaný seznam množinu všech dokumentů, ve
+kterých se vyskytuje jedno slovo, existuje jiná technika pro uložení této
+množiny - bitmapa. Bitmapové kódování množiny použije jeden kladný bit na
+pozici dané identifikátorem dokumentu, pokud se slovo v seznamu vyskytuje, a
+záporný, pokud nikoliv. Bitmapy poskytují velmi rychlé algoritmy přesně pro ty
+množinové operace, se kterými invertovaný index operuje - tedy konjunktivní
+(AND) a disjunktivní (OR) sloučení. Pro jejich vykonání existují extrémně
+rychlé bitově-paralelní operace zabudované přímo v instrukčních sadách
+procesorů.
+
+Tato reprezentace množiny poskytuje vysokou kompresi pro množiny s vysokou
+hustotou. Velikost reprezentace je přesně $\bftt{n}\ /\ 8 bytů$, kde \bftt{n}
+je počet dokumentů. Bohužel kvůli zipfově distribuci slov je většina
+invertovaných seznamů velmi řídká, a proto nejsou bitmapy pro invertované
+indexy používány. Navíc řeší pouze množinový problém, jestli dokument obsahuje
+dané slovo, ale neřeší dodatečné informace o multiciplitě a pozici výskytů.
+
+% popiš kompresi bitmapy tabulky s hustotou
+
+\subsection{Invertované seznamy v externím systému}
 
 \section{Algoritmy pro sloučení invertových seznamů}
 \subsection{Zipper}
@@ -1060,13 +1118,10 @@ Exponential search
 \section{Ohodnocovací funkce}
 
 \subsection{tf.idf}
-U dlouhého textu můžeme použít statistiky počtu slov k určení jeho
-relevance k nějakému slovu. Na tomhle principu stojí většina
-ohodnocovacích metod, které pracují s dlouhým textem.
-
-$$
-\bftt{tf.idf}_{t, d} = (1 + \log \bftt{tf}_{t, d}) \times \log_{10} N / \bftt{df}_{t}
-$$
+U dlouhého textu můžeme použít statistiky počtu slov k určení jeho relevance k
+nějakému slovu. Na tomhle principu stojí většina ohodnocovacích metod, které
+pracují s dlouhým textem.  \[\bftt{tf.idf}_{t, d} = (1 + \log \bftt{tf}_{t, d})
+\times \log_{10} N / \bftt{df}_{t}\]
 
 \bftt{tf} (term frequency) je počet výskytů slova v daném dokumentu. \bftt{df}
 (document frequency) je počet výskytů slova v celé textové kolekci. \bftt{idf}
@@ -1168,9 +1223,9 @@ Rozložení do skupin u hybridního indexu - HYB i mé rozložení - vyžaduje
 dvoufázové indexování, protože rozdělení do skupin potřebuje vědět statistiky,
 ze kterých se určí, jak mají být sloučené skupiny velké.
 
-V (fast HYB construction) autoři popisují techniku, jak použít jen několik
-vzorků, aby s vysokou pravděpodobností určili velikost skupin. (cite a nastin
-alg.)
+V~\cite{Bast:2011:FCH:1993036.1993040} autoři popisují techniku, jak použít jen
+několik vzorků, aby s vysokou pravděpodobností určili velikost skupin. (cite a
+nastin alg.)
 
 Hybridní index se od klasického liší v počtu invertovaných seznamů. Klasický má
 jeden seznam, byť potenciálně velmi krátký, pro každé vyskytující se slovo v
