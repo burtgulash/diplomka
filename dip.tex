@@ -1139,25 +1139,69 @@ strom~\cite{Grossi:2003:HET:644108.644250} který našel uplatnění i jako
 reprezentace invertovaného
 indexu~\cite{Ferragina:2007:CRS:1240233.1240243,FERRAGINA2009849}. Tento
 přístup je poměrně nový a neprobádaný a má proti klasickému invertovanému řadu
-výhod (kompaktnost, možnost více seřazení), ale ten stále zůstává dle rychlosti
-vykonání dotazu nepokořen.  Důvodem je zejména jeho uspořádání v paměti
-umožňující téměř perfektní sekvenční přístup, který současné hardwarové
-architektury silně zvýhodňují.  Obdoba waveletového stromu s aplikací pro
-prefixové dotazy je AutoTree~\cite{Weber2007}.
+výhod (kompaktnost, možnost více seřazení~\cite{Navarro2010}), ale ten stále
+zůstává dle rychlosti vykonání dotazu nepokořen.  Důvodem je zejména jeho
+uspořádání v paměti umožňující téměř perfektní sekvenční přístup, který
+současné hardwarové architektury silně zvýhodňují. AutoTree~\cite{Weber2007} je
+obdoba waveletového stromu s aplikací pro prefixové dotazy.
 
 % TODO
 
 \subsection{Invertované seznamy v externím systému}
 
 \section{Algoritmy pro sloučení invertových seznamů}
-\subsection{Zipper}
-\subsection{Skipper}
-\subsection{Binary search}
-\subsection{Gallop}
-Exponential search
-\subsection{Přeskakovací tabulka}
-\url{http://algo2.iti.kit.edu/documents/Algorithmentechnik/alenex07_2.pdf}
+První část vykonání dotazu, prohledání slovníku, a poslední část, ohodnocení a
+seřazení výsledků, by měly být relativně rychlé. Slovník odpovídá pro lidské
+jazyky heapsově zákonu, a proto je oproti velikosti všech dat relativně malý.
+Stejně tak počet výsledků by v průměrném případě měl být malý. Získání a
+sloučení invertovaných seznamů by proto mělo dominovat celkovému času doby
+vykonání dotazu. Ty totiž tvoří většinu uložených dat indexu.
 
+Konstantním výzkumem na poli vyhledávačů jsou algoritmy pro jejich efektivní
+slučování zejména v konjunktivní formě (průnik, intersection). V této práci nás
+bude zajímat i disjunktivní forma sloučení (sjednocení, union, merge), která má
+velkou roli v prefixových a fuzzy variantách indexu. 
+
+Invertovanými seznamy se rozumí vzrůstající posloupnosti identifikátorů
+dokumentů. Ty mohou být obohaceny o pozicovou informaci a ohodnocení, ale pro
+jednoduchost zed uvažujeme pouze dokumentové identifikátory.
+
+\subsection{Strategie sloučení}
+Existují dvě hlavní strategie, jak seznamy sloučit. První z nich sloučení slovo
+po slovu (term-at-a-time, TAAT). Ta nejprve získá invertované seznamy každého
+slova a postupně buduje výsledný seznam sloučením mezivýsledku a dalšího
+seznamu v pořadí. Např. v konjunktivním sloučení nejprve zpracuje první dva
+seznamy do jejich průniku a tenhle mezivýsledek postupně slučuje se zbylými. V
+konjunktivním sloučení se vyplatí seřadit seznamy podle velikosti od nejmenšího
+po nejdelší, protože průnik množin je nejefektivnější u sloučení s co nejmenší
+množinou.
+
+Druhou strategií prochází všechny slučované seznamy naráz jeden dokumentový
+identifikátor po druhém (document-at-a-time, DAAT). I zde platí, že konjunkce
+je nejefektivnější po předseřazení seznamů podle velikosti. Oproti první má
+tahle strategie výhodu pro dotazy typu \uv{konjunkce disjunkcí}, protože
+disjunkce nemusí materializovat před tím, než je sloučí. Zároveň využije
+častého přeskakování u průniku, čímž vynechá spoustu operací u disjunkce, které
+by jinak byly vykonány.
+
+Nejjednodušším způsobem průniku je lineární průchod seznamy a postupným
+zaznamenáváním prvku, který se vyskytuje ve všech seznamech - algoritmus
+\bftt{zipper}. V situaci, kdy slučujeme dva seznamy - jeden velmi krátký oproti
+druhému - je efektivní použít nějaké přeskakovací schéma v delším seznamu,
+protože většina dokumentů delšího seznamu nemusí být brána v úvahu. Algoritmy s
+přeskakováním jsou např. binární nebo exponenciální \bftt{galloping}
+vyhledávání ve zbytku delšího seznamu, nebo použití přeskakovacích tabulek
+(\bftt{skip list}, \bftt{skipper}, \bftt{lookup}).
+\cite{Sanders:2007:III:2791188.2791195} poskytuje experimentální měření
+efektivity těchto algoritmů i při použití delta komprese.
+
+Disjunktivní sloučení není pro aplikaci v invertovaných seznamech příliš
+prozkoumáno, protože je není oproti konjunktivnímu slučování klíčovým prvkem
+vykonání dotazu. U hybridních indexů ale klíčovým je, proto bude nastíněno
+několik způsobů, jak ho provést.
+
+%TODO 
+% wand, mwand
 
 \section{Ohodnocovací funkce}
 
