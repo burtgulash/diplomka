@@ -1,8 +1,8 @@
-\documentclass[10pt,letterpaper,oneside,openright]{book}
+\documentclass[11pt,letterpaper,oneside,openright]{book}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[czech]{babel}
-\usepackage[left=3.8cm,right=2.8cm,bottom=2.5cm,footskip=1.5cm]{geometry}
+\usepackage[left=4cm,right=2.8cm,bottom=2.5cm,footskip=1.5cm]{geometry}
 \usepackage{color}
 \usepackage[scaled=0.83]{beramono}
 
@@ -460,6 +460,8 @@ kolem kterých práce staví. Budou představena pokročilá uživatelská rozhr
 vyhledávací systémy, algoritmy pro vyhledávání v textu a rozšiřující algoritmy
 pro techniky, na které se práce zaměřuje.
 
+\section{Definice problému}
+
 \section{Uživatelské rozhraní}
 Základním uživatelským rozhraní pro textové vyhledávání je obyčejný řádek, do
 kterého uživatel napíše svůj dotaz a po potvrzení mu vyhledávač obratem pošle
@@ -755,17 +757,17 @@ inkrementální vyhledávání s tolerancí překlepů. Vypočteme ji jako nejme
 editační vzdálenost prvního řetězce k prefixům druhého \[\bftt{p\_edit}(x, y) =
 \min_{p \in prefix(y)} \bftt{edit}(x, p)\], kde $prefix(y)$ označuje množinu
 všech prefixů řetězce $y$~\cite{Bast:2013:EFS:2457465.2457470}. Př.
-$\bftt{p\_edit}(ker, karel) = 1$, protože \bftt{edit}(ker, kar) = 1. Oproti
-předchozím metrikám není symetrická. 
+$\bftt{p\_edit}(ker, karel) = 1$, protože $\bftt{edit}(ker, kar) = 1$. Oproti
+předchozím metrikám není symetrická v $x$ a $y$. 
 
 % TODO damerau paper?
 
 \subsection{Výpočet editační vzdálenosti}
 Pro obyčejnou, Levenshteinovu i Damerau-Levenshteinovu vzdálenost se používá
-Wagner-Fisherův tabulkový algoritmus s kvadratickou náročností $|x||y|$, kde
-$|x|$ a $|y|$ jsou délky dvou porovnávaných řetězců. Algoritmus byl nezávisle
-objeven více lidmi (např. Vintsyuk, Needleman - Wunsch, a
-další)~\cite{Navarro:2001:GTA:375360.375365}.
+Wagner-Fisherův tabulkový algoritmus s kvadratickou náročností
+$\Theta(|x||y|)$, kde $|x|$ a $|y|$ jsou délky dvou porovnávaných řetězců.
+Algoritmus byl nezávisle objeven více lidmi (např. Vintsyuk, Needleman -
+Wunsch, a další)~\cite{Navarro:2001:GTA:375360.375365}.
 
 Obdobný tabulkový algoritmus se používá pro výpočet nejdelšího řetězce se
 stejnou kvadratickou náročností, proto nepomůže výpočet přes alternativní
@@ -1106,7 +1108,7 @@ rychlé bitově-paralelní operace zabudované přímo v instrukčních sadách
 procesorů.
 
 Tato reprezentace množiny poskytuje vysokou kompresi pro množiny s vysokou
-hustotou. Velikost reprezentace je přesně $\bftt{n}\ /\ 8 bytů$, kde \bftt{n}
+hustotou. Velikost reprezentace je přesně $\bftt{n}\ /\ 8$ bytů, kde \bftt{n}
 je počet dokumentů. Bohužel kvůli zipfově distribuci slov je většina
 invertovaných seznamů velmi řídká, a proto nejsou bitmapy pro invertované
 indexy používány. Navíc řeší pouze množinový problém, jestli dokument obsahuje
@@ -1116,6 +1118,13 @@ Bitmapy ukládají pouze množinovou informaci o existenci slova v dokumentu, al
 takto jednoduše v nich nelze uložit pozicovou informaci. To z nich dělá
 nevhodného kandidáta pro potřeby vyhledávače, který ohodnocuje výsledky podle
 blízkosti slov a zvýrazňuje výsledky na základě právě pozicové informace.
+
+U hybridního indexu se sloučenými seznamy je hustota množiny vyšší, ale přesto
+z experimentálního měření není dostatečná, aby zdůvodnila použití bitmap. Pro
+komprimované bitmapy by se snížila účinnost jednoduchých bitových operací a
+vzájemně by si mohla překážet s relativně vysokou hustotou u hybridního
+seznamu, protože kompresní schémata pro bitmapy (např. WAH, EWAH, Concise nebo
+Roaring~\cite{DBLP:journals/corr/LemireKK16}) jsou stavěné pro řídké množiny.
 
 % popiš kompresi bitmapy tabulky s hustotou
 
@@ -1147,8 +1156,6 @@ obdoba waveletového stromu s aplikací pro prefixové dotazy.
 
 % TODO
 
-\subsection{Invertované seznamy v externím systému}
-
 \section{Algoritmy pro sloučení invertových seznamů}
 První část vykonání dotazu, prohledání slovníku, a poslední část, ohodnocení a
 seřazení výsledků, by měly být relativně rychlé. Slovník odpovídá pro lidské
@@ -1168,7 +1175,7 @@ jednoduchost zed uvažujeme pouze dokumentové identifikátory.
 
 \subsection{Strategie sloučení}
 Existují dvě hlavní strategie, jak seznamy sloučit. První z nich sloučení slovo
-po slovu (term-at-a-time, TAAT). Ta nejprve získá invertované seznamy každého
+po slovu (term-at-a-time, \bftt{taat}). Ta nejprve získá invertované seznamy každého
 slova a postupně buduje výsledný seznam sloučením mezivýsledku a dalšího
 seznamu v pořadí. Např. v konjunktivním sloučení nejprve zpracuje první dva
 seznamy do jejich průniku a tenhle mezivýsledek postupně slučuje se zbylými. V
@@ -1177,7 +1184,7 @@ po nejdelší, protože průnik množin je nejefektivnější u sloučení s co 
 množinou.
 
 Druhou strategií prochází všechny slučované seznamy naráz jeden dokumentový
-identifikátor po druhém (document-at-a-time, DAAT). I zde platí, že konjunkce
+identifikátor po druhém (document-at-a-time, \bftt{daat}). I zde platí, že konjunkce
 je nejefektivnější po předseřazení seznamů podle velikosti. Oproti prvnímu má
 tenhle způsob výhodu, že nemusí materializovat jednotlivé disjunkce, ale tvoří
 je za běhu.
@@ -1227,6 +1234,14 @@ jsou experimentálně vyzkoušeny v \S\,\ref{sec:rychlost_vyhledavani}.
 % wand, mwand
 
 \section{Ohodnocovací funkce}
+Poslední fáze vykonání dotazu je ohodnocení všech nalezených výsledků, jejich
+seřazení a zvýraznění výskytů v textu (highlighting, snippet generation). V
+téhle fázi je důležité se rozmyslet, jestli je nutné zpracovávat všechny
+výsledky, nebo pouze \bftt{k} nejlépe ohodnocených (top-k). Zpracování všech
+znamená seřazení celé výsledné množiny v čase $\mathcal{O}(n \log n)$, oproti
+částečnému zpracování, kdy můžeme použít pouze několik iterací heapsortu v
+$\mathcal{O}(n + k \log n)$ nebo algoritmus pro částečné seřazení quickselect v
+očekávané složitosti $\mathcal{O}(n + k \log k)$.
 
 \subsection{tf.idf}
 U dlouhého textu můžeme použít statistiky počtu slov k určení jeho relevance k
@@ -2017,7 +2032,7 @@ $\log n$ oproti ostatním, které procházejí disjunktivní seznam lineárně.
     \begin{figure}[H]
     \includegraphics[width=\textwidth]{figures/trie_edit_cpython.eps}
     \captionsetup{justification=centering}
-    \caption{Rychlost slovníku (v~CPythonu)~\bftt{log[y]}}
+    \caption{Rychlost trie (v~CPythonu)~\bftt{log[y]}}
     \label{fig:trie_edit_cpython}
     \end{figure}
     \end{minipage}
@@ -2025,7 +2040,7 @@ $\log n$ oproti ostatním, které procházejí disjunktivní seznam lineárně.
     \begin{figure}[H]
     \includegraphics[width=\textwidth]{figures/trie_edit_pypy3.eps}
     \captionsetup{justification=centering}
-    \caption{Rychlost slovníku (v~PyPy)~\bftt{log[y]}}
+    \caption{Rychlost trie (v~PyPy)~\bftt{log[y]}}
     \label{fig:trie_edit_pypy}
     \end{figure}
     \end{minipage}}
@@ -2100,6 +2115,8 @@ http '<uri>/<index>/_stats' | jq .indices.<index>.primaries.store.size_in_bytes
 Existující otevřené projekty, které se vyhledáváním zabývají, postrádají zde
 popsané techniky. Tato práce by pro ně mohla poskytnout vodítko, jak techniky
 implementovat, pokud by to pro ně neznamenalo překopání celé architektury.
+
+\subsection{Invertované seznamy v externím systému}
 
 \section{Statické a dynamické indexy}
 % static: no locks and latches, compact data structures, cache efficient
@@ -2191,6 +2208,9 @@ Možným dalším rozšířením by byla kombinace navržené architektury s ngr
 
 %\medskip
 \bibliographystyle{myplainnat}
+\renewcommand{\refname}{Reference}
+\renewcommand{\bibname}{Reference}
+\setlength{\bibsep}{0pt}
 \bibliography{ref}
 
 %\appendix
