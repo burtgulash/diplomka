@@ -193,9 +193,9 @@ pro interaktivitu v publikovaných vědeckých pracích.
 Motivaci této práce charakterizuje pojem small data, protože hlavní myšlenkou
 je, že spousta problémů firem nepotřebuje produkty pro manipulaci s terabyty
 dat, ale často jsou to pouze datové objemy, které dnešní počítače zvládnou
-hravě bez opuštění rychlé paměti RAM. Například přibližné vyhledávání v textu
-je jednou z oblastí, které není věnováno příliš pozornosti, ačkoliv je jeho
-využití nesmírné.
+hravě bez opuštění rychlé paměti RAM. Například přibližné vyhledávání v
+textu je jednou z oblastí, které není věnováno příliš pozornosti, ačkoliv je
+jeho využití nesmírné.
 
 Znatelný rozdíl je v požadavcích pro vyhledávání ve full-textu, tedy rozsáhlých
 dokumentech (webové stránky, pdf soubory) a v relativně krátkých textových
@@ -460,7 +460,13 @@ kolem kterých práce staví. Budou představena pokročilá uživatelská rozhr
 vyhledávací systémy, algoritmy pro vyhledávání v textu a rozšiřující algoritmy
 pro techniky, na které se práce zaměřuje.
 
-\section{Definice problému}
+\section{Definice problému vyhledávání}
+Problém vyhledávání, které se zde budeme zabývat spočívá v existenci velké
+datové sady (kolekce) jednotlivých položek obsahujících text, které nazveme
+záznamy nebo také dokumenty. Samotné vyhledávání přichází ve chvíli, kdy
+uživatel vyšle požadavek na vyhledávací systém (dotaz) sestávající z několika
+slov a vzápětí od systému očekává odpověď, která mu vrátí nejpřesnější možný
+výsledek nebo výsledky dle relevance k jeho dotazu.
 
 \section{Uživatelské rozhraní}
 Základním uživatelským rozhraní pro textové vyhledávání je obyčejný řádek, do
@@ -542,7 +548,7 @@ v náhodném pořadí.
 V některých případech je žádoucí, když vyhledávač pomáhá vyhledávat navzdory
 morfologii jazyka. Při prohledávání celých textových dokumentů je pro užívatele
 frustrující situace, kdy hledá výraz - nejčastěji v prvním mluvnickém pádu -
-ale výskyt fráze je v dokumentu v jiném pádu nebo čísle. Přibližným
+ale výskyt fráze je v dokumentu v jiném pádu nebo čísle. Přibližným (fuzzy)
 vyhledáváním se také rozumí, pokud dokáže systém napovědět, nebo rovnou
 vyhledat výsledky, přestože dotaz obsahuje překlepy (\bftt{metamatyka} ->
 \bftt{matematika}), zdvojená písmena nebo naopak (\bftt{forest gump} ->
@@ -560,7 +566,6 @@ experty z oblasti. Oproti tomu kontrolování překlepů je relativně snadno
 implementovatelné, protože je závislé pouze na znalosti kompletního slovníku
 datové kolekce.
 
-
 \subsection{Filtrované vyhledávání}
 Textové vyhledávání může být kombinováno s různými filtry pro vlastnosti, které
 výsledky obsahují. Dokonce ještě přes započetím vkládání dotazu může být
@@ -574,7 +579,18 @@ všechny kategorie, které nemají v omezené množině zastoupení. Pole pro
 vyhledávání pak lze chápat jako pouze další filtr.
 
 \section{Povaha textových dat}
-% zipf, heaps
+V této práci se budeme zabývat textem, který reprezentuje přirozený jazyk.
+Nebudou nás zajímat náhodně vygenerovaná data s charakterem textu, textová
+reprezentace jiných dat nebo sekvence DNA, na které se často používají podobné,
+ale přesto rozdílné, metody. Přirozený jazyk je charakterizován několika až
+překvapivými pravidly, které je dobré znát před vstupem do oblasti, která se
+zpracováním těchto dat zabývá.
+
+\paragraph{Zipfův zákon}
+% zipf - mandelbrot
+\paragraph{Heapsův zákon}
+
+\subsubsection{Další pravidla}
 
 \section{Algoritmy pro textové vyhledávání}
 Implementace a výběr algoritmů bude záviset na vlastnostech, které po
@@ -1153,6 +1169,8 @@ zůstává dle rychlosti vykonání dotazu nepokořen.  Důvodem je zejména jeh
 uspořádání v paměti umožňující téměř perfektní sekvenční přístup, který
 současné hardwarové architektury silně zvýhodňují. AutoTree~\cite{Weber2007} je
 obdoba waveletového stromu s aplikací pro prefixové dotazy.
+
+% TODO forward index fuzzy search
 
 % TODO
 
