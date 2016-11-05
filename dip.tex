@@ -1,4 +1,4 @@
-\documentclass[11pt,letterpaper,oneside,openright]{book}
+\documentclass[10pt,letterpaper,oneside,openright]{book}
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[czech]{babel}
@@ -1178,13 +1178,12 @@ množinou.
 
 Druhou strategií prochází všechny slučované seznamy naráz jeden dokumentový
 identifikátor po druhém (document-at-a-time, DAAT). I zde platí, že konjunkce
-je nejefektivnější po předseřazení seznamů podle velikosti. Oproti první má
-tahle strategie výhodu pro dotazy typu \uv{konjunkce disjunkcí}, protože
-disjunkce nemusí materializovat před tím, než je sloučí. Zároveň využije
-častého přeskakování u průniku, čímž vynechá spoustu operací u disjunkce, které
-by jinak byly vykonány.
+je nejefektivnější po předseřazení seznamů podle velikosti. Oproti prvnímu má
+tenhle způsob výhodu, že nemusí materializovat jednotlivé disjunkce, ale tvoří
+je za běhu.
 
-Nejjednodušším způsobem průniku je lineární průchod seznamy a postupným
+\subsubsection{Konjunkce}
+Nejjednodušším způsobem vykonání průniku je lineární průchod seznamy a postupným
 zaznamenáváním prvku, který se vyskytuje ve všech seznamech - algoritmus
 \bftt{zipper}. V situaci, kdy slučujeme dva seznamy - jeden velmi krátký oproti
 druhému - je efektivní použít nějaké přeskakovací schéma v delším seznamu,
@@ -1195,10 +1194,34 @@ vyhledávání ve zbytku delšího seznamu, nebo použití přeskakovacích tabu
 \cite{Sanders:2007:III:2791188.2791195} poskytuje experimentální měření
 efektivity těchto algoritmů i při použití delta komprese.
 
-Disjunktivní sloučení není pro aplikaci v invertovaných seznamech příliš
-prozkoumáno, protože je není oproti konjunktivnímu slučování klíčovým prvkem
-vykonání dotazu. U hybridních indexů ale klíčovým je, proto bude nastíněno
-několik způsobů, jak ho provést.
+\subsubsection{Disjunkce}
+Disjunktivní sloučení je stejný problém jako sloučení podseznamů v řadícím
+algoritmu mergesort. Ten se řeší postupným vybíráním minimálního prvku z $k$
+seznamů pomocí prioritní fronty (k-way merge) s náročností $\mathcal{O}(n \log
+k)$ při použití binární haldy. Díky tomu je disjunktivní sloučení formou taat i
+daat algoritmicky totožné, ale daat má výhodu možnosti překakování. Při dotazu
+typu \uv{konjunkce disjunkcí} totiž můžeme vynechat velké množství operací
+disjunkce, protože v postupující konjunkci průběžně zjišťujeme, které dokumenty
+mohou být přeskočeny.
+
+Existuje několik možností pro zefektivnění. Prvním je povšimnutí si, že některé
+seznamy budou vyčerpány dříve než ostatní, a proto je můžeme z binární haldy
+odstranit předčasně. Druhá modifikace je nepoužití binární haldy pro prioritní
+frontu, ale obyčejného seznamu, pokud používáme hybridní index s malým počtem
+seznamů ke sloučení. Konstantní faktory vytahování a vkládání prvku binární
+haldy mohou být jednoduchým seznamem sníženy. Oproti slučování v mergesortu je
+ve slučování konjunkce disjunkcí rozdíl v neustálém přeskakování prvků. Pro
+disjunkci znamená jedna přeskakující operace vytažení všech prvků z prioritní
+fronty, provedení jejich posunutí a vložení zpět do fronty. Disjunkci můžeme
+více přizpůsobit přeskakování oproti posunutím po jednom dokumentu tak, že
+seznamy seřadíme od největšího po nejmenší a přeskočení ukončíme v momentu, kdy
+alespoň jeden seznam vrátí prvek, na který přeskakujeme. Pouze si uchováme
+informaci, že později musíme dorovnat zbytek seznamů k témuž dokumentu. Seznamy
+seřadíme od největšího, protože očekáváme větší šanci výskytu dokumentu v
+delším seznamu, čímž zvýšíme šanci předčasného ukončení operace. Tyto metody
+jsou experimentálně vyzkoušeny v \S\,\ref{sec:rychlost_vyhledavani}.
+
+
 
 %TODO 
 % wand, mwand
@@ -1745,7 +1768,7 @@ výpočetní náročnost.
 
 
 \clearpage
-\section{Rychlost vyhledávání}
+\section{Rychlost vyhledávání} \label{sec:rychlost_vyhledavani}
 
 %\mbox{}\input{figures/timings.tex}\mbox{}
 
