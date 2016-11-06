@@ -468,6 +468,38 @@ uživatel vyšle požadavek na vyhledávací systém (dotaz) sestávající z n�
 slov a vzápětí od systému očekává odpověď, která mu vrátí nejpřesnější možný
 výsledek nebo výsledky dle relevance k jeho dotazu.
 
+\section{Povaha textových dat}
+V této práci se budeme zabývat textem, který reprezentuje přirozený jazyk.
+Nebudou nás zajímat náhodně vygenerovaná data s charakterem textu, textová
+reprezentace jiných dat nebo sekvence DNA, na které se často používají podobné,
+ale přesto rozdílné, metody. Přirozený jazyk je charakterizován několika až
+překvapivými pravidly, které je dobré znát před vstupem do oblasti, která se
+zpracováním těchto dat zabývá.
+
+\paragraph{Zipfův zákon} říká, že kdybychom seřadili slova nějaké větší textové
+sady podle počtu výskytů, pak pořadí jednoho takového slova $\bftt{i}$ vzhledem
+k jeho frekvenci $f_i$ bude nepřímo úměrné podle vztahu \[i \propto
+\frac{k}{f_i}\]. Zipfův zákon charakterizuje danou textovou sadou konstantou
+\bftt{k}. Např. pro jednu datovou sadu, se kterou zde budeme pracovat (databáze
+filmů) jsou pěti nejfrekventovanějšími slovy \bftt{the} ($80\,999\times$),
+\bftt{of} ($31\,026\times$), \bftt{a} ($24\,499\times$), \bftt{in} ($12\,226
+\times$) a \bftt{la} ($11\,417\times$). Na první pohled je patrná exponenciálně
+klesající frekvence s rostoucím pořadím, jejichž součin je zhruba konstantní.
+Modifikace tohoto zákona, která ještě blíže odpovídá reálným datům je
+Zipf-Mandelbrotův, nebo také Zipf-Paretův zákon.
+
+\paragraph{Heapsův zákon} popisuje druhou charakteristiku textu přirozeného
+jazyka, se kterým musí algoritmy počítat. Ten empiricky vyjadřuje počet slov
+dané textové kolekce v závislosti na její velikosti. Tedy kolik unikátních slov
+bude text obsahovat, pokud bude obsahovat celkově 1\,000, 100\,000,
+10\,000\,000, ... slov. Heapsův zákon empiricky stanovuje závislost \[k \times
+n^b\] s klíčovou konstantou \bftt{b}, která je sice závislá na textové kolekci,
+ale prakticky má hodnotu kolem $0.5$. Tedy počet unikátních slov roste jako
+odmocnina celkového počtu slov. Zajímavé je pozorování, že počet slov neustále
+roste, přestože by se mohlo zdát, že jazyk má pouze omezený počet slov. Čím
+více dat ale máme, tím větší je šance, že se v něm budou objevovat různá jména,
+smyšlená slova a překlepy, které se také počítají jako unikátní slova.
+
 \section{Uživatelské rozhraní}
 Základním uživatelským rozhraní pro textové vyhledávání je obyčejný řádek, do
 kterého uživatel napíše svůj dotaz a po potvrzení mu vyhledávač obratem pošle
@@ -578,19 +610,6 @@ postupně reflektují zmenšující se množinu. Tedy např. z nabídky filtrů 
 všechny kategorie, které nemají v omezené množině zastoupení. Pole pro
 vyhledávání pak lze chápat jako pouze další filtr.
 
-\section{Povaha textových dat}
-V této práci se budeme zabývat textem, který reprezentuje přirozený jazyk.
-Nebudou nás zajímat náhodně vygenerovaná data s charakterem textu, textová
-reprezentace jiných dat nebo sekvence DNA, na které se často používají podobné,
-ale přesto rozdílné, metody. Přirozený jazyk je charakterizován několika až
-překvapivými pravidly, které je dobré znát před vstupem do oblasti, která se
-zpracováním těchto dat zabývá.
-
-\paragraph{Zipfův zákon}
-% zipf - mandelbrot
-\paragraph{Heapsův zákon}
-
-\subsubsection{Další pravidla}
 
 \section{Algoritmy pro textové vyhledávání}
 Implementace a výběr algoritmů bude záviset na vlastnostech, které po
@@ -822,10 +841,10 @@ znaků. Např. n-gramy slova \bftt{podlaha} o délce 3 (trigramy) jsou \bftt{pod
 překrývají, a proto hovoříme o překrývajících se trigramech.
 
 Podobnost dvou textů pomocí n-gramů můžeme efektivně zjistit pomocí Jaccardovy
-podobnosti množin. Tu zjistíme jako poměr velikosti průniku ku velikosti
-sjednocení obou množin \[\bftt{jacc}(X, Y) = |X \cap Y|\ /\ |X \cup Y|\]. Pokud
-porovnávané texty reprezentujeme jako dvě množiny jejich n-gramů, vypočteme
-jejich podobnost jako podobnost těchto množin.
+podobnosti množin (coherence). Tu zjistíme jako poměr velikosti průniku ku
+velikosti sjednocení obou množin \[\bftt{jacc}(X, Y) = |X \cap Y|\ /\ |X \cup
+Y|\]. Pokud porovnávané texty reprezentujeme jako dvě množiny jejich n-gramů,
+vypočteme jejich podobnost jako podobnost těchto množin.
 
 Tento způsob funguje pro krátké řetězce a nízkou toleranci odlišnosti. Podobná
 slova budou sdílet všechny n-gramy vzdálené $n$ pozic od místa, kde mezi nimi
