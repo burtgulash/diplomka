@@ -1270,7 +1270,7 @@ jsou experimentálně vyzkoušeny v \S\,\ref{sec:rychlost_vyhledavani}.
 %TODO 
 % wand, mwand
 
-\section{Ohodnocovací funkce}
+\section{Ohodnocení výsledků dotazu}
 Poslední fáze vykonání dotazu je ohodnocení všech nalezených výsledků, jejich
 seřazení a zvýraznění výskytů v textu (highlighting, snippet generation). V
 téhle fázi je důležité se rozmyslet, jestli je nutné zpracovávat všechny
@@ -1288,6 +1288,11 @@ ukončení dotazu (early termination) namísto průchodu celým seznamem, proto�
 pokud systém vrací pouze nejlepších \bftt{k} dokumentů, pak nemají dokumenty s
 nízkým ohodnocením šanci se do nich vejít.
 
+Výpočetně by bylo výhodnější, pokud by se uvažovalo pouze předdefinované
+pořadí, protože by bylo možné ho předpočítat během indexování a invertovaný
+index seřadit podle něj. Případně index uložit ve více pořadích za cenu více
+potřebného úložného prostoru.
+
 \subsubsection{Business metriky}
 Předdefinovanou váhou může být zvolena jakákoliv metrika relevantní pro datovou
 sadu, např. uživatelské hodnocení u filmů nebo knih, počet zakoupení produktu,
@@ -1304,20 +1309,10 @@ Pro dokumenty u webových vyhledávačů se používá ohodnocení na základě
 popularity webových stránek ve webovém grafu. Pro ohodnocení popularity se
 používají algoritmy pro míry centrality, z nichž nejpopulárnější je PageRank.
 
-\subsection{tfidf}
-\subsubsection{BM25}
-
-\subsection{Blízkost}
-Statistiky jako počet slov v textu ztrácí v krátkém textu význam. Film
-nebude více zelený, pokud se v jeho názvu bude vícekrát vyskytovat slovo
-\bftt{zelený} (cite algolia). V krátkém textu by byly nadměrně hodnoceny
-delší texty, které slovo obsahují vícekrát, protože většina textů v
-kolekci bude slovo obsahovat jenom jednou.
-
-
-
-\subsection{Alternativní}
-% dependence
+\subsubsection{Více průchodů}
+Některé vyhledávače implementují víceprůchodové ohodnocení tak, že jejich první
+fáze odfiltruje určitou množinu relevantních dokumentů pomocí funkce s nízkou
+náročností a pro zbylé aplikuje sofistikovanější metody (cite yahoo).
 
 \subsection{tf.idf}
 U dlouhého textu můžeme použít statistiky počtu slov k určení jeho relevance k
@@ -1328,9 +1323,9 @@ pracují s dlouhým textem.  \[\bftt{tf.idf}_{t, d} = (1 + \log \bftt{tf}_{t, d}
 \bftt{tf} (term frequency) je počet výskytů slova v daném dokumentu. \bftt{df}
 (document frequency) je počet výskytů slova v celé textové kolekci. \bftt{idf}
 (inverse document frequency) je převrácená hodnota \bftt{df}.
+\subsubsection{BM25}
 
-
-\subsection{Problémy ohodnocovacích funkcí}
+\subsubsection{Problémy statistických přístupů}
 Už od počátků velkých webových vyhledávačů v 90. letech se čistě textové
 statistické metody založené na tf.idf zneužívaly, protože každý mohl
 přizpůsobit text na své webové stránce, aby se lépe přizpůsobila
@@ -1341,45 +1336,47 @@ stuffing), aby byla zvýšená pravděpodobnost, že ji vyhledávač uzná
 relevantní při náhodném dotazu. Pro ještě větší úspěšnost lze důležitá
 slova na stránce duplikovat pro zvýšení parametru \bftt{tf}.
 
+\subsection{Ohodnocení pro přibližné vyhledávání}
+Pořadí by mělo být možné doupravit nějakým preferenčním pořadím (podle času,
+podle ceny, počtu zhlédnutí, apod.). Přesto by měla mít textová shoda největší
+význam, jinak by mohl mít uživatel pocit, že si buď vyhledávač vymýšlí, má
+nízkou přesnost, nebo se mu někdo snaží něco vnutit (např. upřednostněné
+produkty v eshopu).
+
 % TODO Fuzzy a idf! článek od elasticsearch
 % SEO - exploit of google's algorithms. Více vyhledávačů ztěžuje SEO
 
-\subsubsection{Ohodnocení výsledků dotazu}
-U dokumentů běžně uvažujeme náhodné pořadí, ale lze ho doupravit nějakým
-preferenčním pořadím (podle času, podle ceny, počtu zhlédnutí, apod.). Přesto
-by měla mít textová shoda největší význam, jinak by mohl mít uživatel pocit, že
-si buď vyhledávač vymýšlí, má nízkou přesnost, nebo se mu někdo snaží něco
-vnutit (např. upřednostněné produkty v eshopu).
+\subsection{Blízkost}
+Statistiky jako počet slov v textu ztrácí v krátkém textu význam. Film
+nebude více zelený, pokud se v jeho názvu bude vícekrát vyskytovat slovo
+\bftt{zelený} (cite algolia). V krátkém textu by byly nadměrně hodnoceny
+delší texty, které slovo obsahují vícekrát, protože většina textů v
+kolekci bude slovo obsahovat jenom jednou.
 
-Výpočetně by bylo výhodnější, pokud by se uvažovalo pouze předdefinované
-pořadí, protože by bylo možné ho předpočítat během indexování a invertovaný
-index seřadit podle něj. Případně ho uložit ve více pořadích za cenu více
-potřebného úložného prostoru.
+\subsubsection{Plane sweep algoritmus}
+\subsubsection{Preference prvního}
+\subsubsection{Modifikace}
 
-Předdefinované pořadí navíc ulehčuje předčasné ukončení vykonání dotazu (early
-termination), protože nejdůležitější dokumenty budou nalezeny hned na začátku
-invertovaných seznamů.
+%\subsection{Alternativní}
+% dependence
 
 \subsubsection{Zvolení vah}
 Celkové ohodnocení shody se vypočte jako součet všech dílčích faktorů
-ohodnocených různými vahami. Důležitost textové shody by měla v první řadě být
-určena vzdáleností výsledku od dotazu podle editační vzdálenosti. V druhé řadě
-by to měla být minimální vzdálenost mezi slovy ve výsledku.  Tohle pořadí pak
-může doupravit uživatelem zvolené pořadí, ale mělo by mít menší váhu než
-textová shoda.
+ohodnocených různými vahami. U přibližného vyhledávání by důležitost shody měla
+být v první řadě určena vzdáleností výsledku od dotazu podle editační
+vzdálenosti. V druhé řadě by to měla být minimální vzdálenost mezi slovy ve
+výsledku. Tohle pořadí pak může doupravit uživatelem zvolené pořadí, ale mělo
+by mít menší váhu než textová shoda.
 
 \subsubsection{Tie-breaking}
 Jiný způsob výpočtu důležitosti používá implementace vyhledávače algolia
-(tie-breaking). V něm se určí pořadí jednotlivých faktorů podle
-důležitosti a nižší faktory se uvažují pouze pokud dojde ke shodě ve
-vyšších faktorech. Např.  pokud je vzdálenost několika prvních výsledků
-dotazu od dotazu 0 - tedy přesná shoda, pak teprve se přistoupí k
-ohodnocení podle předdefinovaného pořadí, blízkosti, nebo jiného
-faktoru. (cite algolia blog post).
-
-\subsubsection{Blízkost}
-Pro výpočet blízkosti slov dotazu ve výsledku jsem zvolil variaci na algoritmus
-(plane sweep proximity match).
+(tie-breaking). V něm se určí pořadí jednotlivých faktorů podle důležitosti a
+nižší faktory se uvažují pouze pokud dojde ke shodě ve vyšších faktorech. Např.
+pokud je vzdálenost několika prvních výsledků dotazu od dotazu 0 - tedy přesná
+shoda, pak teprve se přistoupí k ohodnocení podle předdefinovaného pořadí,
+blízkosti, nebo jiného faktoru. (cite algolia blog post). Tie-breaking sice
+ulehčuje výpočetní náročnost i pro složitější ohodnocovací funkce, ale
+neposkytuje flexibilitu v její modifikaci.
 
 
 
