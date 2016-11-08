@@ -1280,6 +1280,45 @@ znamená seřazení celé výsledné množiny v čase $\mathcal{O}(n \log n)$, o
 $\mathcal{O}(n + k \log n)$ nebo algoritmus pro částečné seřazení quickselect v
 očekávané složitosti $\mathcal{O}(n + k \log k)$.
 
+\subsection{Předdefinované pořadí}
+Dokumenty v invertovaných seznamech nemusí být nutně seřazeny vzestupně podle
+jejich identifikátorů. Jiným způsobem je seřazení podle klesající váhy, která
+je u každého dokumentu stanovena před zaindexováním. To umožňuje předčasné
+ukončení dotazu (early termination) namísto průchodu celým seznamem, protože
+pokud systém vrací pouze nejlepších \bftt{k} dokumentů, pak nemají dokumenty s
+nízkým ohodnocením šanci se do nich vejít.
+
+\subsubsection{Business metriky}
+Předdefinovanou váhou může být zvolena jakákoliv metrika relevantní pro datovou
+sadu, např. uživatelské hodnocení u filmů nebo knih, počet zakoupení produktu,
+popularita produktu, atd. Uživatel si dokonce může zvolit vlastní preferované
+pořadí, např. sestupně nebo vzestupně podle ceny nebo data uvedení. Ohodnocení
+může být stanoveno i tak, aby maximalizovalo mikroekonomickou užitkovou funkci
+a v důsledku zisk firmy, která vyhledávač provozuje na svém eshopu.
+
+% ekonomická funkce
+
+% business metrics
+\subsubsection{Analýza vazeb}
+Pro dokumenty u webových vyhledávačů se používá ohodnocení na základě
+popularity webových stránek ve webovém grafu. Pro ohodnocení popularity se
+používají algoritmy pro míry centrality, z nichž nejpopulárnější je PageRank.
+
+\subsection{tfidf}
+\subsubsection{BM25}
+
+\subsection{Blízkost}
+Statistiky jako počet slov v textu ztrácí v krátkém textu význam. Film
+nebude více zelený, pokud se v jeho názvu bude vícekrát vyskytovat slovo
+\bftt{zelený} (cite algolia). V krátkém textu by byly nadměrně hodnoceny
+delší texty, které slovo obsahují vícekrát, protože většina textů v
+kolekci bude slovo obsahovat jenom jednou.
+
+
+
+\subsection{Alternativní}
+% dependence
+
 \subsection{tf.idf}
 U dlouhého textu můžeme použít statistiky počtu slov k určení jeho relevance k
 nějakému slovu. Na tomhle principu stojí většina ohodnocovacích metod, které
@@ -1290,17 +1329,6 @@ pracují s dlouhým textem.  \[\bftt{tf.idf}_{t, d} = (1 + \log \bftt{tf}_{t, d}
 (document frequency) je počet výskytů slova v celé textové kolekci. \bftt{idf}
 (inverse document frequency) je převrácená hodnota \bftt{df}.
 
-\subsection{Předdefinované pořadí}
-
-\subsection{Grafová analýza}
-% page rank, centrality measures
-
-\subsection{Blízkost}
-Statistiky jako počet slov v textu ztrácí v krátkém textu význam. Film
-nebude více zelený, pokud se v jeho názvu bude vícekrát vyskytovat slovo
-\bftt{zelený} (cite algolia). V krátkém textu by byly nadměrně hodnoceny
-delší texty, které slovo obsahují vícekrát, protože většina textů v
-kolekci bude slovo obsahovat jenom jednou.
 
 \subsection{Problémy ohodnocovacích funkcí}
 Už od počátků velkých webových vyhledávačů v 90. letech se čistě textové
