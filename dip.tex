@@ -466,7 +466,8 @@ datové sady (kolekce) jednotlivých položek obsahujících text, které nazvem
 záznamy nebo také dokumenty. Samotné vyhledávání přichází ve chvíli, kdy
 uživatel vyšle požadavek na vyhledávací systém (dotaz) sestávající z několika
 slov a vzápětí od systému očekává odpověď, která mu vrátí nejpřesnější možný
-výsledek nebo výsledky dle relevance k jeho dotazu.
+výsledek nebo výsledky dle relevance k jeho dotazu. Možnosti uživatelského
+rozhraní takového systému jsou popsány v \S\,\ref{sec:uzivatelske_rozhrani}.
 
 \section{Povaha textových dat}
 V této práci se budeme zabývat textem, který reprezentuje přirozený jazyk.
@@ -500,7 +501,7 @@ roste, přestože by se mohlo zdát, že jazyk má pouze omezený počet slov. �
 více dat ale máme, tím větší je šance, že se v něm budou objevovat různá jména,
 smyšlená slova a překlepy, které se také počítají jako unikátní slova.
 
-\section{Uživatelské rozhraní}
+\section{Uživatelské rozhraní} \label{sec:uzivatelske_rozhrani}
 Základním uživatelským rozhraní pro textové vyhledávání je obyčejný řádek, do
 kterého uživatel napíše svůj dotaz a po potvrzení mu vyhledávač obratem pošle
 sadu dokumentů, které ohodnotí jako nejrelevantnější vzhledem k jeho dotazu.
@@ -1314,16 +1315,23 @@ Některé vyhledávače implementují víceprůchodové ohodnocení tak, že jej
 fáze odfiltruje určitou množinu relevantních dokumentů pomocí funkce s nízkou
 náročností a pro zbylé aplikuje sofistikovanější metody (cite yahoo).
 
-\subsection{tf.idf}
+\subsection{Statistické metody}
 U dlouhého textu můžeme použít statistiky počtu slov k určení jeho relevance k
-nějakému slovu. Na tomhle principu stojí většina ohodnocovacích metod, které
-pracují s dlouhým textem.  \[\bftt{tf.idf}_{t, d} = (1 + \log \bftt{tf}_{t, d})
-\times \log_{10} N / \bftt{df}_{t}\]
+nějakému slovu. Na tomhle principu stojí většina ohodnocovacích metod a metod
+pro dolování dat, které pracují s dlouhým textem.  
 
-\bftt{tf} (term frequency) je počet výskytů slova v daném dokumentu. \bftt{df}
-(document frequency) je počet výskytů slova v celé textové kolekci. \bftt{idf}
-(inverse document frequency) je převrácená hodnota \bftt{df}.
-\subsubsection{BM25}
+Hodnotou \bftt{tf} (term frequency) označíme počet výskytů slova v daném
+dokumentu a \bftt{df} (document frequency) bude značit počet výskytů slova v
+celé textové kolekci. \bftt{idf} (inverse document frequency) je převrácená
+hodnota \bftt{df}. Statistické metody kombinují tyto dvě hodnoty, proto tomuto
+modelu říká \bftt{tf.idf}. Intuice \bftt{tf} je, že čím vícekrát se slovo v
+dokumentu objevuje, tím je pravděpodobnější, že je k dokumentu relevantní.
+\bftt{idf} je korekcí pro často se vyskytující slova. Větší váhu dá těm slovům,
+která jsou v datové kolekci objevují málo často (vysoká hodnota \bftt{idf}),
+protože mají vysokou rozlišovací schopnost. Častá slova jako předložky nebo
+zájmena o dokumentu prakticky nic nevypoví. Výsledný vztah pro funkci
+\bftt{tf.idf} je \[\bftt{tf.idf}_{t, d} = (1 + \log \bftt{tf}_{t, d}) \times
+\log_{10} N / \bftt{df}_{t}\]
 
 \subsubsection{Problémy statistických přístupů}
 Už od počátků velkých webových vyhledávačů v 90. letech se čistě textové
@@ -1331,34 +1339,82 @@ statistické metody založené na tf.idf zneužívaly, protože každý mohl
 přizpůsobit text na své webové stránce, aby se lépe přizpůsobila
 jednoduchým statistikám.
 
-Stačí stránku zahltit co největším počtem různých slov (Keyword
-stuffing), aby byla zvýšená pravděpodobnost, že ji vyhledávač uzná
-relevantní při náhodném dotazu. Pro ještě větší úspěšnost lze důležitá
-slova na stránce duplikovat pro zvýšení parametru \bftt{tf}.
+Stačí stránku zahltit co největším počtem různých slov (Keyword stuffing), aby
+byla zvýšená pravděpodobnost, že ji vyhledávač uzná relevantní při náhodném
+dotazu. Pro ještě větší úspěšnost lze důležitá slova na stránce duplikovat pro
+zvýšení parametru \bftt{tf}. Tenhle problém do nějaké míry řeší pokročilá
+modifikace \bftt{tf.idf} funkcí nazvaná BM25 (Best Match).
+
+U přibližného vyhledávání nastává problém s parametrem \bftt{idf}, protože slova,
+která odpovídají překlepům, se vyskytují vzácně v porovnání s jejich správnou
+verzí. Protože ale \bftt{idf} slouží ke zvýšení váhy u vzácných slov, bude mít
+u přibližného vyhledávání nežádoucí efekt~\cite{elastic_fuzzy}.
 
 \subsection{Ohodnocení pro přibližné vyhledávání}
-Pořadí by mělo být možné doupravit nějakým preferenčním pořadím (podle času,
-podle ceny, počtu zhlédnutí, apod.). Přesto by měla mít textová shoda největší
-význam, jinak by mohl mít uživatel pocit, že si buď vyhledávač vymýšlí, má
-nízkou přesnost, nebo se mu někdo snaží něco vnutit (např. upřednostněné
-produkty v eshopu).
+Vyhledávač by měl umožnit uživatelům volbu preferenčního pořadí výsledků (podle
+času, podle ceny, počtu zhlédnutí, apod.). Přesto by měla mít textová shoda
+největší význam, jinak by mohl mít uživatel pocit, že si buď vyhledávač
+vymýšlí, má nízkou přesnost, nebo se mu někdo snaží něco vnutit (např.
+upřednostněné produkty v eshopu). Statistické metody pro případ vyhledávače zde
+navrhovaného jsou problematické, a proto se budeme zaměřovat na alternativní
+ohodnocovací způsoby, které jsou závislé pouze na textové shodě. Jiné způsoby
+by vyžadovaly náročnou sémantickou analýzu jednotlivých položek, a proto je pro
+jednoduchost vynecháme.
 
 % TODO Fuzzy a idf! článek od elasticsearch
 % SEO - exploit of google's algorithms. Více vyhledávačů ztěžuje SEO
 
 \subsection{Blízkost}
-Statistiky jako počet slov v textu ztrácí v krátkém textu význam. Film
+Statistiky jako počet slov v textu ztrácí v krátkém textu význam. Např. film
 nebude více zelený, pokud se v jeho názvu bude vícekrát vyskytovat slovo
-\bftt{zelený} (cite algolia). V krátkém textu by byly nadměrně hodnoceny
-delší texty, které slovo obsahují vícekrát, protože většina textů v
-kolekci bude slovo obsahovat jenom jednou.
+\bftt{zelený} (cite algolia). V krátkém textu by byly nadměrně hodnoceny delší
+texty, které slovo obsahují vícekrát, protože většina textů v kolekci bude
+slovo obsahovat jenom jednou.
 
-\subsubsection{Plane sweep algoritmus}
-\subsubsection{Preference prvního}
-\subsubsection{Modifikace}
+Tradičně podporují implementace invertovaných indexů hledání s přihlédnutím k
+blízkosti slov pomocí frázových dotazů. Už při slučování seznamů dojde k
+odfiltrování všech záznamů, které nesplňují podmínku blízkosti fráze pro
+nějakou stanovenou mez. Pro malý index není třeba filtrovat během slučování,
+ale stačí pouze na konci seřadit výsledky podle nejmenší vzdálenosti mezi
+slovy.
 
-%\subsection{Alternativní}
-% dependence
+Ohodnocení blízkosti při seřazování výsledků, kdy známe pozice výskytů všech
+slov uživatelova dotazu, můžeme jednoduše sečíst velikosti mezer mezi
+jednotlivými výskyty a zprůměrovat počtem slov. Čím kratší mezery, tím lépe
+bude výsledek ohodnocený, tak jak očekáváme. Problém nastane, pokud výsledek
+obsahuje více výskytů téhož slova, s tím že jedno patří do hledané fráze a
+druhé je velmi vzdálené od této fráze. Velká vzdálenost tohoto slova, které by
+mělo mít menší váhu, protože nepřispívá k frázi, zapříčiní nárůst naší metriky
+vzdálenosti. To naznačuje, že musíme uvažovat minimální vzdálenost výskytů -
+tedy délku minimálního intervalu, který obsahuje všechna slova dotazu.
+
+\subsubsection{Algoritmus pro nalezení minimálního intervalu}
+Vstupem algoritmu je seznam všech výskytů slov v dokumentu a výstupem je
+interval s minimální délkou v tomto seznamu, který obsahuje všechna unikátní
+slova alespoň jednou. Tento seznam je seřazen vzestupně podle pozice výskytu a
+během algoritmu v něm postupujeme od nejmenšího k největšímu, tedy zleva
+doprava, a udržuje si frekvenční tabulku všech viděných slov.  V prvním kroku
+nalezneme první interval, který obsahuje zástupce každého slova - kandidát na
+minimální interval. Ve druhém kroku rozšiřujeme interval slovy na pravo od něj,
+dokud nenarazíme na první slovo dosavadního nalezeného intervalu. Tento
+interval jistě obsahuje zástupce každého slova, protože jsme zatím žádné
+neodebrali, ale obsahuje některé vícekrát. Zmenšíme ho opět na minimální možnou
+velikost tím, že zleva odstraníme všechny výskyty tak, aby jej žádné ze slov
+neopustilo (postupně sledujeme frekvenční tabulku pro každé slovo a zastavíme
+se, pokud odstraňovaný prvek má hodnotu 1). Postupně projedeme celý seznam
+rozšiřováním intervalu výskyty napravo a odebíráním výskytů zleva. Všechny
+nalezené kandidáty seřadíme podle velikosti a vrátímeminimální interval.
+
+\subsubsection{Jiné přístupy}
+Index s rychlou podporou omezení blízkosti, ale za cenu velkého indexu
+($\mathcal{O}(dn)$, kde $d$ představuje hranici blízkosti) navrhli Manber
+a~Baeza-Yates v~\cite{MANBER1991133}. Jiný paměťově náročný způsob je
+zaindexování párů všech slov do vzdálenosti $d$~\cite{Aref95}. Sadakane a Imai
+navrhují dva algoritmy~\cite{Sadakane99textretrieval} s~podporou pro
+invertovaný index, které vyžadují pouze index uchovávající si pozice bez
+dalších změn. Prvním je algoritmus plane-sweep a~druhý je varianta prvního
+s~použitím techniky rozděl a panuj. Algoritmus představený v~této sekci je
+modifikací z~prvního z~nich.
 
 \subsubsection{Zvolení vah}
 Celkové ohodnocení shody se vypočte jako součet všech dílčích faktorů
