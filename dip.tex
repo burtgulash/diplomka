@@ -1212,14 +1212,15 @@ dokumentů. Ty mohou být obohaceny o pozicovou informaci a ohodnocení, ale pro
 jednoduchost zed uvažujeme pouze dokumentové identifikátory.
 
 \subsection{Strategie sloučení}
-Existují dvě hlavní strategie, jak seznamy sloučit. První z nich sloučení slovo
-po slovu (term-at-a-time, \bftt{taat}). Ta nejprve získá invertované seznamy každého
-slova a postupně buduje výsledný seznam sloučením mezivýsledku a dalšího
-seznamu v pořadí. Např. v konjunktivním sloučení nejprve zpracuje první dva
-seznamy do jejich průniku a tenhle mezivýsledek postupně slučuje se zbylými. V
-konjunktivním sloučení se vyplatí seřadit seznamy podle velikosti od nejmenšího
-po nejdelší, protože průnik množin je nejefektivnější u sloučení s co nejmenší
-množinou.
+Existují dvě hlavní strategie, jak seznamy
+sloučit~\cite{Lacour_efficiencycomparison}. První z nich sloučení slovo po
+slovu (term-at-a-time, \bftt{taat}). Ta nejprve získá invertované seznamy
+každého slova a postupně buduje výsledný seznam sloučením mezivýsledku a
+dalšího seznamu v pořadí. Např. v konjunktivním sloučení nejprve zpracuje první
+dva seznamy do jejich průniku a tenhle mezivýsledek postupně slučuje se
+zbylými. V konjunktivním sloučení se vyplatí seřadit seznamy podle velikosti od
+nejmenšího po nejdelší, protože průnik množin je nejefektivnější u sloučení s
+co nejmenší množinou.
 
 Druhou strategií prochází všechny slučované seznamy naráz jeden dokumentový
 identifikátor po druhém (document-at-a-time, \bftt{daat}). I zde platí, že konjunkce
@@ -1239,10 +1240,10 @@ vyhledávání ve zbytku delšího seznamu, nebo použití přeskakovacích tabu
 \cite{Sanders:2007:III:2791188.2791195} poskytuje experimentální měření
 efektivity těchto algoritmů i při použití delta komprese.
 
-\subsubsection{Disjunkce}
+\subsubsection{Disjunkce} \label{sec:disjunctive_merge}
 Disjunktivní sloučení je stejný problém jako sloučení podseznamů v řadícím
 algoritmu mergesort. Ten se řeší postupným vybíráním minimálního prvku z $k$
-seznamů pomocí prioritní fronty (k-way merge) s náročností $\mathcal{O}(n \log
+seznamů pomocí prioritní fronty (K-way merge) s náročností $\mathcal{O}(n \log
 k)$ při použití binární haldy. Díky tomu je disjunktivní sloučení formou taat i
 daat algoritmicky totožné, ale daat má výhodu možnosti překakování. Při dotazu
 typu \uv{konjunkce disjunkcí} totiž můžeme vynechat velké množství operací
@@ -1435,21 +1436,53 @@ ulehčuje výpočetní náročnost i pro složitější ohodnocovací funkce, al
 neposkytuje flexibilitu v její modifikaci.
 
 \subsection{Indexace}
-% TODO indexační algoritmy
-Klasický invertovaný index 
-\subsubsection{Konstrukce invertovaného indexu}
+Efektivní vytvoření indexu je hluboce prozkoumávaná oblast v literatuře
+textového vyhledávání. Většina výzkumu se zaměřuje na rozsáhlé textové kolekce,
+a proto počítá s tím, že se index i po kompresi nevejde do paměti. Pokud by se
+celá datová sada vešla do paměti, pak je nejjednodušším způsobem vytvoření
+invertovaného indexu pomocí hashovací tabulky. Při průchodu textem si v
+hashovací tabulce zaznamenáváme pro každé slovo seznam dokumentů, ve kterých se
+nachází. Tím, že procházíme dokumenty od prvního k poslednímu, budou tyto
+seznamy rovnou seřazeny a posléze je můžeme použít přímo pro vyhledávání. Běžně
+se používají hashovací tabulky s optimalizací vzhledem k zipfově zákonu, které
+zvýhodňují frekventovaná slova při hledání v tabulce (např. techniky
+move-at-back nebo move-to-front)~\cite{ZOBEL2001271}.
+
+V případě, že se data do paměti nevejdou, pak se používají algoritmy, které
+jsou vytvářené na míru danému hardwaru pro persistentní uložení. Tradičně se
+pro tuto úlohu používaly pevné disky, ale v poslední době se objevily techniky
+přímo zaměřené na rychlejší ssd~\cite{Jung201525}.
+
+\subsubsection{Konstrukce seřazením}
+První z nejpopulárnějších metod pro vytvoření invertovaného indexu je
+konstrukce blokovým seřazením. Ta sestává ze dvou fází.  V první dojde k
+vygenerování všech ntic výskytu (viz~\S\,\ref{sec:inverted_index}) a jejich
+postupné seřazení. Druhou fází je seřazení bloků ntic. Seřazení proběhne
+externě, tj. s použitím disku. Ntice jsou rozděleny do bloků o velikosti, aby
+se vešly jednotlivě do paměti. Ty jsou seřazeny běžným řadícím algoritmem. Krok
+externího seřazení vykonáme několika slučovacími kroky mergesortu, které mohou
+zpracovávat jednotlivé bloky proudově - tedy bez celého načtení do paměti.
+Způsob je obdobný jako disjunktivní slučování seznamů při vykonání dotazu,
+který byl popsán v \S\,\ref{sec:disjunctive_merge}.
+
+\subsubsection{Konstrukce o jednom průchodu}
+Druhou populární metodou, která je experimentálně
+výkonější~\cite{Heinz:2003:ESI:873988.873992}, je v podstatě stejná jako
+vytvoření indexu v paměti, jen v momentu, kdy dojde pro index paměť, je
+dosavadní tabulka seřazena podle lexikografického pořadí slov a zapsána na
+disk. Tímto způsobem se vytvoří a zapíší na disk jednotlivé podindexy a v
+následujícím kroku se sloučí podobným způsobem jako u indexace seřazením.
+Výhodou oproti předchozímu způsobu jsou identifikátory dokumentů ukládány v
+sekvenčním pořadí u každého slova, a díky kompresi umožní uchovat v paměti více
+dat před tím, než bude blok zapsán na disk.
+
 \subsubsection{Konstrukce hybridního indexu}
-
-Metody pro indexování u klasických invertovaných indexů se snaží vyhnout se
-více průchody vstupní datovou sadou. Čtení vstupu z disku, parsování a
-převádění na identifikátory je při velkých datových objemech časově náročné.
-Rozložení do skupin u hybridního indexu - HYB i mé rozložení - vyžaduje
-dvoufázové indexování, protože rozdělení do skupin potřebuje vědět statistiky,
-ze kterých se určí, jak mají být sloučené skupiny velké.
-
-V~\cite{Bast:2011:FCH:1993036.1993040} autoři popisují techniku, jak použít jen
+Rozložení do skupin u hybridního indexu vyžaduje dvoufázové indexování, protože
+rozdělení do skupin potřebuje vědět statistiky, ze kterých se určí, jak mají
+být sloučené skupiny velké. V~\cite{Bast:2011:FCH:1993036.1993040} autoři
+popisují techniku inspirovanou technikami pro paralelní řazení, jak použít jen
 několik vzorků, aby s vysokou pravděpodobností určili velikost skupin. (cite a
-nastin alg.)
+nastin alg.).
 
 Hybridní index se od klasického liší v počtu invertovaných seznamů. Klasický má
 jeden seznam, byť potenciálně velmi krátký, pro každé vyskytující se slovo v
@@ -1460,14 +1493,13 @@ charakteristikám pevných disků (pomalé posunutí čtecí hlavice při nesekv
 přístupu) a problému mít otevřených tisíce souborů najednou spočívají klasické
 indexační algoritmy v tom, že zapisují částečné indexy sekvenčně na konec
 jednoho souboru, a poté (nebo ještě za běhu) je postupně sloučí do většího.
-
-% TODO describe block merge sort based
-
 Hybridní index ale bude mít pouze omezené množství invertovaných seznamů, které
-lze navíc korigovat. Autoři (cite completesearch) doporučují celkový počet
-seznamů v řádu stovek - okolo 256. Díky tomu by nemělo být takovým problémem
-vytvořit pro každý invertovaný seznam jeden soubor a vyhnout se slučovacímu
-kroku.
+lze navíc korigovat. Díky omezenému počtu invertovaných skupin by nemělo být
+takovým problémem vytvořit pro každý invertovaný seznam jeden soubor a vyhnout
+se slučovacímu kroku. V~\cite{Bast:2011:FCH:1993036.1993040} využívají malého
+počtu seznamů a navíc algoritmus optimalizují i pro efektivní přístupy do
+mezipaměti procesoru (L1 cache). Ve výsledku dosahují experimentálně vyššího
+výkonu než doposud nejrychlejší metoda \uv{konstrukce o jednom průchodu}).
 
 
 \chapter{Implementace}
@@ -2325,9 +2357,6 @@ zkomplikoval původně jednoduchou architekturu.
 V porovnání s alternativami založených na ngramové podobnosti není navržený
 systém robustní v případech oddělených slov nebo naopak kompozitních slov.
 Možným dalším rozšířením by byla kombinace navržené architektury s ngramy.
-
-\section*{Odkazy}
-\url{http://www.dcs.gla.ac.uk/~craigm/publications/lacour08efficiency.pdf}
 
 %\medskip
 \bibliographystyle{myplainnat}
