@@ -1344,7 +1344,8 @@ Stačí stránku zahltit co největším počtem různých slov (Keyword stuffin
 byla zvýšená pravděpodobnost, že ji vyhledávač uzná relevantní při náhodném
 dotazu. Pro ještě větší úspěšnost lze důležitá slova na stránce duplikovat pro
 zvýšení parametru \bftt{tf}. Tenhle problém do nějaké míry řeší pokročilá
-modifikace \bftt{tf.idf} funkcí nazvaná BM25 (Best Match).
+modifikace \bftt{tf.idf} funkcí nazvaná BM25 (Best
+Match)~\cite{Robertson:2009:PRF:1704809.1704810}.
 
 U přibližného vyhledávání nastává problém s parametrem \bftt{idf}, protože slova,
 která odpovídají překlepům, se vyskytují vzácně v porovnání s jejich správnou
@@ -1446,7 +1447,9 @@ nachází. Tím, že procházíme dokumenty od prvního k poslednímu, budou tyt
 seznamy rovnou seřazeny a posléze je můžeme použít přímo pro vyhledávání. Běžně
 se používají hashovací tabulky s optimalizací vzhledem k zipfově zákonu, které
 zvýhodňují frekventovaná slova při hledání v tabulce (např. techniky
-move-at-back nebo move-to-front)~\cite{ZOBEL2001271}.
+move-at-back nebo move-to-front)~\cite{ZOBEL2001271}. Experimentální měření
+technik pro konstrukci indexu čistě v paměti bylo provedeno
+v~\cite{Buttcher05memorymanagement}.
 
 V případě, že se data do paměti nevejdou, pak se používají algoritmy, které
 jsou vytvářené na míru danému hardwaru pro persistentní uložení. Tradičně se
