@@ -75,13 +75,13 @@
 \chapter{Úvod}
 Textové vyhledávání se stalo populární v 90. letech s nástupem Webu a s ním
 masivního nárůstu informací, které jsou dostupné prakticky každému po pár
-kliknutích myši. Toho bylo dosaženo vzestupem velkých webových vyhledávačů
-(Excite, AltaVista, Yahoo, Seznam, Google), které byly schopné exponenciálně
-rostoucí růst informací zkrotit~\cite{search_history}. Alespoň do jisté míry,
-protože tyto vyhledávače umožňují přítup pouze k té části webu, ke které se lze
-dostat následováním hypertextových odkazů. Většina informací není skrze pouhé
-odkazy dostupná (deep web), protože je např. skrytá v interních databázích, k
-nimž se lze dostat pouze interním vyhledávacím systémem.
+kliknutích myši. Toho bylo dosaženo vzestupem velkých webových vyhledávačů ,
+které byly schopné exponenciálně rostoucí růst informací
+zkrotit~\cite{search_history}. Alespoň do jisté míry, protože tyto vyhledávače
+umožňují přítup pouze k té části webu, ke které se lze dostat následováním
+hypertextových odkazů. Většina informací není skrze pouhé odkazy dostupná (deep
+web), protože je např. skrytá v interních databázích, k nimž se lze dostat
+pouze interním vyhledávacím systémem.
 
 Popularita webových vyhledávačů zapříčinila zájem o vyhledávací systémy i u
 jednotlivců a firem. Stejné techniky začaly být dostupné v open source
@@ -93,17 +93,18 @@ specializovaných vyhledávačů~\cite{dion_almaer,javaworld}.
 Vyhledávání by se tedy mohlo jevit jako vyřešený problém. V této práci bude ale
 představeno několik méně známých technik, které pokud by se více
 popularizovaly, mohly by změnit tenhle pohled a zapříčinit vznik nových
-vyhledávacích systémů.
+vyhledávacích systémů. 
 
-Pokud by tyto techniky byly natolik užívatelsky výhodné, pak by bylo podivné,
-že by je dodnes nikdo neimplementoval. Některé výzkumné týmy a komerční řešení
-se jimi přímo zabývají, ale v dnešní době platí v softwaru očekávání, že pokud
-není takový systém distribuován zdarma s otevřeným kódem (open source), nezíská
-si popularitu ani mezi nezávislými jedinci, ani mezi firmami. Snad pouze pokud
-byly osobně osloveny obchodním oddělením dané firmy, a tedy tvoří menšinu.
-Dalším důvodem je, že pokud se nějaký systém snaží být nejlepším pro všechny
-možné případy, pak je šance, že nebude nejlepším pro žádný z nich. To otvírá
-šanci pro nová řešení.
+
+% Pokud by tyto techniky byly natolik užívatelsky výhodné, pak by bylo podivné,
+% že by je dodnes nikdo neimplementoval. Některé výzkumné týmy a komerční řešení
+% se jimi přímo zabývají, ale v dnešní době platí v softwaru očekávání, že pokud
+% není takový systém distribuován zdarma s otevřeným kódem (open source), nezíská
+% si popularitu ani mezi nezávislými jedinci, ani mezi firmami. Snad pouze pokud
+% byly osobně osloveny obchodním oddělením dané firmy, a tedy tvoří menšinu.
+% Dalším důvodem je, že pokud se nějaký systém snaží být nejlepším pro všechny
+% možné případy, pak je šance, že nebude nejlepším pro žádný z nich. To otvírá
+% šanci pro nová řešení.
 
 \section{Motivace}
 Prozkoumávat oblast alternativních vyhledávacích technik jsem začal po
@@ -170,17 +171,14 @@ Jednak se zvýšila dostupnost výpočetní kapacity díky firmám pronajímají
 volnou kapacitu ve svých datových centrech (cloud). Vzestup tzv. NoSQL databází
 a distribuovaného výpočetního modelu MapReduce přinesl běžným uživatelům
 možnost používat distribuované algoritmy a datové struktury pro rozsáhlé datové
-sady přesahující kapacity jednoho počítače (Big Data), bez větší námahy.  Podle
-Stonebrakera jsou tato řešení nevhodná a jejich uživatelé postupně znovuobjeví
-stejné problémy, kterým se databázoví výzkumníci věnují posledních několik
-desetiletí.
+sady přesahující kapacity jednoho počítače (Big Data), bez větší námahy.
 
 Druhý směr je viditelný např. ve vzestupu dynamicky typovaných programovacích
 jazyků, které silně odstiňují programátora od složitostí hardwaru za cenu
 řádově pomalejšího výkonu. Tím, že je výpočetní výkon natolik levný, nejedná se
 tolik o plýtvání, pokud se efektivně využije dražší čas programátora. 
 
-Třetí směr je Opačným jevem k fenoménu Big Data, který by se odvozeně z názvu
+Třetí směr je opačným jevem k fenoménu Big Data, který by se odvozeně z názvu
 jmenoval Small Data, znamená soustředit se na relativně malé objemy dat, ale s
 použitím vlastností, které byly při minulých výpočetních kapacitách vyhodnoceny
 jako příliš náročné pro praktické použití. Pojem Small Data není tolik
@@ -237,33 +235,35 @@ textech zaznamenaných v audio nebo video souborech.
 % Spousta interních databází vyžaduje efektivní a robustní vyhledávání, které 
 
 \section{Cíl práce}
-Cílem práce je navrhnout praktický vyhledávací systém s vlastnostmi
-odpovídajícími požadavkům a očekáváním dnešní doby. Některé z popisovaných
-technik jsou opomíjené, protože jejich implementace není jednoduchá, nebo
-dlouho nebyla výpočetně výhodná. Pokrok ve výpočetním výkonu, nových
-počítačových architekturách, vyšších kapacitách pamětí a obecně pokrok v
-hardwaru pro ně ale poskytuje novou příležitost.
+Cílem práce je navrhnout praktický vyhledávací systém zaměřený pro
+specializované datové sady jako názvy produktů, jména a obecně text obtížně
+zpracovatelný jazykovou analýzou. Techniky, které bude vyhledávač používat
+nejsou v populární literatuře ještě velmi známé. Jednak jsou výpočetně
+náročnější než dosavadní algoritmy, ale umožňují efektivnější vykonávání
+některých uživatelských rozhraní a pokročilých typů dotazu.
 
-Důraz bude kladen především na přibližné vyhledávání, které je považované za
-velmi výpočetně nevýhodné, pokud by se implementovalo do současných populárních
-vyhledávacích systémů. Existují pro něj ale techniky, pro které by
-doimplementace do stávajících systémů znamenala drastický zásah do celkové
-architektury. Jinou technikou je ohodnocení podle blízkosti (proximity) slov ve
-výsledcích.
+Některé z popisovaných technik byly dlouho opomíjené, protože jejich
+implementace není jednoduchá, nebo dlouho nebyla výpočetně výhodná. Pokrok ve
+výpočetním výkonu, nových počítačových architekturách, vyšších kapacitách
+pamětí a obecně pokrok v hardwaru pro ně ale poskytuje novou příležitost.
+
+Důraz bude kladen především na prefixové a přibližné vyhledávání, které jsou
+považované za velmi výpočetně náročné. Další navrhovanou technikou je
+ohodnocení podle blízkosti (proximity) slov ve výsledcích.
 
 Systém, který bude navrhnut v této práci se nesnaží být nejlepším řešením pro
 všechny případy a explicitně se zaměřuje na specifičtější případy, ve kterých
-by přibližné vyhledávání přineslo velkou hodnotu. Kompromisem je, že se
-navrhovaný systém nesnaží jít stejnou cestou velkých dat (Big Data), ale přesně
-opačně by mělo představované řešení nalézt uplatnění pro menší objemy dat
-(Small Data).
+by přibližné vyhledávání přineslo velkou hodnotu. Z důvodu vyšší výpočetní
+náročnosti se navrhovaný systém nesnaží jít stejnou cestou velkých dat (Big
+Data), ale přesně opačně by mělo představované řešení nalézt uplatnění pro
+specifické případy a menší objemy dat (Small Data).
 
-Práce je koncipována tak, aby přiblížila některé opomíjené příležitosti ve
-vyhledávání, přiblížila dosavadní výzkum v těchto oblastech a na prototypové
-aplikaci demonstrovala praktickou proveditelnost navrhovaného řešení. Prototyp
-bude porovnán s některými populárními open source vyhledávacími systémy, které
-budou konfigurovány tak, aby splňovaly podobné požadavky.
-
+Práce je koncipována tak, aby přiblížila opomíjené příležitosti v čistě textově
+orientovaném vyhledávání, přiblížila dosavadní výzkum v těchto oblastech a na
+prototypové aplikaci demonstrovala praktickou proveditelnost navrhovaného
+řešení. Prototyp bude porovnán s některými populárními open source
+vyhledávacími systémy, které budou konfigurovány tak, aby splňovaly podobné
+požadavky.
 
 \section{Porovnání}
 Protože je dalších vyhledávacích systémů mnoho, bude vytvořeno pouze několik
@@ -1434,6 +1434,40 @@ blízkosti, nebo jiného faktoru. (cite algolia blog post). Tie-breaking sice
 ulehčuje výpočetní náročnost i pro složitější ohodnocovací funkce, ale
 neposkytuje flexibilitu v její modifikaci.
 
+\subsection{Indexace}
+% TODO indexační algoritmy
+Klasický invertovaný index 
+\subsubsection{Konstrukce invertovaného indexu}
+\subsubsection{Konstrukce hybridního indexu}
+
+Metody pro indexování u klasických invertovaných indexů se snaží vyhnout se
+více průchody vstupní datovou sadou. Čtení vstupu z disku, parsování a
+převádění na identifikátory je při velkých datových objemech časově náročné.
+Rozložení do skupin u hybridního indexu - HYB i mé rozložení - vyžaduje
+dvoufázové indexování, protože rozdělení do skupin potřebuje vědět statistiky,
+ze kterých se určí, jak mají být sloučené skupiny velké.
+
+V~\cite{Bast:2011:FCH:1993036.1993040} autoři popisují techniku, jak použít jen
+několik vzorků, aby s vysokou pravděpodobností určili velikost skupin. (cite a
+nastin alg.)
+
+Hybridní index se od klasického liší v počtu invertovaných seznamů. Klasický má
+jeden seznam, byť potenciálně velmi krátký, pro každé vyskytující se slovo v
+kolekci. Počet slov se odvíjí od heapsova zákona - tedy roste přibližně s
+odmocninou velikosti kolekce - a pro velké kolekce je následně velký počet slov
+důvodem indexačních technik pracujících s externí pamětí. Kvůli
+charakteristikám pevných disků (pomalé posunutí čtecí hlavice při nesekvenčním
+přístupu) a problému mít otevřených tisíce souborů najednou spočívají klasické
+indexační algoritmy v tom, že zapisují částečné indexy sekvenčně na konec
+jednoho souboru, a poté (nebo ještě za běhu) je postupně sloučí do většího.
+
+% TODO describe block merge sort based
+
+Hybridní index ale bude mít pouze omezené množství invertovaných seznamů, které
+lze navíc korigovat. Autoři (cite completesearch) doporučují celkový počet
+seznamů v řádu stovek - okolo 256. Díky tomu by nemělo být takovým problémem
+vytvořit pro každý invertovaný seznam jeden soubor a vyhnout se slučovacímu
+kroku.
 
 
 \chapter{Implementace}
@@ -1499,35 +1533,6 @@ všechny uzly se původně jedna skupina rozpadne na více skupin. Jediným
 parametrem je hranice určující rozpadnutí skupiny, která může být staticky
 daná, nebo být odvozená od dat. Zatím jsem ideální způsob, jak ji stanovit.
 
-\subsection{Indexace}
-Metody pro indexování u klasických invertovaných indexů se snaží vyhnout se
-více průchody vstupní datovou sadou. Čtení vstupu z disku, parsování a
-převádění na identifikátory je při velkých datových objemech časově náročné.
-Rozložení do skupin u hybridního indexu - HYB i mé rozložení - vyžaduje
-dvoufázové indexování, protože rozdělení do skupin potřebuje vědět statistiky,
-ze kterých se určí, jak mají být sloučené skupiny velké.
-
-V~\cite{Bast:2011:FCH:1993036.1993040} autoři popisují techniku, jak použít jen
-několik vzorků, aby s vysokou pravděpodobností určili velikost skupin. (cite a
-nastin alg.)
-
-Hybridní index se od klasického liší v počtu invertovaných seznamů. Klasický má
-jeden seznam, byť potenciálně velmi krátký, pro každé vyskytující se slovo v
-kolekci. Počet slov se odvíjí od heapsova zákona - tedy roste přibližně s
-odmocninou velikosti kolekce - a pro velké kolekce je následně velký počet slov
-důvodem indexačních technik pracujících s externí pamětí. Kvůli
-charakteristikám pevných disků (pomalé posunutí čtecí hlavice při nesekvenčním
-přístupu) a problému mít otevřených tisíce souborů najednou spočívají klasické
-indexační algoritmy v tom, že zapisují částečné indexy sekvenčně na konec
-jednoho souboru, a poté (nebo ještě za běhu) je postupně sloučí do většího.
-
-% TODO describe block merge sort based
-
-Hybridní index ale bude mít pouze omezené množství invertovaných seznamů, které
-lze navíc korigovat. Autoři (cite completesearch) doporučují celkový počet
-seznamů v řádu stovek - okolo 256. Díky tomu by nemělo být takovým problémem
-vytvořit pro každý invertovaný seznam jeden soubor a vyhnout se slučovacímu
-kroku.
 
 \subsection{Problém korelovaných slov}
 Jednou příčinou pomalých dotazů ve fuzzy vyhledávači je výskyt více podobných
