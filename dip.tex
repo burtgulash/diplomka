@@ -1506,7 +1506,6 @@ mezipaměti procesoru (L1 cache). Ve výsledku dosahují experimentálně vyšš
 výkonu než doposud nejrychlejší metoda \uv{konstrukce o jednom průchodu}).
 
 
-\chapter{Implementace}
 %\subsection{Datové struktury}
 %Po uvážení běžně používaných a alternativních datových struktur pro index jsem
 %zvolil klasický invertovaný index s hybridní materializací. Pro slovník jsem
@@ -1528,12 +1527,17 @@ výkonu než doposud nejrychlejší metoda \uv{konstrukce o jednom průchodu}).
 %nenašel způsob, jak v něm uložit hybridní index, který má pro mé účely velkou
 %výhodu.
 
-V této kapitole budou popsány konkrétní detaily implementací porovnaných
-systémů. V první sekci bude rozebrána implementace prototypu navrhovaného
-systému a v pozdějších částech stručně popsány konfigurace v systémech
-ElasticSearch a Postgres.
+% V této kapitole budou popsány konkrétní detaily implementací porovnaných
+% systémů. V první sekci bude rozebrána implementace prototypu navrhovaného
+% systému a v pozdějších částech stručně popsány konfigurace v systémech
+% ElasticSearch a Postgres.
 
 \section{Navrhovaný systém}
+V této části bude popsán navrhovaný vyhledávací systém s použitím technik popsaných výše.
+
+\subsection{Slovník}
+
+\subsection{Invertovaný soubor}
 Rozložení skupin invertovaným seznamů u rozložení HYB
 obecně nerespektuje abecední hranice. Důvodem je ten, že sloučené skupiny
 invertovaných seznamů by měly být ideálně stejně dlouhé. Není to ale
@@ -1569,6 +1573,8 @@ Rekurzivní aplikací pro všechny uzly se původně jedna skupina rozpadne na v
 skupin. Jediným parametrem je hranice určující rozpadnutí skupiny, která může
 být staticky daná, nebo být odvozená od dat. Zatím jsem ideální způsob, jak ji
 stanovit.
+
+\subsection{Ohodnocování}
 
 
 \subsection{Problém korelovaných slov}
@@ -1619,17 +1625,48 @@ dotazu (zde 2), bude těmto primitivním případům zabráněno.
 
 
 
-\section{Konfigurace v ElasticSearch}
-Pro systém ElasticSearch byly nakonfigurovány dva systémy.
 
-\subsection{Základní řešení}
+\chapter{Výsledky porovnáni}
+V této části budou nejprve shrnuty konfigurace a vlastnosti alternativních
+implementovaných vyhledávacích systémů a datové soubory použité pro
+experimentální analýzu.  První část analýzy je porovnání vlastností
+implementovaného systému s alternativními. Druhá část obsahuje ukázku a shrnutí
+nonfunkčních vlastností (rychlost, paměťová náročnost) systémů.
+
+\section{Porovnávané systémy}
+Kromě vlastní implementace byly pro systém ElasticSearch nakonfigurovány dva
+systémy. V systému Postgres byl vytvořen jeden trigramový vyhledávač.
+
+\subsubsection{Vlastní implementace}
+Můj systém vychází z výše popsaného návrhu vyhledávacího systému. Implementace
+je pouze prototyp napsaný v dynamicky typovaném Pythonu, a tedy nemůže z
+výkonostního důvodu sloužit k porovnání rychlosti a jiných výkonnostních
+veličin. Protože ale používám relativně malé datové sady, neměla by být
+výkonnost překážkou. Prototyp slouží zejména jako demonstrace implementovaných
+technik. Tou hlavní je výše popsaný modifikovaný hybridní invertovaný index se
+slovníkem implementovaným jako trie.  Ohodnocovací funkce je čistě textově
+založená - nemá o datech žádné vlastní předpoklady nebo přednostní pořadí. V
+první řadě upřednostňuje shodu dotazu s výsledkem podle editační vzdálenosti -
+pro každé slovo zvlášť. Dále pozitivně hodnotí ty výsledky, které obsahují
+shodu s minimální poziční vzdáleností.  Shody výsledků se stejným ohodnocením
+jsou pak rozbity několika minoritními hodnotami s nízkou váhou. Shoda, která je
+více na začátku záznamu má přednost a shoda, která obsahuje více shodujících se
+slov má přednost - obdobně jako u modelu tf.idf, pouze zde má velmi malou váhu
+a neuvažuje relativní důležitost slova ve shodě (idf).
+
+Dokonce při použití nového interpreteru pro Python s podporou JIT
+kompilace PyPy vyhledávač dosahuje až srovnatelných rychlostí jako
+Elasticsearch.
+
+
+\subsubsection{ElasticSearch - Základní řešení}
 Jako základní řešení sloužící pro porovnání jsem nakonfiguroval Elasticsearch
 tak, jak by se měl doporučeně nastavit pro full-textové vyhledávání ve větších
 textových dokumentech. Text je stematizován zabudovaným stematizérem pro
 češtinu. Cílem bude ukázat, že tohle nastavení bude mít potíže s vícejazykovou
 datovou sadou, jmény a s některými případy morfologie v češtině.
 
-\subsection{Trigramový vyhledávač}
+\subsubsection{ElasticSearch - Trigramový vyhledávač}
 Pro ukázku fuzzy vyhledávání pomocí n-gramů jsem vytvořil další konfiguraci pro
 Elasticsearch, která používá n-gramy o minimální a maximální velikosti 3.
 
@@ -1660,15 +1697,8 @@ typ dotazu, dochází k chybám, když se n-gramy ve výsledku překrývají. Je
 nenašel, jak tohle vyřešit, vytvořil jsem v Pythonu dodatečný zvýrazňovač, aby
 zde prezentované výsledky byly srovnatelné s ostatními systémy.
 
-\section{Konfigurace v Postgres}
+\subsubsection{Postgres - trigramový vyhledávač}
 
-
-\chapter{Analýza}
-V této části budou nejprve shrnuty vlastnosti alternativních implementovaných
-vyhledávacích systémů a datové soubory použité pro experimentální analýzu.
-První část analýzy je porovnání vlastností implementovaného systému s
-alternativními. Druhá část obsahuje ukázku a shrnutí nonfunkčních vlastností
-(rychlost, paměťová náročnost) systémů.
 
 %\section{Implementované systémy}
 %Pro demonstraci uvedených technik jsem vytvořil tři vyhledávací systémy. První
@@ -1676,27 +1706,6 @@ alternativními. Druhá část obsahuje ukázku a shrnutí nonfunkčních vlastn
 %pro Elasticsearch sloužící k porovnání. Všechny porovnávané systémy odstraňují
 %diakritiku a převádějí velká písmena na malá při indexování i dotazování.
 %Všechny konfigurace jsou v příloze \ref{appendix:search_config}.
-
-\subsection{Vlastní implementace}
-Můj systém vychází z výše popsaného návrhu vyhledávacího systému. Implementace
-je pouze prototyp napsaný v dynamicky typovaném Pythonu, a tedy nemůže z
-výkonostního důvodu sloužit k porovnání rychlosti a jiných výkonnostních
-veličin. Protože ale používám relativně malé datové sady, neměla by být
-výkonnost překážkou. Prototyp slouží zejména jako demonstrace implementovaných
-technik. Tou hlavní je výše popsaný modifikovaný hybridní invertovaný index se
-slovníkem implementovaným jako trie.  Ohodnocovací funkce je čistě textově
-založená - nemá o datech žádné vlastní předpoklady nebo přednostní pořadí. V
-první řadě upřednostňuje shodu dotazu s výsledkem podle editační vzdálenosti -
-pro každé slovo zvlášť. Dále pozitivně hodnotí ty výsledky, které obsahují
-shodu s minimální poziční vzdáleností.  Shody výsledků se stejným ohodnocením
-jsou pak rozbity několika minoritními hodnotami s nízkou váhou. Shoda, která je
-více na začátku záznamu má přednost a shoda, která obsahuje více shodujících se
-slov má přednost - obdobně jako u modelu tf.idf, pouze zde má velmi malou váhu
-a neuvažuje relativní důležitost slova ve shodě (idf).
-
-Dokonce při použití nového interpreteru pro Python s podporou JIT
-kompilace PyPy vyhledávač dosahuje až srovnatelných rychlostí jako
-Elasticsearch.
 
 
 \section{Použité datové soubory}
@@ -1764,7 +1773,7 @@ zahraniční film \bftt{Forrest Gump}, jehož jméno známe a umíme ho správn�
 napsat.
 
 \section{Přesnost}
-\subsection{Filmy}
+\subsubsection{Filmy}
 Několik následujících příkladů demonstruje záměrně zkomolené nebo jinak
 nepřesné dotazy, od kterých ale beztak očekáváme přesný zásah.
 Vyhledávače by neměly vracet příliš mnoho výsledků, protože tyto dotazy
@@ -1864,7 +1873,7 @@ našemu očekávání. Ostatní rovněž nalezly několik dokumenťů, ale až n
 výjimek, které v textu obsahují kompozitní slovo oddělené pomlčkou, se k cíli
 ani nepřibližíly.
 
-\subsection{Jména}
+\subsubsection{Jména}
 Pro databázi jmen byla zvýšena tolerance překlepů v editační vzdálenosti pro
 kratší slova, protože jména jsou obvykle krátká proti názvům filmů. Menší
 datová sada vykompenzuje nadbytečný výpočetní výkon, který se použije pro vyšší
@@ -1895,7 +1904,7 @@ Konery}. Musela by být silně zvýšena tolerance editační vzdálenosti pro k
 slova (\bftt{son} a \bftt{sean} se liší vzdáleností 2). Nevýhodou by bylo velké
 množství nevyhovujících záznamů.
 
-\subsection{Názvy produktů}
+\subsubsection{Názvy produktů}
 
 \mbox{}\input{hits/intel_8086.tex}\mbox{}
 
