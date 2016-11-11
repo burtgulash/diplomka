@@ -534,7 +534,7 @@ letitou stálou základnu uživatelů, musíme implementovat pokročilé vlastno
 bez použití pokročilých operátorů. Tedy vyhledávač dostane pouze základní
 textovou informaci, kterou pak může inteligentně interpretovat.
 
-\subsubsection{Inkrementální vyhledávání}
+\subsubsection{Inkrementální vyhledávání} \label{sec:inkrementalni_vyhledavani}
 Jednou technikou, kterou může vyhledávací systém implementovat bez nutnosti
 učit uživatele svým pokročilým funkcím, je vyhledávání ještě před tím, než
 uživatel dokončí svůj dotaz. Této technice se říká mnoha způsoby - kromě
@@ -557,17 +557,16 @@ vyhledávač vrátil po potvrzení - proto je to pouze našeptávač.
 
 Plná forma inkrementálního vyhledávání (prefixové vyhledávání) je striktně
 náročnější na výpočetní výkon, protože vykonává plný dotaz pro každé písmeno
-dotazu. Některé systémy to řeší ukládáním průběžných výsledků nedokončených
-dotazů do mezipaměti s krátkou žívotností (cite tastier, completesearch?).
-Populární je slabší forma inkrementálního vyhledávání využívající dvou
-uživatelských rozhraní, která vykoná pouze výpočetně méně náročnou verzi dotazu
-při každém novém písmenu.  Jejím příkladem by mohlo být vyhledávání pouze v
-titulcích nebo názvech dokumentů při našeptávání a plné vyhledání v celé datové
-sadě po potvrzení dotazu.  Jiným způsobem je využití záznamu všech dotazů
-(query log). Toho využívají rozsáhlé webové vyhledávače, díky velkého počtu
-svých uživatelů a jimi vykonaných dotazů. Statistické informace jsou zpětně
-zabudovány do našeptávače, který pak doplňuje nové dotazy jejich
-nejpopulárnějším dokončením.
+dotazu. To je možné řešit ukládáním průběžných výsledků nedokončených dotazů do
+mezipaměti s krátkou žívotností.  Populární je slabší forma inkrementálního
+vyhledávání využívající dvou uživatelských rozhraní, která vykoná pouze
+výpočetně méně náročnou verzi dotazu při každém novém písmenu.  Jejím příkladem
+by mohlo být vyhledávání pouze v titulcích nebo názvech dokumentů při
+našeptávání a plné vyhledání v celé datové sadě po potvrzení dotazu.  Jiným
+způsobem je využití záznamu všech dotazů (query log). Toho využívají rozsáhlé
+webové vyhledávače, díky velkého počtu svých uživatelů a jimi vykonaných
+dotazů. Statistické informace jsou zpětně zabudovány do našeptávače, který pak
+doplňuje nové dotazy jejich nejpopulárnějším dokončením.
 
 Prefixově interpretovaný dotaz může mít dvě základní varianty. V té první se
 každé zadané slovo dotazu uvažuje jako prefix nedokončeného slova. Např. dotaz
@@ -1107,16 +1106,15 @@ byla pouze mezifáze před vytvořením invertovaného indexu, zatímco u hybrid
 indexu se tahle datová struktura struktura používá přímo k vyhledávání.
 
 \subsubsection{HYB} je typ hybridního invertovaného indexu, který během
-indexování předsloučí invertované seznamy slov v abecedním rozsahu.
-Materializované seznamy mohou mít rozsahy např. \bftt{[A-EN], [EN-NUL],
-[NUL-QU], [QU-Z]} - první invertovaný seznam by obsahoval slova
-začínající na \bftt{A} až \bftt{EN}. Disjunktivní dotaz v téhle
-struktuře je už buďto předsloučený, nebo během vykonání dotazu za běhu
-sloučí pouze malé množství sousedících materializovaných seznamů. Ke
-každému záznamu ve sloučeném seznamu musí být poznamenáno, ke kterému
-slovu patří. Dotazy, které nevyužijí celý rozsah seznamu se díky této
-dodatečné informaci vyfiltrují od slov, které zúženému rozsahu
-neodpovídají. cite completesearch.
+indexování předsloučí invertované seznamy slov v abecedním
+rozsahu~\cite{Bast:2006:TLF:1148170.1148234}.  Materializované seznamy mohou
+mít rozsahy např. \bftt{[A-EN], [EN-NUL], [NUL-QU], [QU-Z]} - první invertovaný
+seznam by obsahoval slova začínající na \bftt{A} až \bftt{EN}. Disjunktivní
+dotaz v téhle struktuře je už buďto předsloučený, nebo během vykonání dotazu za
+běhu sloučí pouze malé množství sousedících materializovaných seznamů. Ke
+každému záznamu ve sloučeném seznamu musí být poznamenáno, ke kterému slovu
+patří. Dotazy, které nevyužijí celý rozsah seznamu se díky této dodatečné
+informaci vyfiltrují od slov, které zúženému rozsahu neodpovídají.
 
 Tím, že jsou některé seznamy sloučeny do většího, budou dotazy, které by těchto
 seznamů využily, penalizovány. Naopak komplexní disjunktivní dotazy budou
@@ -1310,12 +1308,14 @@ a v důsledku zisk firmy, která vyhledávač provozuje na svém eshopu.
 \subsubsection{Analýza vazeb}
 Pro dokumenty u webových vyhledávačů se používá ohodnocení na základě
 popularity webových stránek ve webovém grafu. Pro ohodnocení popularity se
-používají algoritmy pro míry centrality, z nichž nejpopulárnější je PageRank.
+používají algoritmy pro míry centrality, z nichž nejpopulárnější je
+PageRank~\cite{Page99thepagerank}.
 
 \subsubsection{Více průchodů}
 Některé vyhledávače implementují víceprůchodové ohodnocení tak, že jejich první
 fáze odfiltruje určitou množinu relevantních dokumentů pomocí funkce s nízkou
-náročností a pro zbylé aplikuje sofistikovanější metody (cite yahoo).
+náročností a pro zbylé aplikuje sofistikovanější
+metody~\cite{Yin:2016:RRY:2939672.2939677}.
 
 \subsection{Statistické metody}
 U dlouhého textu můžeme použít statistiky počtu slov k určení jeho relevance k
@@ -1345,8 +1345,8 @@ Stačí stránku zahltit co největším počtem různých slov (Keyword stuffin
 byla zvýšená pravděpodobnost, že ji vyhledávač uzná relevantní při náhodném
 dotazu. Pro ještě větší úspěšnost lze důležitá slova na stránce duplikovat pro
 zvýšení parametru \bftt{tf}. Tenhle problém do nějaké míry řeší pokročilá
-modifikace \bftt{tf.idf} funkcí nazvaná BM25 (Best
-Match)~\cite{Robertson:2009:PRF:1704809.1704810}.
+modifikace \bftt{tf.idf} funkcí nazvaná BM25
+(Best~Match)~\cite{Robertson:2009:PRF:1704809.1704810}.
 
 U přibližného vyhledávání nastává problém s parametrem \bftt{idf}, protože slova,
 která odpovídají překlepům, se vyskytují vzácně v porovnání s jejich správnou
@@ -1370,9 +1370,9 @@ jednoduchost vynecháme.
 \subsection{Blízkost}
 Statistiky jako počet slov v textu ztrácí v krátkém textu význam. Např. film
 nebude více zelený, pokud se v jeho názvu bude vícekrát vyskytovat slovo
-\bftt{zelený} (cite algolia). V krátkém textu by byly nadměrně hodnoceny delší
-texty, které slovo obsahují vícekrát, protože většina textů v kolekci bude
-slovo obsahovat jenom jednou.
+\bftt{zelený}. V krátkém textu by byly nadměrně hodnoceny delší texty, které
+slovo obsahují vícekrát, protože většina textů v kolekci bude slovo obsahovat
+jenom jednou.
 
 Tradičně podporují implementace invertovaných indexů hledání s přihlédnutím k
 blízkosti slov pomocí frázových dotazů. Už při slučování seznamů dojde k
@@ -1434,7 +1434,7 @@ Jiný způsob výpočtu důležitosti používá implementace vyhledávače algo
 nižší faktory se uvažují pouze pokud dojde ke shodě ve vyšších faktorech. Např.
 pokud je vzdálenost několika prvních výsledků dotazu od dotazu 0 - tedy přesná
 shoda, pak teprve se přistoupí k ohodnocení podle předdefinovaného pořadí,
-blízkosti, nebo jiného faktoru. (cite algolia blog post). Tie-breaking sice
+blízkosti, nebo jiného faktoru~\cite{algolia_ranking}. Tie-breaking sice
 ulehčuje výpočetní náročnost i pro složitější ohodnocovací funkce, ale
 neposkytuje flexibilitu v její modifikaci.
 
@@ -1486,8 +1486,7 @@ Rozložení do skupin u hybridního indexu vyžaduje dvoufázové indexování, 
 rozdělení do skupin potřebuje vědět statistiky, ze kterých se určí, jak mají
 být sloučené skupiny velké. V~\cite{Bast:2011:FCH:1993036.1993040} autoři
 popisují techniku inspirovanou technikami pro paralelní řazení, jak použít jen
-několik vzorků, aby s vysokou pravděpodobností určili velikost skupin. (cite a
-nastin alg.).
+několik vzorků, aby s vysokou pravděpodobností určili velikost skupin.
 
 Hybridní index se od klasického liší v počtu invertovaných seznamů. Klasický má
 jeden seznam, byť potenciálně velmi krátký, pro každé vyskytující se slovo v
@@ -2379,7 +2378,19 @@ na prvních $k$ nejvýše ohodnocených.
 \subsubsection{Plánování dotazů}
 
 \subsubsection{Ukládání inkrementálních mezivýsledků}
-\subsubsection{Zvýrazňovač pro editační vzdálenost}
+Tento problém byl krátce naznačen v \S\,\ref{sec:inkrementalni_vyhledavani}.
+Vyhledávač s podporou search-as-you-type dotazů může využít výsledku hledání
+kratšího prefixu pro výpočet výsledků delšího prefixu. Pro příklad mějme dotaz
+\bftt{já jsem doma} a předpokládejme, že ho uživatel vkládá postupně po
+slovech. Před tím, než uživatel zadá celý dotaz, dostane se do momentu, kdy mu
+vyhledávač vrátí výsledky prefixu \bftt{já jsem}. Vyhledávač může postupného
+zadávání využít a uložit si mezivýsledky tohoto prefixu do krátkodobé
+mezipaměti. Jakmile uživatel zadá poslední slovo, stačí použít mezivýsledek,
+najít poslední slovo \bftt{doma} a provést sloučení. Tuhle techniku využívají
+fuzzy vyhledávací systémy CompleteSearch~\cite{Bast:2006:TLF:1148170.1148234}
+a~Tastier~\cite{Ji:2009:EIF:1526709.1526760}.
+
+%\subsubsection{Zvýrazňovač pro editační vzdálenost}
 
 
 %\subsubsection{Indexování}
