@@ -583,11 +583,12 @@ morfologii jazyka. Při prohledávání celých textových dokumentů je pro už
 frustrující situace, kdy hledá výraz - nejčastěji v prvním mluvnickém pádu -
 ale výskyt fráze je v dokumentu v jiném pádu nebo čísle. Přibližným (fuzzy)
 vyhledáváním se také rozumí, pokud dokáže systém napovědět, nebo rovnou
-vyhledat výsledky, přestože dotaz obsahuje překlepy (\bftt{metamatyka} ->
-\bftt{matematika}), zdvojená písmena nebo naopak (\bftt{forest gump} ->
-\bftt{forrest gump}), nesprávné rozdělení slov (\bftt{i phone} ->
-\bftt{iphone}), inteligentní nahrazování některých slov jejich synonymy, nebo
-expanze zkratek na plný výraz (\bftt{U.S. -> United States}).
+vyhledat výsledky, přestože dotaz obsahuje překlepy (\bftt{metamatyka}
+$\rightarrow$ \bftt{matematika}), zdvojená písmena nebo naopak (\bftt{forest
+gump}  $\rightarrow$ \bftt{forrest gump}), nesprávné rozdělení slov (\bftt{i
+phone}  $\rightarrow$ \bftt{iphone}), inteligentní nahrazování některých slov
+jejich synonymy, nebo expanze zkratek na plný výraz (\bftt{U.S.  $\rightarrow$
+United States}).
 
 Některé techniky je obtížné implementovat, protože závisí na podrobné analýze
 dat. Např. přibližná shoda slov na základě morfologie závisí na správné detekci
@@ -1272,7 +1273,7 @@ jsou experimentálně vyzkoušeny v \S\,\ref{sec:rychlost_vyhledavani}.
 %TODO
 % wand, mwand
 
-\section{Ohodnocení výsledků dotazu}
+\section{Ohodnocení výsledků dotazu} \label{sec:ohodnoceni_vysledku}
 Poslední fáze vykonání dotazu je ohodnocení všech nalezených výsledků, jejich
 seřazení a zvýraznění výskytů v textu (highlighting, snippet generation). V
 téhle fázi je důležité se rozmyslet, jestli je nutné zpracovávat všechny
@@ -2338,6 +2339,11 @@ netextových datových typů a vyřešení flexibility při vytváření různý
 dotazu.
 
 \section{Otevřené problémy}
+Zde prezentovaný systém cílí na řešení základních otázek okolo prefixového,
+přibližného vyhledávání. Nový systém sice nabízí efektivnější odpovědi na
+pokročilé dotazy, ale s nimi přichází další sada problémů. Těmi se při použití
+klasického invertovaného indexu často ani nemusíme zabývat, protože se pro
+některé pokročilé dotazy ani nepoužívají.
 
 % static: no locks and latches, compact data structures, cache efficient
 % 2 level data structure + bulk updates
@@ -2345,7 +2351,33 @@ dotazu.
 % document or term based
 % share nothing
 \subsubsection{Příliš krátký vstupní řetězec}
+Obtížná situace u prefixového vyhledávání je pokud dotaz obsahuje pouze jedno
+slovo, které navíc obsahuje pouze první znak (např. dotaz \bftt{s*}). Výhoda
+invertovaného indexu je, že dokáže efektivně zúžit počet výsledné množiny.
+Prefixový dotaz tohoto typu prování minimální prořezávání Nalezení všech
+výsledků je náročné i v optimálním případě, kdy je výpočetní náročnost určena
+pouze velikostí nalezené množiny. 
+
+V případě, že použijeme prefixovou schopnost vyhledávače pro vyhledávání typu
+search-as-you-type, pak v každém případě uživatel pocítí počáteční zpoždění,
+jakmile začne vkládat první znak svého dotazu. U dalších znaků pak dojde k
+výraznému zrychlení.
+
+Řešením je nevracet celou množinu, ale problém nějak omezit. Např.
+implementovaný prototyp nepovoluje prefixové dotazy, které jsou definované
+pouze počátečním písmenem. Místo nich provede přepsání prefixového dotazu na
+běžný (např. \bftt{s*} $\rightarrow$ \bftt{s}). Ve většině případech není změna
+uživatelsky vnímatelná, protože datové sady obsahují spoustu jednopísmenných
+slov. V případech vzácněji se vyskytujících písmen může tento způsob
+pokulhávat.
+
+Pokud bychom chtěli, aby systém systém fungoval zaručeně bez velkých zpoždění,
+mohli bychom implementovat slučování invertovaných systémů typu Top-K (viz
+\S\,\ref{sec:ohodnoceni_vysledku}) a jednoduše omezit počet vrácených výsledků
+na prvních $k$ nejvýše ohodnocených.
+
 \subsubsection{Plánování dotazů}
+
 \subsubsection{Ukládání inkrementálních mezivýsledků}
 \subsubsection{Zvýrazňovač pro editační vzdálenost}
 
