@@ -93,7 +93,7 @@ specializovaných vyhledávačů~\cite{dion_almaer,javaworld}.
 Vyhledávání by se tedy mohlo jevit jako vyřešený problém. V této práci bude ale
 představeno několik méně známých technik, které pokud by se více
 popularizovaly, mohly by změnit tenhle pohled a zapříčinit vznik nových
-vyhledávacích systémů. 
+vyhledávacích systémů.
 
 
 % Pokud by tyto techniky byly natolik užívatelsky výhodné, pak by bylo podivné,
@@ -130,7 +130,7 @@ Postgres) do sekundárního systému pro vyhledávání (Solr, ElasticSearch,
 Sphinx). Přitom by bylo jednodušší, kdyby databázové systémy přímo podporovaly
 solidní vyhledávací systém formou externí komponenty. Např. databázový systém
 Postgres některé vyhledávací doplňky poskytuje, ale očividně ne v takové formě,
-aby se lidem nevyplatilo fragmentovat data do více systémů. 
+aby se lidem nevyplatilo fragmentovat data do více systémů.
 
 % BIg Noise - Silver
 % Gargage In - Garbage Out
@@ -176,7 +176,7 @@ sady přesahující kapacity jednoho počítače (Big Data), bez větší námah
 Druhý směr je viditelný např. ve vzestupu dynamicky typovaných programovacích
 jazyků, které silně odstiňují programátora od složitostí hardwaru za cenu
 řádově pomalejšího výkonu. Tím, že je výpočetní výkon natolik levný, nejedná se
-tolik o plýtvání, pokud se efektivně využije dražší čas programátora. 
+tolik o plýtvání, pokud se efektivně využije dražší čas programátora.
 
 Třetí směr je opačným jevem k fenoménu Big Data, který by se odvozeně z názvu
 jmenoval Small Data, znamená soustředit se na relativně malé objemy dat, ale s
@@ -185,7 +185,7 @@ jako příliš náročné pro praktické použití. Pojem Small Data není tolik
 rozšířený jako Big Data a byl několikrát použit v různých významech. V jednom
 případě se ale shoduje s významem, v jakém je v této práci
 zamýšlen~\cite{small_data}. Autor navrhuje použití nadbytečného výkonu např.
-pro interaktivitu v publikovaných vědeckých pracích. 
+pro interaktivitu v publikovaných vědeckých pracích.
 
 \subsection{Přibližné vyhledávání}
 Motivaci této práce charakterizuje pojem small data, protože hlavní myšlenkou
@@ -201,14 +201,14 @@ dokumentech (webové stránky, pdf soubory) a v relativně krátkých textových
 krátkých reklamních sděleních, apod. Rozdíl je především ten, že full-text je
 tvořen celými větami jednoho jazyka, zatímco názvy a pojmenování jsou tvořeny
 často jen několika málo slovy, které netvoří větu, a často nejsou tvořená slovy
-jednoho jazyka. 
+jednoho jazyka.
 
 U názvů produktů často nelze rozlišit jazyk, protože jsou slova unikátní a tím,
 že obsahují číslice, nelze o nich ani hovořit jako o slovech. Např. \bftt{MSI
 GeForce GTX 1060 GAMING X 6G, 6GB GDDR5} je název grafické karty, \bftt{Bosch
 TDA502412E} a \bftt{Tefal Autoclean ANTI CALC FV9640} jsou příklady názvů pro
 žehličku a \bftt{55" LG OLED55E6V} a \bftt{55" HISENSE H55M3300} jsou názvy
-televizorů. 
+televizorů.
 
 V databázích jmen se často vyskytují jména osob různých národností a i přes
 znalost národnosti nelze správně určit jazyk jména. Např. Jakými jazyky by byla
@@ -232,7 +232,7 @@ textech zaznamenaných v audio nebo video souborech.
 % (a, já, jsem, tu, k, nebo, ...), která pomáhají plynulosti jazyka a navazování
 % myšlenek. Názvy stop slova neobsahují.
 
-% Spousta interních databází vyžaduje efektivní a robustní vyhledávání, které 
+% Spousta interních databází vyžaduje efektivní a robustní vyhledávání, které
 
 \section{Cíl práce}
 Cílem práce je navrhnout praktický vyhledávací systém zaměřený pro
@@ -794,7 +794,7 @@ editační vzdálenost prvního řetězce k prefixům druhého \[\bftt{p\_edit}(
 \min_{p \in prefix(y)} \bftt{edit}(x, p)\], kde $prefix(y)$ označuje množinu
 všech prefixů řetězce $y$~\cite{Bast:2013:EFS:2457465.2457470}. Př.
 $\bftt{p\_edit}(ker, karel) = 1$, protože $\bftt{edit}(ker, kar) = 1$. Oproti
-předchozím metrikám není symetrická v $x$ a $y$. 
+předchozím metrikám není symetrická v $x$ a $y$.
 
 % TODO damerau paper?
 
@@ -822,7 +822,7 @@ Např. vzdálenost mezi krátkými slovy \bftt{na} a \bftt{ty} je 2, přitom spo
 nemají slova pranic společného. Naopak u delších slov je větší šance, že dojde
 k překlepům, proto práh můžeme zvýšit. Dokonce pro velmi dlouhá slova bude
 platit, že ve slovníku bude pouze omezené množství dlouhých a zároveň podobných
-slov, proto si můžeme dovolit limit nastavit poměrně vysoko. 
+slov, proto si můžeme dovolit limit nastavit poměrně vysoko.
 
 Jako řešení můžeme definovat relativní editační vzdálenost jako
 \[\bftt{edit\_rel}(x, y) = \frac{\max (|x|, |y|) - edit(x, y)}{\min (|x|,
@@ -973,7 +973,7 @@ písmene slova. Pokud začíná vyhledání od prvního písemene, musí se otes
 všechny větve odpovídající prvním písmenům, protože i na nich může dojít k
 překlepu. Prohledání stromu od druhého písmene je o poznání efektivnější,
 protože už se uvažuje pouze podstrom, který odpovídá stejnému prvnímu písmenu,
-které má dotazované slovo. Tento jev může být využit více způsoby. 
+které má dotazované slovo. Tento jev může být využit více způsoby.
 
 Prvním je datová struktura pojmenovaná FB-trie (Forward -
 Backward)~\cite{Boytsov:2011:IMA:1963190.1963191}, která vytvoří dvě trie.
@@ -1055,7 +1055,7 @@ přenosu dat (I/O bottleneck) oproti rychlosti dnešních procesorů. Algoritmy 
 dekompresi mohou být velmi rychlé a tento jev zaznamenáme i na rychlejších ssd
 úložištích a dokonce i pokud uvažujeme celou operaci výhradně v paměti
 počítače. Dekódování může být díky několika úrovním vyrovnávací paměti
-procesoru rychlejší než přístup k nekomprimovaným datům v RAM. 
+procesoru rychlejší než přístup k nekomprimovaným datům v RAM.
 % TODO cite ssd, memory hierarchy model, atd?
 
 \paragraph{Instantní kódy} uvažují každé číslo samostatně a snaží se
@@ -1168,7 +1168,7 @@ Roaring~\cite{DBLP:journals/corr/LemireKK16}) jsou stavěné pro řídké množi
 Invertované indexy jsou použitelné zejména pro lidský jazyk, který odpovídá
 vlastnostem zipfova a heapsa zákona. Text je modifikován odstraněním
 neabecedních znaků a rozdělením na slova. V důsledku odstranění některých částí
-textu není možné text z indexu zpětně rekonstruovat. 
+textu není možné text z indexu zpětně rekonstruovat.
 
 Jiné přístupy, které jsou vhodné i pro text neodpovídající lidské řeči (např.
 biologické sekvence) jsou založené na suffixových stromech, suffixových polích
@@ -1205,7 +1205,7 @@ vykonání dotazu. Ty totiž tvoří většinu uložených dat indexu.
 Konstantním výzkumem na poli vyhledávačů jsou algoritmy pro jejich efektivní
 slučování zejména v konjunktivní formě (průnik, intersection). V této práci nás
 bude zajímat i disjunktivní forma sloučení (sjednocení, union, merge), která má
-velkou roli v prefixových a fuzzy variantách indexu. 
+velkou roli v prefixových a fuzzy variantách indexu.
 
 Invertovanými seznamy se rozumí vzrůstající posloupnosti identifikátorů
 dokumentů. Ty mohou být obohaceny o pozicovou informaci a ohodnocení, ale pro
@@ -1269,7 +1269,7 @@ jsou experimentálně vyzkoušeny v \S\,\ref{sec:rychlost_vyhledavani}.
 
 
 
-%TODO 
+%TODO
 % wand, mwand
 
 \section{Ohodnocení výsledků dotazu}
@@ -1319,7 +1319,7 @@ náročností a pro zbylé aplikuje sofistikovanější metody (cite yahoo).
 \subsection{Statistické metody}
 U dlouhého textu můžeme použít statistiky počtu slov k určení jeho relevance k
 nějakému slovu. Na tomhle principu stojí většina ohodnocovacích metod a metod
-pro dolování dat, které pracují s dlouhým textem.  
+pro dolování dat, které pracují s dlouhým textem.
 
 Hodnotou \bftt{tf} (term frequency) označíme počet výskytů slova v daném
 dokumentu a \bftt{df} (document frequency) bude značit počet výskytů slova v
@@ -1390,22 +1390,23 @@ mělo mít menší váhu, protože nepřispívá k frázi, zapříčiní nárůs
 vzdálenosti. To naznačuje, že musíme uvažovat minimální vzdálenost výskytů -
 tedy délku minimálního intervalu, který obsahuje všechna slova dotazu.
 
-\subsubsection{Algoritmus pro nalezení minimálního intervalu}
-Vstupem algoritmu je seznam všech výskytů slov v dokumentu a výstupem je
-interval s minimální délkou v tomto seznamu, který obsahuje všechna unikátní
-slova alespoň jednou. Tento seznam je seřazen vzestupně podle pozice výskytu a
-během algoritmu v něm postupujeme od nejmenšího k největšímu, tedy zleva
-doprava, a udržuje si frekvenční tabulku všech viděných slov.  V prvním kroku
-nalezneme první interval, který obsahuje zástupce každého slova - kandidát na
-minimální interval. Ve druhém kroku rozšiřujeme interval slovy na pravo od něj,
-dokud nenarazíme na první slovo dosavadního nalezeného intervalu. Tento
-interval jistě obsahuje zástupce každého slova, protože jsme zatím žádné
-neodebrali, ale obsahuje některé vícekrát. Zmenšíme ho opět na minimální možnou
-velikost tím, že zleva odstraníme všechny výskyty tak, aby jej žádné ze slov
-neopustilo (postupně sledujeme frekvenční tabulku pro každé slovo a zastavíme
-se, pokud odstraňovaný prvek má hodnotu 1). Postupně projedeme celý seznam
-rozšiřováním intervalu výskyty napravo a odebíráním výskytů zleva. Všechny
-nalezené kandidáty seřadíme podle velikosti a vrátímeminimální interval.
+\subsubsection{Nalezení minimálního intervalu}
+\paragraph{Algoritmus.} Vstupem algoritmu je seznam všech výskytů slov v
+dokumentu a výstupem je interval s minimální délkou v tomto seznamu, který
+obsahuje všechna unikátní slova alespoň jednou. Tento seznam je seřazen
+vzestupně podle pozice výskytu a během algoritmu v něm postupujeme od
+nejmenšího k největšímu, tedy zleva doprava, a udržuje si frekvenční tabulku
+všech viděných slov.  V prvním kroku nalezneme první interval, který obsahuje
+zástupce každého slova - kandidát na minimální interval. Ve druhém kroku
+rozšiřujeme interval slovy na pravo od něj, dokud nenarazíme na první slovo
+dosavadního nalezeného intervalu. Tento interval jistě obsahuje zástupce
+každého slova, protože jsme zatím žádné neodebrali, ale obsahuje některé
+vícekrát. Zmenšíme ho opět na minimální možnou velikost tím, že zleva
+odstraníme všechny výskyty tak, aby jej žádné ze slov neopustilo (postupně
+sledujeme frekvenční tabulku pro každé slovo a zastavíme se, pokud odstraňovaný
+prvek má hodnotu 1). Postupně projedeme celý seznam rozšiřováním intervalu
+výskyty napravo a odebíráním výskytů zleva. Všechny nalezené kandidáty seřadíme
+podle velikosti a vrátímeminimální interval.
 
 \subsubsection{Jiné přístupy}
 Index s rychlou podporou omezení blízkosti, ale za cenu velkého indexu
@@ -1558,15 +1559,16 @@ HYB se snaží zajistit, aby byly abecední hranice respektovány co nejvíce.
 Výsledkem by měly být skupiny, jejichž hraniční slova sdílejí co nejdelší
 prefixy.
 
-\subsubsection{Algoritmus pro rozdělení skupin respektující abecední hranice}
-Zařazení slova do slučující skupiny lze provést při prohledání trie do hloubky.
-Začínáme na kořenovém uzlu s tím, že uvažujeme jedinou skupinu, do které na
-začátku všechna slova patří. Pokud při průchodu součet délek invertovaných
-seznamů poduzlů jednoho uzlu překročí stanovenou hranici, pak je dosavadní
-přiřazená skupina uzlu nahrazena skupinou novou. Rekurzivní aplikací pro
-všechny uzly se původně jedna skupina rozpadne na více skupin. Jediným
-parametrem je hranice určující rozpadnutí skupiny, která může být staticky
-daná, nebo být odvozená od dat. Zatím jsem ideální způsob, jak ji stanovit.
+\subsubsection{Rozdělení skupin respektující abecední hranice}
+\paragraph{Algoritmus.} Zařazení slova do slučující skupiny lze provést při
+prohledání trie do hloubky.  Začínáme na kořenovém uzlu s tím, že uvažujeme
+jedinou skupinu, do které na začátku všechna slova patří. Pokud při průchodu
+součet délek invertovaných seznamů poduzlů jednoho uzlu překročí stanovenou
+hranici, pak je dosavadní přiřazená skupina uzlu nahrazena skupinou novou.
+Rekurzivní aplikací pro všechny uzly se původně jedna skupina rozpadne na více
+skupin. Jediným parametrem je hranice určující rozpadnutí skupiny, která může
+být staticky daná, nebo být odvozená od dat. Zatím jsem ideální způsob, jak ji
+stanovit.
 
 
 \subsection{Problém korelovaných slov}
@@ -2268,69 +2270,102 @@ http '<uri>/<index>/_stats' | jq .indices.<index>.primaries.store.size_in_bytes
 \end{table}
 \end{tt}
 
-\chapter{Další postup a otevřené problémy}
-\section{Integrace do existujících systémů}
-Existující otevřené projekty, které se vyhledáváním zabývají, postrádají zde
-popsané techniky. Tato práce by pro ně mohla poskytnout vodítko, jak techniky
-implementovat, pokud by to pro ně neznamenalo překopání celé architektury.
+\chapter{Závěr}
 
-\subsection{Invertované seznamy v externím systému}
+\section{Další postup v implementaci}
+Častečná implementace zde navrhovaného systému není vhodná pro produkční
+nasazení zejména z výkonnostních důvodů.  V této části bude představeno několik
+možností, jakými cestami by se mohla dosavadní implemtance tohoto sytému dále
+vyvíjet.
 
-\section{Statické a dynamické indexy}
+Vyhledávač by mohl být přepsán ve výkonějším jazyce než Python a vyvíjen jako
+samostatný systém, nebo by mohl být integrován do existujících databázových
+nebo vyhledávacích systémů.
+
+\subsubsection{Integrace do existujících systémů}
+Systém byl navržen tak, aby byl ideálně jazykově nezávislý, čehož dosahuje díky
+možnosti přibližného vyhledávání. To ho činí vhodným kandidátem pro integraci
+do open sourcových databázových systémů, které nejsou výhradně zaměřeny na
+zpracování textu. Díky jednoduchosti nasazení bez nutnosti žádné složité
+textové analýzy by mohl být tento systém implementován jako plugin podobně
+jako trigramový plugin do systému Postgres, který zde byl použit pro
+porovnání.
+
+Integrace do specializovaných vyhledávačů by paradoxně mohla být obtížnější,
+protože jsou silně specializované na některé specifické datové struktury.
+Vytvoření slovníku s podporou fuzzy hledání a implementace hybridních
+invertovaných seznamů - oproti klasickému invertovanému indexu - by mohla
+znamenat významný zásah do celkové architektury a prakticky znamenala vytvoření
+zcela nového systému.
+
+\subsubsection{Částečná integrace}
+Alternativně by mohl být nový systém částečně integrován do existujících
+databázových systémů tak, že by v nich byly uloženy pouze invertované seznamy,
+které tvoří většinu indexu. Slovník a část věnující se ohodnocování výsledků by
+byla implementována externě. Tenhle přístup by vyřešil problém distribuovaného
+indexu při použití více počítačů najednou.
+
+Sloupcové databáze v principu uchovávají data v komprimované formě stejné jakou
+používají invertované indexy pro své seznamy. Podle některých dochází k
+postupnému slučování oborů zabývajícími se databázemi a textovým vyhledáváním
+právě díky obdobné architektuře používaných systémů. Invertované seznamy mohou
+být ve sloupcové databázi uloženy v sekvenčním pořadí. Vytvoření jednoho
+sloupce pro jeden invertovaný seznam není prakticky proveditelné, protože počet
+slov typické textové kolekce významně překračuje povolené počty sloupců v
+současných systémech. Kvůli zipfově zákonu je většina invertovaných seznamů
+velmi krátká a tím, že sloupcové databáze uchovávají data v blocích o nějaké
+minimální velikosti, došlo by k velkému plýtvání~\cite{Bjorklund_aconfluence}.
+
+Hybridní index by mohl vyřešit problém velkého počtu sloupců, protože už z
+principu omezuje jejich počet tím, že je slučuje dohromady. Kombinace
+hybridních invertovaných indexů a sloupcových databází nabízí cestu pro další
+výzkum s řadou praktických aplikací.
+
+\subsubsection{Samostatný systém}
+Systém by mohl být dále vyvíjen jako samostatný systém. Pro implementaci by to
+znamenalo vytvoření efektivního procesu indexování, uchovánání dat v
+perzistentním úložišti, distribuci indexu na více počítačů, podporu dalších
+netextových datových typů a vyřešení flexibility při vytváření různých typů
+dotazu.
+
+\section{Otevřené problémy}
+
 % static: no locks and latches, compact data structures, cache efficient
 % 2 level data structure + bulk updates
 % columnar storage
 % document or term based
 % share nothing
-\section{Příliš krátký vstupní řetězec}
-\section{Plánování dotazů}
-\section{Ukládání inkrementálních mezivýsledků}
-\section{Zvýrazňovač pro editační vzdálenost}
-\section{Škálovatelnost}
-V této práci je mým cílem poukázat, že pro malá objemy dat je vhodné použít
-adekvátní techniky pro zvýšení relevance vyhledávání za cenu zvýšené výpočetní
-náročnosti. Tím, že jsou počítače stále výkonnější a datové sady se snadno
-vejdou do dostupné paměti RAM, neměl by být při efektivní implementaci a
-běžných dotazech s výkonem problém. Pokud jsou požadavkem větší objemy dat,
-protože například firma roste s přibývajícím počtem zákazníků, pak by dnes
-neměl být problém dokoupit si více paměti, která je každým rokem stále levnější.
-
-I kdyby nepřipadalo v úvahu vertikální škálování přidáváním více RAM, existuje
-možnost horizontálního škálování na více počítačů a vytvoření distribuovaného
-systému. Invertované indexy jsou velmi snadno paralelizovatelné problémy
-% TODO term or document distributed. cite something
-
-Ten by ostatně byl nezbytný, pokud by požadavkem byla vysoká
-dostupnost dat. Stejná data by byla replikována na více strojů a v případě
-selhání jednoho by se instantně použila redundance více strojů.
+\subsubsection{Příliš krátký vstupní řetězec}
+\subsubsection{Plánování dotazů}
+\subsubsection{Ukládání inkrementálních mezivýsledků}
+\subsubsection{Zvýrazňovač pro editační vzdálenost}
 
 
+%\subsubsection{Indexování}
+%Implementace je zaměřená především na ty části, které jsou klíčové pro
+%demonstraci návrhu. Indexovací fáze používá jednoduchý \bftt{sort based}
+%algoritmus a nevyužívá techniky více souborů. Do budoucna by bylo užitečné
+%zjistit, jaké jsou nejvhodnější indexovací metody pro hybridní index oproti
+%klasickému invertovanému indexu.
+%
+%\subsubsection{Porovnání výkonu}
+%Algoritmy pro slučování invertovaných seznamů jsou obzvlášť citlivé na správnou
+%implementaci a především na zvolený programovací jazyk. Zatímco Python je
+%ideální prototypovací jazyk, je asi tím nejhorším, v čem by měl být produkční
+%vyhledávací systém vytvořen. To se sice časem může změnit díky výkonově
+%orientovanému interpreteru PyPy. Přesto by měla být pro adekvátní porovnání
+%implementace provedena v jazyce s podporou překladu do nativního strojového
+%kódu.
+%
+%Se zpomalujícím Mooreovým zákonem se objevují různé formy paralelismu, které by
+%měly sloužit jako náhrada za klesající tempo růstu. Pro pečlivě optimalizovaný
+%kód, které databázové a vyhledávací systémy často využívají, se častěji a
+%častěji využívají bitově-paralelní instrukce moderních procesorů. I z tohoto
+%důvodu by měl být zvolen takový jazyk, ve kterém není velkou překážkou tyto
+%moderní schopnosti procesorů využívat. (cite completesearch C++).
 
-\subsubsection{Indexování}
-Implementace je zaměřená především na ty části, které jsou klíčové pro
-demonstraci návrhu. Indexovací fáze používá jednoduchý \bftt{sort based}
-algoritmus a nevyužívá techniky více souborů. Do budoucna by bylo užitečné
-zjistit, jaké jsou nejvhodnější indexovací metody pro hybridní index oproti
-klasickému invertovanému indexu.
 
-\subsubsection{Porovnání výkonu}
-Algoritmy pro slučování invertovaných seznamů jsou obzvlášť citlivé na správnou
-implementaci a především na zvolený programovací jazyk. Zatímco Python je
-ideální prototypovací jazyk, je asi tím nejhorším, v čem by měl být produkční
-vyhledávací systém vytvořen. To se sice časem může změnit díky výkonově
-orientovanému interpreteru PyPy. Přesto by měla být pro adekvátní porovnání
-implementace provedena v jazyce s podporou překladu do nativního strojového
-kódu.
-
-Se zpomalujícím Mooreovým zákonem se objevují různé formy paralelismu, které by
-měly sloužit jako náhrada za klesající tempo růstu. Pro pečlivě optimalizovaný
-kód, které databázové a vyhledávací systémy často využívají, se častěji a
-častěji využívají bitově-paralelní instrukce moderních procesorů. I z tohoto
-důvodu by měl být zvolen takový jazyk, ve kterém není velkou překážkou tyto
-moderní schopnosti procesorů využívat. (cite completesearch C++).
-
-
-\chapter{Závěr}
+\section{Shrnutí}
 Záměrem této práce je poukázat na alternativní techniky v oblasti vyhledávání a
 demonstrovat možný vyhledávací systém, který je implementuje. Tento systém by
 měl být vhodnější pro potřeby jednotlivců i firem, které vyžadují od
@@ -2351,7 +2386,7 @@ dynamicky typovaném programovacím jazyce Python, ale byla použita stejná
 architektura, kterou by bylo možné pouze přepsat do výkonnějšího jazyka. Bylo
 proto provedeno relativní porovnání výkonu mezi určitými typy dotazů s vyšší
 mírou tolerance pro běh dotazu, které ukázalo že pro běžný dotaz by vyhledávač
-splňoval kritéria pro vyhledávání v reálném čase. 
+splňoval kritéria pro vyhledávání v reálném čase.
 
 Analýza nejhorších případů ukázala na typ dotazů, které by mohly být zneužity
 proti vyhledávači. Pro tento případ byl nastíněn způsob, jak ho řešit, ač by
