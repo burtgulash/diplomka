@@ -5,6 +5,7 @@
 \usepackage[left=4cm,right=3cm,bottom=2.5cm,footskip=1.5cm]{geometry}
 \usepackage{color}
 \usepackage[scaled=0.83]{beramono}
+\usepackage{amsmath}
 
 \usepackage[sort,numbers]{natbib}
 
@@ -1577,7 +1578,7 @@ stanovit.
 \subsection{Ohodnocování}
 
 
-\subsection{Problém korelovaných slov}
+\subsection{Problém korelovaných slov} \label{sec:correlated_words}
 Jednou příčinou pomalých dotazů ve fuzzy vyhledávači je výskyt více podobných
 slov v dotazu. Jednoduchým případem pro ilustraci je, pokud dotaz obsahuje více
 totožných slov. Jejich invertované seznamy, případně disjunkce více
@@ -1626,7 +1627,7 @@ dotazu (zde 2), bude těmto primitivním případům zabráněno.
 
 
 
-\chapter{Výsledky porovnáni}
+\chapter{Výsledky porovnání}
 V této části budou nejprve shrnuty konfigurace a vlastnosti alternativních
 implementovaných vyhledávacích systémů a datové soubory použité pro
 experimentální analýzu.  První část analýzy je porovnání vlastností
@@ -2375,7 +2376,54 @@ mohli bychom implementovat slučování invertovaných systémů typu Top-K (viz
 \S\,\ref{sec:ohodnoceni_vysledku}) a jednoduše omezit počet vrácených výsledků
 na prvních $k$ nejvýše ohodnocených.
 
-\subsubsection{Plánování dotazů}
+\subsubsection{Korelovaná slova}
+V \S\,\ref{sec:correlated_words} byl naznačen problém, který poukazuje na možný
+útok proti vyhledávači tím, že ho zahltí spoustou pomalých dotazů. Nejhorší
+případ pomalých dotazů lze vytvořit nějakého slova s malými změnami, jejichž
+disjunkce invertovaných seznamů se z velké části překrývají. Tím, že jsou téměř
+totožné, nedojde k efektivnímu konjunktivnímu filtrování, a tím naroste
+náročnost vykonání dotazu. Protože jsou při slučování seznamů použity pouze
+jednoduché booleovské operátory AND, OR a případně NOT, mohli bychom využít
+jejich vlastností a dotaz podle nich přepsat. Např. invertované seznamy dvou
+korelovaných slov \bftt{them} a \bftt{they} budou odpovídat sdílené části
+seznamu $X$ a částem, které nesdílí - respektive $A$ a $B$. Klasické vykonání
+konjunkce disjunkcí by mělo tvar \ref{eq:puvodni}:
+
+\begin{align}
+\bftt{(X OR A) AND (X OR B)} \label{eq:puvodni} \\
+\bftt{(X AND X) OR (X AND A) OR (X AND B) OR (X AND AB)} \label{eq:dlouhy} \\
+\bftt{X OR (A AND B)} \label{eq:kratky}
+\end{align}
+
+. Pomocí booleovského kalkulu ho můžeme změnit na \ref{eq:dlouhy}, nebo rovnou
+na \ref{eq:kratky}. Poslední forma ukazuje, jak zabránit pomalým dotazům, pokud
+bychom potřebovali zjistit ty dokumenty, ve kterých se slova \bftt{them} a
+\bftt{they} nalézají. Jenže vyhledávač není pouze booleovský, ale zaznamenává
+si navíc pozice výskytů pro ohodnocování a zvýrazňování, proto není jednoduché
+přepsání dotazu takhle triviální. Přesto tato myšlenka může být odrážecím
+můstkem, jak tenhle problém v budoucnu vyřešit.
+
+\subsubsection{Kompozitní slova}
+Tím, že index uvažuje text jako posloupnost slov, dělají mu potíže složená
+slova, která vznikla ať už přirozeně složením dvou kratších slov nebo kvůli
+překlepu. Např. páry dotazů (\bftt{i phone}, \bftt{iphone}) nebo
+(\bftt{godfather}, \bftt{god father}) vyhodnotí vyhledávač naprosto odlišně,
+přestože intuitivně cítíme, že se jedná o víceméně tentýž dotaz. Ngramové
+vyhledávače neuvažují čistě jako slova a díky tomu dokážou rozpoznat i mezeru
+jako překlep. Obohacením vyhledávače o ngramový vejdlejší index by mohlo pomoci
+s těmito případy.
+
+Jiná možnost je rozpoznat složená slova ještě před vykonáním dotazu a rozložit
+je. Každé slovo je možné předem uvažovat jako složené a systém pro přepisování
+dotazu by se snažil najít rozdělení na podslova, které maximalizuje frekvenci
+vzniklých slov. Např. \bftt{godfather} můžeme rozdělit na \bftt{g odfather},
+\bftt{go dfather}, \bftt{god father}, \bftt{godf ather}, \bftt{godfa ther},
+\ldots s tím, že ne všechna rozdělení vytváří slova, která se nachází ve
+slovníku, a proto je může rovnou zahodit. V opačném směru - tedy kdy dokument
+obsahuje kompozitní slovo (\bftt{godfather}), ale uživatel zadal rozložené na
+podslova (\bftt{god father}) - je možné uvažovat všechny páry sousedících slov
+a zkusit stejným způsobem najít, jestli jejich sloučení produkuje smysluplné
+slovo.
 
 \subsubsection{Ukládání inkrementálních mezivýsledků}
 Tento problém byl krátce naznačen v \S\,\ref{sec:inkrementalni_vyhledavani}.
