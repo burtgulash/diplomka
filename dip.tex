@@ -1951,6 +1951,20 @@ výpočetní náročnost.
 \mbox{}\input{hits/the_live_tour.tex}\mbox{}
 
 
+\section{Porovnání trigramových vyhledávačů}
+Pro srovnání schopností trigramového indexu Postgresu (\bftt{trig\_PG}) a
+trigramové konfigurace pro ElasticSearch (\bftt{trig\_ES}) bylo provedeno
+několik dotazů, které poukazují na slabost ostatních vyhledávačů. Těmi jsou
+kompozitní slova. Tab.~\ref{tab:result:trig_god_father} ukazuje, že oba systémy
+si podle očekávání s kompozitními slovy poradí. \bftt{trig\_ES} má oproti
+běžnému trigramovému indexu navíc nakonfigurovanou preferenci přesných shod,
+což mu může dávat výhodu v přesnosti. Přestože pouze dva výsledky obsahují
+přesnou shodu ve slovech \bftt{god} ani \bftt{father}, zdá se, že
+\bftt{trig\_ES} vrací přesnější výsledky.
+
+\mbox{}\input{hits/trig_god_father.tex}\mbox{}
+
+
 
 \clearpage
 \section{Rychlost vyhledávání} \label{sec:rychlost_vyhledavani}
