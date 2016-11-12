@@ -1960,9 +1960,11 @@ si podle očekávání s kompozitními slovy poradí. \bftt{trig\_ES} má oproti
 běžnému trigramovému indexu navíc nakonfigurovanou preferenci přesných shod,
 což mu může dávat výhodu v přesnosti. Přestože pouze dva výsledky obsahují
 přesnou shodu ve slovech \bftt{god} ani \bftt{father}, zdá se, že
-\bftt{trig\_ES} vrací přesnější výsledky.
+\bftt{trig\_ES} vrací přesnější výsledky. Tab.~\ref{tab:result:trig_auto_mobil} ukazuje podobný výsledek pro dotaz \bftt{auto mobil}.
 
 \mbox{}\input{hits/trig_god_father.tex}\mbox{}
+
+\mbox{}\input{hits/trig_auto_mobil.tex}\mbox{}
 
 
 
@@ -1999,16 +2001,18 @@ dotazu pro každý ze systémů.
 
 Podle očekávání je implementace \bftt{edit\_dyn} výkonově nejslabší kvůli
 dynamicky typovanému Pythonu. Znatelný je rozdíl mezi jednotlivými interpretery
-Pythonu. Zejména pro korelované dotazy \bftt{the of}, \bftt{the they} a
-\bftt{the than then they thel them thun}, jimž odpovídá v
-obr.~\ref{fig:timings_log} špička dosahující až 4000ms. Tyto dotazy byly
+Pythonu. Zejména pro experimentální korelované dotazy \bftt{the of}, \bftt{the
+they} a \bftt{the than then they thel them thun}, jimž odpovídá v
+obr.~\ref{fig:timings_log} špička dosahující přes 4000\,ms. Tyto dotazy byly
 záměrně zkonstruovány z nefrekventovanějších slov \bftt{the} a \bftt{of}, aby
 ukázaly na nejhorší možný případ. Oproti CPythonu dokáže PyPy rozpoznat
 opakující se kód průchodu invertovanými seznamy a efektivně ho vykonat, jak je
 patrné z relativního rozdílu těchto dotazů oproti ostatním.
 
 \bftt{trig\_ES} je podle očekávání pomalejší než základní \bftt{cs\_ES}, ale do
-takové míry, kdy to pro malou datovou kolekci nevadí.
+takové míry, kdy to pro malou datovou kolekci nevadí. Trigramový vyhledávač v
+Postgresu \bftt{trig\_PG} dosahuje obecně horšího výkonu než jeho protějšek v
+ElasticSearch \bftt{trig\_ES}.
 
 
 \noindent\makebox[\textwidth][c]{%
