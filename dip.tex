@@ -238,21 +238,22 @@ textech zaznamenaných v audio nebo video souborech.
 \section{Cíl práce}
 Cílem práce je navrhnout praktický vyhledávací systém zaměřený pro
 specializované datové sady jako názvy produktů, jména a obecně text obtížně
-zpracovatelný jazykovou analýzou. Techniky, které bude vyhledávač používat
-nejsou v populární literatuře ještě velmi známé. Jednak jsou výpočetně
-náročnější než dosavadní algoritmy, ale umožňují efektivnější vykonávání
-některých uživatelských rozhraní a pokročilých typů dotazu.
+zpracovatelný jazykovou analýzou. Techniky, které by měl navrhovaný vyhledávač
+používat nejsou v populární literatuře ještě velmi známé. Jsou výpočetně
+náročnější než dosavadní algoritmy, ale na druhou stranu umožňují efektivnější
+vykonávání některých uživatelských rozhraní a pokročilých typů dotazu.
 
-Některé z popisovaných technik byly dlouho opomíjené, protože jejich
-implementace není jednoduchá, nebo dlouho nebyla výpočetně výhodná. Pokrok ve
-výpočetním výkonu, nových počítačových architekturách, vyšších kapacitách
-pamětí a obecně pokrok v hardwaru pro ně ale poskytuje novou příležitost.
+% TODO kam s tim?
+% Některé z popisovaných technik byly dlouho opomíjené, protože jejich
+% implementace není jednoduchá, nebo dlouho nebyla výpočetně výhodná. Pokrok ve
+% výpočetním výkonu, nových počítačových architekturách, vyšších kapacitách
+% pamětí a obecně pokrok v hardwaru pro ně ale poskytuje novou příležitost.
 
-Důraz bude kladen především na prefixové a přibližné vyhledávání, které jsou
+Důraz je kladen především na prefixové a přibližné vyhledávání, které jsou
 považované za velmi výpočetně náročné. Další navrhovanou technikou je
 ohodnocení podle blízkosti (proximity) slov ve výsledcích.
 
-Systém, který bude navrhnut v této práci se nesnaží být nejlepším řešením pro
+Systém, který je v této práci navrhován se nesnaží být nejlepším řešením pro
 všechny případy a explicitně se zaměřuje na specifičtější případy, ve kterých
 by přibližné vyhledávání přineslo velkou hodnotu. Z důvodu vyšší výpočetní
 náročnosti se navrhovaný systém nesnaží jít stejnou cestou velkých dat (Big
@@ -2519,6 +2520,11 @@ vyhledávacího systému robustnost proti malým změnám v dotazu. Uplatnění 
 nalézt v menších datových sadách, než na které je dnes kladen důraz, protože
 díky omezené velikosti dat je možné přebytečný výpočetní výkon použít k těmto
 náročnějším technikám.
+
+% Některé z popisovaných technik byly dlouho opomíjené, protože jejich
+% implementace není jednoduchá, nebo dlouho nebyla výpočetně výhodná. Pokrok ve
+% výpočetním výkonu, nových počítačových architekturách, vyšších kapacitách
+% pamětí a obecně pokrok v hardwaru pro ně ale poskytuje novou příležitost.
 
 Navržený vyhledávací systém byl implementován jako prototyp obsahující popsané
 techniky a porovnán s několika dalšími vyhledávači, které byly vytvořeny jako
