@@ -1099,12 +1099,40 @@ abecedně blízko sebe.
 Pokud je index rozšířený o pozicovou informaci, pak sloučením všech
 invertovaných záznamů získáme zpět původní datovou sadu, pouze zakódovanou
 (dopředný index, forward index). Index se nazývá hybridní, protože je hybridem
-mezi invertovaným a dopředným indexem.  Hybridní index je velmi podobný
+mezi invertovaným a dopředným indexem. Hybridní index je velmi podobný
 dopřednému indexu v jednom z prvních popisů architektury Googlu. To, co se
 myslí skupinou slov v hybridním indexu, odpovídá barelu (barrel) v jejich
 indexu. S rozdílem, že oba pojmy slouží k jinému účelu. Jejich dopředný index
 byla pouze mezifáze před vytvořením invertovaného indexu, zatímco u hybridního
-indexu se tahle datová struktura struktura používá přímo k vyhledávání.
+indexu se tahle datová struktura struktura používá přímo k
+vyhledávání~\cite{Brin:1998:ALH:297810.297827}.
+
+\mbox{}
+\begin{figure}[H]
+\centering
+\begin{tt}
+\begin{tabulary}{\textwidth}{LLL}
+\textbf{původní text} & \textbf{dopředný index} \\
+\hline
+1: \bftt{dokument text a index}         & 1: [2, 7, 1, 3] \\
+2: \bftt{invertovaný index pro text}    & 2: [4, 3, 6, 7] \\
+3: \bftt{dokument a text}               & 3: [2, 1, 7] \\
+4: \bftt{pro text je index}             & 4: [6, 7, 5, 3] \\
+\vspace{.5cm}\\
+\textbf{invertovaný index + slovník} & \textbf{hybridní index} \\
+\hline
+1, \bftt{a}:           [1, 3]        & \bftt{a-d}: [1:1, 1:2, 2:2, 3:1] \\
+2, \bftt{dokument}:    [1, 2]        & \bftt{i-j}: [1:3, 2:3, 2:4, 4:3, 4:5] \\
+3, \bftt{index}:       [1, 2, 4]     & \bftt{p-t}: [1:7, 2:6, 2:7, 3:7, 4:6, 4:7] \\
+4, \bftt{invertovaný}: [2] & \\ 
+5, \bftt{je}:          [4] & \\
+6, \bftt{pro}:         [2, 4] & \\
+7, \bftt{text}:        [1, 2, 3, 4] & \\
+\end{tabulary}
+\end{tt}
+\caption{Příklad indexů}
+\label{tab:index_examples}
+\end{figure}
 
 \subsubsection{HYB} je typ hybridního invertovaného indexu, který během
 indexování předsloučí invertované seznamy slov v abecedním
@@ -1742,7 +1770,7 @@ obsahuje \textbf{907\,094} titulků článků (\bftt{cswiki\_titulky}).
 \begin{table}[H]
 \centering
 \begin{tabulary}{\textwidth}{LRRRR}
-\textbf{data} & \textbf{velikost} & \textbf{\# záznamů} & \textbf{\# slov} & \textbf{\# unikátních slov} \\
+\textbf{data} & \textbf{velikost} & \textbf{záznamů} & \textbf{slov} & \textbf{unikátních slov} \\
 \hline
 csfd\_filmy     & 11.2\,MB & 540\,152 & 1\,958\,147 & 231\,452 \\
 csfd\_tvůrci    & 3.6\,MB  & 240\,659 & 523\,544    & 124\,780 \\
