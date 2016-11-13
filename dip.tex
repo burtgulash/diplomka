@@ -238,21 +238,22 @@ textech zaznamenaných v audio nebo video souborech.
 \section{Cíl práce}
 Cílem práce je navrhnout praktický vyhledávací systém zaměřený pro
 specializované datové sady jako názvy produktů, jména a obecně text obtížně
-zpracovatelný jazykovou analýzou. Techniky, které bude vyhledávač používat
-nejsou v populární literatuře ještě velmi známé. Jednak jsou výpočetně
-náročnější než dosavadní algoritmy, ale umožňují efektivnější vykonávání
-některých uživatelských rozhraní a pokročilých typů dotazu.
+zpracovatelný jazykovou analýzou. Techniky, které by měl navrhovaný vyhledávač
+používat nejsou v populární literatuře ještě velmi známé. Jsou výpočetně
+náročnější než dosavadní algoritmy, ale na druhou stranu umožňují efektivnější
+vykonávání některých uživatelských rozhraní a pokročilých typů dotazu.
 
-Některé z popisovaných technik byly dlouho opomíjené, protože jejich
-implementace není jednoduchá, nebo dlouho nebyla výpočetně výhodná. Pokrok ve
-výpočetním výkonu, nových počítačových architekturách, vyšších kapacitách
-pamětí a obecně pokrok v hardwaru pro ně ale poskytuje novou příležitost.
+% TODO kam s tim?
+% Některé z popisovaných technik byly dlouho opomíjené, protože jejich
+% implementace není jednoduchá, nebo dlouho nebyla výpočetně výhodná. Pokrok ve
+% výpočetním výkonu, nových počítačových architekturách, vyšších kapacitách
+% pamětí a obecně pokrok v hardwaru pro ně ale poskytuje novou příležitost.
 
-Důraz bude kladen především na prefixové a přibližné vyhledávání, které jsou
+Důraz je kladen především na prefixové a přibližné vyhledávání, které jsou
 považované za velmi výpočetně náročné. Další navrhovanou technikou je
 ohodnocení podle blízkosti (proximity) slov ve výsledcích.
 
-Systém, který bude navrhnut v této práci se nesnaží být nejlepším řešením pro
+Systém, který je v této práci navrhován se nesnaží být nejlepším řešením pro
 všechny případy a explicitně se zaměřuje na specifičtější případy, ve kterých
 by přibližné vyhledávání přineslo velkou hodnotu. Z důvodu vyšší výpočetní
 náročnosti se navrhovaný systém nesnaží jít stejnou cestou velkých dat (Big
@@ -875,9 +876,10 @@ indexu rovněž postačí obyčejná hashovací tabulka.
 
 \subsection{Prefixový slovník}
 Pro nalezení všech slov v prefixovém indexu, které odpovídají jednomu prefixu
-můžeme použít reprezentaci slovníku seřazeným seznamem slov. V něm nalezneme
-první a poslední slovo, které odpovídají prefixu. Všechna slova mezi nimi jsou
-výsledkem hledání.  Tuto reprezentaci můžeme efektivně komprimovat technikou
+můžeme použít reprezentaci slovníku seřazeným seznamem
+slov~\citep[kap.~4]{buttcher2010information}. V něm nalezneme první a poslední
+slovo, které odpovídají prefixu. Všechna slova mezi nimi jsou výsledkem
+hledání.  Tuto reprezentaci můžeme efektivně komprimovat technikou
 Front-Coding, která rozdělí seřazený seznam na bloky o konstantní velikosti
 (např. 8) a pro každý blok uloží nejdelší prefix, který sdílí všechna slova
 bloku. Technika funguje pro slova přirozeného jazyka, protože díky tendenci
@@ -1074,7 +1076,13 @@ tisíců prvků. Při sekvenčním přístupu u slučování invertovaných sezn
 využije velká část prvků bloku, proto jsou bloková schémata pro invertované
 indexy efektivní. Příkladem jsou např. kompresní rodiny Frame of Reference (bit
 packing, FOR, PFor, PForDelta, ...) a v poslední době se rožšiřující velmi
-efektivní kódování Elias-Fano~\cite{DBLP:journals/corr/abs-1206-4300}.
+efektivní kódování
+Elias-Fano~\cite{DBLP:journals/corr/abs-1206-4300,Curtiss:2013:USS:2536222.2536239}.
+
+~\\
+Experimentální srovnání různých typů komprese pro invertované seznamy bylo
+provedeno např. v~\citep[addenda~6]{buttcher2010information}
+nebo~\cite{Zhang:2008:PCI:1367497.1367550}.
 
 \subsubsection{Poloinvertovaný index}
 Velkou výpočetní zátěží u prefixových a fuzzy indexů je, pokud musí provést
@@ -2519,6 +2527,11 @@ vyhledávacího systému robustnost proti malým změnám v dotazu. Uplatnění 
 nalézt v menších datových sadách, než na které je dnes kladen důraz, protože
 díky omezené velikosti dat je možné přebytečný výpočetní výkon použít k těmto
 náročnějším technikám.
+
+% Některé z popisovaných technik byly dlouho opomíjené, protože jejich
+% implementace není jednoduchá, nebo dlouho nebyla výpočetně výhodná. Pokrok ve
+% výpočetním výkonu, nových počítačových architekturách, vyšších kapacitách
+% pamětí a obecně pokrok v hardwaru pro ně ale poskytuje novou příležitost.
 
 Navržený vyhledávací systém byl implementován jako prototyp obsahující popsané
 techniky a porovnán s několika dalšími vyhledávači, které byly vytvořeny jako
