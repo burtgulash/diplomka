@@ -949,7 +949,7 @@ Delete~\cite{Faroo_symmetric_delete}. Několik variant algoritmu je popsáno
 v~\cite{FastSS} a~\cite{Bast:2013:EFS:2457465.2457470} popisuje modifikovanou
 kompaktnější verzi s názvem DeleteMax, která řeší problém s velikostí.
 
-\subsubsection{Trie}
+\subsubsection{Trie} \label{sec:trie}
 Populární datovou strukturou, do které lze relativně kompaktně uložit sadu slov
 a která podporuje rychlé vyhledávání je trie, také známá jako radixový nebo
 prefixový strom. Jedno slovo do trie uložíme tak, že ho rozdělíme na písmena a
@@ -1142,8 +1142,8 @@ vyhledávání~\cite{Brin:1998:ALH:297810.297827}.
 \label{tab:index_examples}
 \end{figure}
 
-\subsubsection{HYB} je typ hybridního invertovaného indexu, který během
-indexování předsloučí invertované seznamy slov v abecedním
+\subsubsection{HYB} \label{sec:hyb} je typ hybridního invertovaného indexu,
+který během indexování předsloučí invertované seznamy slov v abecedním
 rozsahu~\cite{Bast:2006:TLF:1148170.1148234}.  Materializované seznamy mohou
 mít rozsahy např. \bftt{[A-EN], [EN-NUL], [NUL-QU], [QU-Z]} - první invertovaný
 seznam by obsahoval slova začínající na \bftt{A} až \bftt{EN}. Disjunktivní
@@ -1466,13 +1466,13 @@ výsledku. Tohle pořadí pak může doupravit uživatelem zvolené pořadí, al
 by mít menší váhu než textová shoda.
 
 \subsubsection{Tie-breaking}
-Jiný způsob výpočtu důležitosti používá implementace vyhledávače algolia
-(tie-breaking). V něm se určí pořadí jednotlivých faktorů podle důležitosti a
-nižší faktory se uvažují pouze pokud dojde ke shodě ve vyšších faktorech. Např.
-pokud je vzdálenost několika prvních výsledků dotazu od dotazu 0 - tedy přesná
-shoda, pak teprve se přistoupí k ohodnocení podle předdefinovaného pořadí,
-blízkosti, nebo jiného faktoru~\cite{algolia_ranking}. Tie-breaking sice
-ulehčuje výpočetní náročnost i pro složitější ohodnocovací funkce, ale
+Jiný způsob výpočtu důležitosti používá implementace komerčního vyhledávače
+Algolia~\cite{algolia_ranking}. V něm se určí pořadí jednotlivých faktorů podle
+důležitosti a nižší faktory se uvažují pouze pokud dojde ke shodě ve vyšších
+faktorech (tie-breaking). Např.  pokud je vzdálenost několika prvních výsledků
+dotazu od dotazu 0 - tedy přesná shoda, pak teprve se přistoupí k ohodnocení
+podle předdefinovaného pořadí, blízkosti, nebo jiného faktoru. Tie-breaking
+sice ulehčuje výpočetní náročnost i pro složitější ohodnocovací funkce, ale
 neposkytuje flexibilitu v její modifikaci.
 
 \subsection{Indexace}
@@ -1570,13 +1570,16 @@ výkonu než doposud nejrychlejší metoda \uv{konstrukce o jednom průchodu}).
 % ElasticSearch a Postgres.
 
 \section{Navrhovaný systém}
-V této části bude popsán navrhovaný vyhledávací systém s použitím technik popsaných výše.
+Nový systém byl navrhován tak, aby v první řadě podporoval vyhledávací rozhraní
+search-as-you-type a zároveň přibližné vyhledávání. Pro slovník je použita
+datová struktura trie s podporou fuzzy vyhledávání samotných slov i prefixů.
+Pro porovnání podobnosti slov může být použita i klasická editační vzdálenost i
+dynamicky adaptovatelná, která struktury trie využívá (popsáno
+v~\S\,\ref{sec:trie}). 
 
-\subsection{Slovník}
-
-\subsection{Invertovaný soubor}
-Rozložení skupin invertovaným seznamů u rozložení HYB
-obecně nerespektuje abecední hranice. Důvodem je ten, že sloučené skupiny
+Pro efektivní nalezení přibližných výskytů byla použita variace hybridního
+indexu typu HYB (\S\,\ref{sec:hyb}), která oproti němu respektuje abecední
+hranice jednotlivých sloučených seznamů. Důvodem je, že sloučené skupiny
 invertovaných seznamů by měly být ideálně stejně dlouhé. Není to ale
 jednoduché, protože se různá písmena objevují různě často. Např. obecně bude
 existovat více slov začínající na \bftt{T} než těch, které začínají na
@@ -1703,7 +1706,7 @@ textových dokumentech. Text je stematizován zabudovaným stematizérem pro
 češtinu. Cílem bude ukázat, že tohle nastavení bude mít potíže s vícejazykovou
 datovou sadou, jmény a s některými případy morfologie v češtině.
 
-\subsubsection{ElasticSearch - Trigramový vyhledávač}
+\subsubsection{ElasticSearch - Trigramový vyhledávač} \label{sec:trigram_implementation}
 Pro ukázku fuzzy vyhledávání pomocí n-gramů jsem vytvořil další konfiguraci pro
 Elasticsearch, která používá n-gramy o minimální a maximální velikosti 3.
 
@@ -2300,7 +2303,15 @@ zabraného indexem. Alternativně lze velikost indexu zjistit sečtením velikos
 všech uložených souborů. Obě metody vracejí zhruba stejné výsledky ($\pm 4\%$).
 
 Indexy pro vyhledávače \bftt{edit} a \bftt{edit\_dyn} jsou totožné. Liší se
-pouze formou hledání podobných slov ve slovníku.
+pouze formou hledání podobných slov ve slovníku. Nutné je podotknout, že
+prototyp navrhovaného systému reprezentovaný těmito dvěma vyhledávači uchováva
+data naivně v textové reprezentaci bez jakékoliv komprese. Překvapivě se
+pohybuje ve stejné kategorii jako index vyhledávače \bftt{cs\_ES}, přestože by
+měly být jeho hodnoty o poznání větší. Trigramový index je podle očekávaní
+větší než běžný index. Jednak z důvodu, že trigramy se překrývají, a proto se
+indexuje větší množství dat, a jednak protože konkrétní implementace
+\bftt{trigram\_ES} sestává dohromady z více indexů (trigramový, celá slova a
+ngramy s n kratším než 3. viz~\S\,\ref{sec:trigram_implementation}).
 
 \begin{Verbatim}
 # Součet souborů na disku
