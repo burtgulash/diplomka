@@ -601,7 +601,7 @@ experty z oblasti. Oproti tomu kontrolování překlepů je relativně snadno
 implementovatelné, protože je závislé pouze na znalosti kompletního slovníku
 datové kolekce.
 
-\subsection{Filtrované vyhledávání}
+\subsection{Filtrované vyhledávání} \label{sec:faceted_search}
 Textové vyhledávání může být kombinováno s různými filtry pro vlastnosti, které
 výsledky obsahují. Dokonce ještě přes započetím vkládání dotazu může být
 uživateli prezentována omezená množina celé kolekce, seřazená např. podle
@@ -611,7 +611,8 @@ datovou sadu rozdělit. Uživatel pak dokonce nemusí ani vepisovat dotaz a pouz
 se k výsledkům dopracuje postupnou interakcí s nabízenými filtry, které
 postupně reflektují zmenšující se množinu. Tedy např. z nabídky filtrů zmizí
 všechny kategorie, které nemají v omezené množině zastoupení. Pole pro
-vyhledávání pak lze chápat jako pouze další filtr.
+vyhledávání pak lze chápat jako pouze další filtr. Tomuto rozhraní se také říká
+facetové vyhledávání.
 
 
 \section{Algoritmy pro textové vyhledávání}
@@ -1138,7 +1139,7 @@ vyhledávání~\cite{Brin:1998:ALH:297810.297827}.
 7, \bftt{text}:        [1, 2, 3, 4] & \\
 \end{tabulary}
 \end{tt}
-\caption{Příklad indexů}
+\caption{Příklad typů indexu}
 \label{tab:index_examples}
 \end{figure}
 
@@ -1428,7 +1429,7 @@ mělo mít menší váhu, protože nepřispívá k frázi, zapříčiní nárůs
 vzdálenosti. To naznačuje, že musíme uvažovat minimální vzdálenost výskytů -
 tedy délku minimálního intervalu, který obsahuje všechna slova dotazu.
 
-\subsubsection{Nalezení minimálního intervalu}
+\subsubsection{Nalezení minimálního intervalu} \label{sec:find_minimal_interval}
 \paragraph{Algoritmus.} Vstupem algoritmu je seznam všech výskytů slov v
 dokumentu a výstupem je interval s minimální délkou v tomto seznamu, který
 obsahuje všechna unikátní slova alespoň jednou. Tento seznam je seřazen
@@ -1465,7 +1466,7 @@ vzdálenosti. V druhé řadě by to měla být minimální vzdálenost mezi slov
 výsledku. Tohle pořadí pak může doupravit uživatelem zvolené pořadí, ale mělo
 by mít menší váhu než textová shoda.
 
-\subsubsection{Tie-breaking}
+\subsubsection{Tie-breaking} \label{sec:tie-breaking}
 Jiný způsob výpočtu důležitosti používá implementace komerčního vyhledávače
 Algolia~\cite{algolia_ranking}. V něm se určí pořadí jednotlivých faktorů podle
 důležitosti a nižší faktory se uvažují pouze pokud dojde ke shodě ve vyšších
@@ -1575,8 +1576,13 @@ search-as-you-type a zároveň přibližné vyhledávání. Pro slovník je pou�
 datová struktura trie s podporou fuzzy vyhledávání samotných slov i prefixů.
 Pro porovnání podobnosti slov může být použita i klasická editační vzdálenost i
 dynamicky adaptovatelná, která struktury trie využívá (popsáno
-v~\S\,\ref{sec:trie}). 
+v~\S\,\ref{sec:trie}). Schopnost vyhledávat v prefixech lze kromě
+samodoplňování využít pro facetové filtrování (viz
+~\S\,\ref{sec:faceted_search}). V této prototypovací fázi není facetové
+filtrování uvažováno. Detailnější popis, jak prefixové vyhledávání tímto
+způsobem použít je v~\cite{Bast_abstractwhen}.
 
+\subsection{Invertovaný soubor}
 Pro efektivní nalezení přibližných výskytů byla použita variace hybridního
 indexu typu HYB (\S\,\ref{sec:hyb}), která oproti němu respektuje abecední
 hranice jednotlivých sloučených seznamů. Důvodem je, že sloučené skupiny
@@ -1603,7 +1609,7 @@ HYB se snaží zajistit, aby byly abecední hranice respektovány co nejvíce.
 Výsledkem by měly být skupiny, jejichž hraniční slova sdílejí co nejdelší
 prefixy.
 
-\subsubsection{Rozdělení skupin respektující abecední hranice}
+\subsubsection{Rozdělení skupin respektující abecední hranice} \label{sec:hybrid_algorithm}
 \paragraph{Algoritmus.} Zařazení slova do slučující skupiny lze provést při
 prohledání trie do hloubky.  Začínáme na kořenovém uzlu s tím, že uvažujeme
 jedinou skupinu, do které na začátku všechna slova patří. Pokud při průchodu
@@ -1615,6 +1621,19 @@ být staticky daná, nebo být odvozená od dat. Zatím jsem ideální způsob, 
 stanovit.
 
 \subsection{Ohodnocování}
+Prozatím je v prototypové verzi implementováno ohodnocení jednoduchým nalezením
+minimálního intervalu se zástupci všech typů výskytu
+(viz~\S\,\ref{sec:find_minimal_interval}). Do budoucna by mohlo být
+implementované vícefázové ohodnocování, protože nalezení minimálního intervalu
+je výpočetně poměrně náročné, pokud se má provést pro každý nalezený záznam.
+Alternativně by problém s efektivitou mohl být vyřešení technikou tie-breaking
+(\S\,\ref{sec:tie-breaking}). Podle očekávání by ale celkový čas vykonání
+dotazu měl být dominován slučováním invertovaných seznamů. Navíc Primární
+určení vyhledávače je pro datové sady s charakteristikou small-data, a tedy
+optimalizování výkonu ohodnocování by mohlo být zbytečně předčasné. V první
+řadě je důležitější flexibilita ohodnocovací funkce, kterou např. tie-breaking
+silně omezuje. Experimentální měření náročnosti jednotlivých fází vykonání
+dotazu je dále v \S\,\ref{sec:timings_query_parts}.
 
 
 \subsection{Problém korelovaných slov} \label{sec:correlated_words}
@@ -1629,20 +1648,16 @@ O dvou podobných invertovaných seznamech můžeme hovořit jako o vysoce
 korelovaných. Pokud slučujeme dva nízce korelované seznamy, pak jejich sloučení
 bude relativně malá množina. Vysoce korelované dotazy trpí tím, že pozitivní
 zmenšující efekt konjunkce u nich neplatí a navíc zvyšuje výpočetní náročnost
-lineárně s každým takovým slovem.
-
-Jednoduchým případem pro vyřešení je, pokud lze v dotazu identifikovat totožná
-slova a jednoduše použít jen jedno z nich, protože průnik více stejných množin
-neovlivní výsledek. Pouze se musí zajistit, že výsledky skutečně obsahují více
-výskytů téhož slova, a to lze provést až v pozdější fázi po průchodem
-invertovanými seznamy.
-
-Těžším případem je, pokud se v dotazu vyskytují slova, která k sobě mají podle
-editační vzdálenosti blízko. Jejich invertované seznamy, případně disjunkce
-více seznamů, budou sdílet značnou část slov. Kvůli tomu budou jejich
-invertované seznamy vysoce korelované a budou způsobovat degradaci dotazu.
-Nicméně tohle už nelze řešit pouhým přepsáním dotazu odstraněním duplikovaných
-slov.
+lineárně s každým takovým slovem.  Jednoduchým případem pro vyřešení je, pokud
+lze v dotazu identifikovat totožná slova a jednoduše použít jen jedno z nich,
+protože průnik více stejných množin neovlivní výsledek. Pouze se musí zajistit,
+že výsledky skutečně obsahují více výskytů téhož slova, a to lze provést až v
+pozdější fázi po průchodem invertovanými seznamy.  Těžším případem je, pokud se
+v dotazu vyskytují slova, která k sobě mají podle editační vzdálenosti blízko.
+Jejich invertované seznamy, případně disjunkce více seznamů, budou sdílet
+značnou část slov. Kvůli tomu budou jejich invertované seznamy vysoce
+korelované a budou způsobovat degradaci dotazu.  Nicméně tohle už nelze řešit
+pouhým přepsáním dotazu odstraněním duplikovaných slov.
 
 Dalším problémem korelovaných slov je najít každému slovu v dotazu odpovídající
 slovo ve výsledku bez překrytí, tj. pro každé slovo v dotazu, přestože může být
@@ -2032,7 +2047,7 @@ přesnou shodu ve slovech \bftt{god} ani \bftt{father}, zdá se, že
 \mbox{}\\
 
 Pro porovnání výkonu bylo náhodně zvoleno 24 dotazů pro vyhledání v databázi
-\bftt{csfd\_filmy}.  . Obrázky \ref{fig:timings} a \ref{fig:timings_log}
+\bftt{csfd\_filmy}. Obrázky \ref{fig:timings} a \ref{fig:timings_log}
 porovnávají rychlost běhu dotazu mezi systémy \bftt{edit\_dyn} interpretovaného
 v CPythonu, \bftt{edit\_dyn} interpretovaného v PyPy a dvou konfigurací pro
 ElasticSearch \bftt{trig\_ES} a \bftt{cs\_ES}.  Časy jsou průměrem 100 běhů
@@ -2091,6 +2106,7 @@ ElasticSearch \bftt{trig\_ES}.
     \end{minipage}}
 \mbox{}\\
 
+\subsection{Rozdělení náročnosti jednotlivých fází} \label{sec:timings_query_parts}
 Poměr všech tří fází vykonání dotazu (1. vyhledání podobných slov ve slovníku
 \bftt{trie}, 2. sloučení všech odpovídajících invertovaných seznamů
 \bftt{slouceni}, 3. ohodnocení nalezených dokumentů \bftt{ohodnoceni}) na
@@ -2100,7 +2116,7 @@ pro různé dotazy. \bftt{ohodnoceni} je přímo závislé na počtu nalezených
 výsledků, protože se pro každý z nich aplikuje stejná ohodnocující funkce a
 následné seřazení.
 
-Ostatní fáze nejsou na počtu výsledku závislé. \bftt{slouceni} není tolik
+Ostatní fáze nejsou na počtu výsledků závislé. \bftt{slouceni} není tolik
 závislé díky předsloučeným invertovaným seznamům hybridního uspořádání. Zvýšení
 náročnosti je možné pozorovat pro dotazy s frekventovanými slovy \bftt{the} a
 \bftt{of}, protože jejich invertované seznamy a disjunkce seznamů s podobnými
@@ -2153,6 +2169,7 @@ posunování po jednom dokumentu.
 % zásadní vliv na dobu vykonání dotazu. Každá je v některém případě víceméně tou
 % nejméně vhodnou a naopak.
 
+\subsection{Rychlost sloučení}
 
 \noindent\makebox[\textwidth][c]{%
     \begin{minipage}[H]{.5\textwidth}\vspace{0pt}
@@ -2207,6 +2224,7 @@ husté (\bftt{x*}) disjunkce. Podle očekávání by měla dominovat implementac
 \bftt{skip}, ale není tomu tak. Nejvhodnější implementací se ukázala
 jednoduchost obyčejného seznamu v případech \bftt{list} a \bftt{list-prune}.
 
+\subsection{Výkon hybridních seznamů}
 \mbox{}\\
 \noindent\makebox[\textwidth][c]{%
     \begin{minipage}[H]{.5\textwidth}\vspace{0pt}
@@ -2228,10 +2246,11 @@ jednoduchost obyčejného seznamu v případech \bftt{list} a \bftt{list-prune}.
 \mbox{}\\
 
 Klíčovým srovnáním této práce je závislost rychlosti sloučení invertovaných
-seznamů na velikosti seskupení invertovaných seznamů (TODO ref algorithmus).
-Pro porovnání byla datová sada \bftt{csfd\_filmy} zaindexována pro více
-parametrů seskupení a pro každý takový index byla změřena doba sloučení pro
-prefixové dotazy \bftt{s* tebou*} (reprezentující typ dotazu \bftt{x* yyyyy*},
+seznamů na velikosti seskupení invertovaných seznamů
+(viz~\S\,\ref{sec:hybrid_algorithm}).  Pro porovnání byla datová sada
+\bftt{csfd\_filmy} zaindexována pro více parametrů seskupení a pro každý takový
+index byla změřena doba sloučení pro prefixové dotazy \bftt{s* tebou*}
+(reprezentující typ dotazu \bftt{x* yyyyy*},
 obr.~\ref{fig:hybrid_union_s_tebou}), a dotaz \bftt{s* t*} (reprezentující
 \bftt{x* y*}, obr.~\ref{fig:hybrid_union_s_t}). Parametrem seskupení se rozumí
 minimální velikost seskupeného invertovaného seznamu. Tedy klasický invertovaný
@@ -2259,7 +2278,7 @@ $\log n$ oproti ostatním, které procházejí disjunktivní seznam lineárně.
     \begin{figure}[H]
     \includegraphics[width=\textwidth]{figures/trie_edit_cpython.eps}
     \captionsetup{justification=centering}
-    \caption{Rychlost trie (v~CPythonu)~\bftt{log[y]}}
+    \caption{Rychlost trie (CPython)~\bftt{log[y]}}
     \label{fig:trie_edit_cpython}
     \end{figure}
     \end{minipage}
@@ -2267,7 +2286,7 @@ $\log n$ oproti ostatním, které procházejí disjunktivní seznam lineárně.
     \begin{figure}[H]
     \includegraphics[width=\textwidth]{figures/trie_edit_pypy3.eps}
     \captionsetup{justification=centering}
-    \caption{Rychlost trie (v~PyPy)~\bftt{log[y]}}
+    \caption{Rychlost trie (PyPy)~\bftt{log[y]}}
     \label{fig:trie_edit_pypy}
     \end{figure}
     \end{minipage}}
