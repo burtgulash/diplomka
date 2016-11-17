@@ -109,7 +109,7 @@ vyhledávacích systémů.
 
 \section{Motivace}
 Prozkoumávat oblast alternativních vyhledávacích technik jsem začal po
-frustraci s vytvořením jednoduchého vyhledávače pro položky jako názvy produktů
+frustraci s vytvářením jednoduchého vyhledávače pro položky jako názvy produktů
 eshopu nebo pro vyhledávání v databázi jmen. Vytvoření takového systému je dnes
 považováno za vyřešený problém, protože existuje spousta open source databází a
 jiných produktů, které se dají přizpůsobit téměř každé situaci.
@@ -172,7 +172,7 @@ Jednak se zvýšila dostupnost výpočetní kapacity díky firmám pronajímají
 volnou kapacitu ve svých datových centrech (cloud). Vzestup tzv. NoSQL databází
 a distribuovaného výpočetního modelu MapReduce přinesl běžným uživatelům
 možnost používat distribuované algoritmy a datové struktury pro rozsáhlé datové
-sady přesahující kapacity jednoho počítače (Big Data), bez větší námahy.
+sady přesahující kapacity jednoho počítače (Big Data) bez větší námahy.
 
 Druhý směr je viditelný např. ve vzestupu dynamicky typovaných programovacích
 jazyků, které silně odstiňují programátora od složitostí hardwaru za cenu
@@ -249,13 +249,13 @@ vykonávání některých uživatelských rozhraní a pokročilých typů dotazu
 % výpočetním výkonu, nových počítačových architekturách, vyšších kapacitách
 % pamětí a obecně pokrok v hardwaru pro ně ale poskytuje novou příležitost.
 
-Důraz je kladen především na prefixové a přibližné vyhledávání, které jsou
-považované za velmi výpočetně náročné. Další navrhovanou technikou je
+Důraz je kladen především na prefixové a přibližné vyhledávání, která jsou
+považovaná za výpočetně velmi náročná. Další navrhovanou technikou je
 ohodnocení podle blízkosti (proximity) slov ve výsledcích.
 
 Systém, který je v této práci navrhován se nesnaží být nejlepším řešením pro
 všechny případy a explicitně se zaměřuje na specifičtější případy, ve kterých
-by přibližné vyhledávání přineslo velkou hodnotu. Z důvodu vyšší výpočetní
+by přibližné vyhledávání mohlo přinést velkou hodnotu. Z důvodu vyšší výpočetní
 náročnosti se navrhovaný systém nesnaží jít stejnou cestou velkých dat (Big
 Data), ale přesně opačně by mělo představované řešení nalézt uplatnění pro
 specifické případy a menší objemy dat (Small Data).
@@ -301,18 +301,18 @@ vzdáleného počítače.
 
 Protože bude návrh nového vyhledávače prezentován pouze jako prototyp v
 dynamicky typovaném Pythonu, kvůli čemuž nelze provést objektivní srovnání
-výkonu. Rychlost běhu programu v Pythonu se oproti nativní implementaci se liší
-řádově, a proto použiji hrubé pravidlo jedné vteřiny, tedy pokud očekáváme
+výkonu. Rychlost běhu programu v Pythonu se oproti nativní implementaci liší
+řádově, a proto bude použito hrubé pravidlo jedné vteřiny, tedy pokud očekáváme
 výkon prototypu desetkrát pomalejší, pak by se měla doba běhu vejít do
 desetinásobku kritické hranice pro lidské vnímání.
 
 Vyhledávač by rovněž neměl být příliš paměťově náročný. Na jednu stranu tím, že
 se soustřeďuje na malé objemy dat a paměť se neustále zlevňuje, by neměl být
-problém využít volné kapacity pro zvýšení výkonu. Na druhou stranu pokud nebude
-vyhledávač nenasytný, pak se do paměti vejde více dat a nebude nutné zasahovat
-na disk, což je u nízkolatenčního vyhledávání velkou překážkou. Několik
-náhodných zásahů na disk by znamenalo instantní porušení hranice 100\,ms, proto
-by měl být systém schopný pojmout všechna data do paměti.
+problém využít volné kapacity pro zvýšení výkonu. Na druhou stranu, pokud
+nebude vyhledávač nenasytný, pak se do paměti vejde více dat a nebude nutné
+zasahovat na disk, což je u nízkolatenčního vyhledávání velkou překážkou.
+Několik náhodných zásahů na disk by znamenalo instantní porušení hranice
+100\,ms, proto by měl být systém schopný pojmout všechna data do paměti.
 
 
 
