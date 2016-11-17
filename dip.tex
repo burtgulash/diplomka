@@ -1689,41 +1689,42 @@ implementovaného systému s alternativními. Druhá část obsahuje ukázku a s
 nonfunkčních vlastností (rychlost, paměťová náročnost) systémů.
 
 \section{Porovnávané systémy}
-Kromě vlastní implementace byly pro systém ElasticSearch nakonfigurovány dva
-systémy. V systému Postgres byl vytvořen jeden trigramový vyhledávač.
-
+Kromě vlastní implementace byly pro systém ElasticSearch nakonfigurovány
+dva systémy. V systému Postgres byl vytvořen jeden trigramový
+vyhledávač. Všechny systémy byly porovnány na počítači s 16\,GB paměti a
+procesorem Intel Core2 Quad Q8400 (2.66\,GHz).
+ 
 \subsubsection{Vlastní implementace}
-Můj systém vychází z výše popsaného návrhu vyhledávacího systému. Implementace
-je pouze prototyp napsaný v dynamicky typovaném Pythonu, a tedy nemůže z
-výkonostního důvodu sloužit k porovnání rychlosti a jiných výkonnostních
-veličin. Protože ale používám relativně malé datové sady, neměla by být
-výkonnost překážkou. Prototyp slouží zejména jako demonstrace implementovaných
-technik. Tou hlavní je výše popsaný modifikovaný hybridní invertovaný index se
-slovníkem implementovaným jako trie.  Ohodnocovací funkce je čistě textově
-založená - nemá o datech žádné vlastní předpoklady nebo přednostní pořadí. V
-první řadě upřednostňuje shodu dotazu s výsledkem podle editační vzdálenosti -
-pro každé slovo zvlášť. Dále pozitivně hodnotí ty výsledky, které obsahují
-shodu s minimální poziční vzdáleností.  Shody výsledků se stejným ohodnocením
-jsou pak rozbity několika minoritními hodnotami s nízkou váhou. Shoda, která je
-více na začátku záznamu má přednost a shoda, která obsahuje více shodujících se
-slov má přednost - obdobně jako u modelu tf.idf, pouze zde má velmi malou váhu
-a neuvažuje relativní důležitost slova ve shodě (idf).
+Protoyp nového systému vychází z výše popsaného návrhu vyhledávacího systému.
+Implementace je prototyp napsaný v dynamicky typovaném Pythonu, a tedy nemůže z
+výkonostního důvodu sloužit k objektivnímu porovnání rychlosti a jiných
+výkonnostních veličin. Protože jsou ale použity relativně malé datové sady,
+neměla by být výkonnost překážkou. Prototyp slouží zejména jako demonstrace
+implementovaných technik. Tou hlavní je výše popsaný modifikovaný hybridní
+invertovaný index se slovníkem implementovaným jako trie. Ohodnocovací funkce
+je čistě textově založená - nemá o datech žádné vlastní předpoklady nebo
+přednostní pořadí. V první řadě upřednostňuje shodu dotazu s výsledkem podle
+editační vzdálenosti - pro každé slovo zvlášť. Dále pozitivně hodnotí ty
+výsledky, které obsahují shodu s minimální poziční vzdáleností.  Shody výsledků
+se stejným ohodnocením jsou pak rozbity několika minoritními hodnotami s nízkou
+váhou. Shoda, která je více na začátku záznamu má přednost a shoda, která
+obsahuje více shodujících se slov má přednost - obdobně jako u modelu tf.idf,
+pouze zde má velmi malou váhu a neuvažuje relativní důležitost slova ve shodě
+(idf). Pro porovnání byly vytvořeny dvě varianty. První používá klasickou
+editační vzdálenost (systém \bftt{edit}) a druhá dynamicky adaptovatelnou
+editační vzdálenost (systém \bftt{edit\_dyn}).
 
-Dokonce při použití nového interpreteru pro Python s podporou JIT
-kompilace PyPy vyhledávač dosahuje až srovnatelných rychlostí jako
-Elasticsearch.
-
-
-\subsubsection{ElasticSearch - Základní řešení}
+\subsubsection{ElasticSearch - základní řešení}
 Jako základní řešení sloužící pro porovnání jsem nakonfiguroval Elasticsearch
 tak, jak by se měl doporučeně nastavit pro full-textové vyhledávání ve větších
 textových dokumentech. Text je stematizován zabudovaným stematizérem pro
 češtinu. Cílem bude ukázat, že tohle nastavení bude mít potíže s vícejazykovou
-datovou sadou, jmény a s některými případy morfologie v češtině.
+datovou sadou, jmény a s některými případy morfologie v češtině. 
 
-\subsubsection{ElasticSearch - Trigramový vyhledávač} \label{sec:trigram_implementation}
-Pro ukázku fuzzy vyhledávání pomocí n-gramů jsem vytvořil další konfiguraci pro
-Elasticsearch, která používá n-gramy o minimální a maximální velikosti 3.
+\subsubsection{ElasticSearch - trigramový vyhledávač} \label{sec:trigram_implementation}
+Pro ukázku fuzzy vyhledávání pomocí n-gramů byla vytvořena další konfiguraci
+pro Elasticsearch, která používá n-gramy o minimální a maximální velikosti 3.
+Dále bude vystupovat pod názvem \bftt{trig\_ES}.
 
 Pokud se v konfiguraci použije n-gramový filtr, pak není podporováno n-gramové
 zvýrazňování výsledků. Musí se použít n-gramový tokenizér, který ale zahazuje
@@ -1753,6 +1754,20 @@ nenašel, jak tohle vyřešit, vytvořil jsem v Pythonu dodatečný zvýrazňova
 zde prezentované výsledky byly srovnatelné s ostatními systémy.
 
 \subsubsection{Postgres - trigramový vyhledávač}
+Databáze Postgres poskytuje více možností pro textové vyhledávání. Rozšíření
+podporující fulltextové vyhledávání bylo vynecháno, protože jako zástupce pro
+vyhledávání s využitím jazykové analýzy byla vytvořena flexibilnější
+konfigurace v ElasticSearch (\bftt{cs\_ES}) s~lepší podporou češtiny.
+
+Pro přibližné vyhledávání v Postgresu je doporučovaný trigramový plugin
+\bftt{pg\_trgm}. Porovnávaný systém na něm založený (\bftt{trig\_PG}) ho
+využívá v základním nastavení, pouze provádí odstranění diakritiky a při
+indexování převede velká písmena na malá. Tento systém generuje trigramy
+odlišným způsobem než trigramový systém v ElasticSearch. Např. pro slovo
+\bftt{pes} vygeneruje ngramy \bftt{p}, \bftt{pe}, \bftt{pes}, \bftt{es},
+zatímco ElasticSearch pouze jeden trigram v tomto případě shodující se s
+původním slovem.
+
 
 
 %\section{Implementované systémy}
@@ -2014,7 +2029,8 @@ si podle očekávání s kompozitními slovy poradí. \bftt{trig\_ES} má oproti
 běžnému trigramovému indexu navíc nakonfigurovanou preferenci přesných shod,
 což mu může dávat výhodu v přesnosti. Přestože pouze dva výsledky obsahují
 přesnou shodu ve slovech \bftt{god} ani \bftt{father}, zdá se, že
-\bftt{trig\_ES} vrací přesnější výsledky. Tab.~\ref{tab:result:trig_auto_mobil} ukazuje podobný výsledek pro dotaz \bftt{auto mobil}.
+\bftt{trig\_ES} vrací přesnější výsledky. Tab.~\ref{tab:result:trig_auto_mobil}
+ukazuje podobný výsledek pro dotaz \bftt{auto mobil}.
 
 \mbox{}\input{hits/trig_god_father.tex}\mbox{}
 
