@@ -980,12 +980,15 @@ protože už se uvažuje pouze podstrom, který odpovídá stejnému prvnímu p�
 které má dotazované slovo. Tento jev může být využit více způsoby.
 
 Prvním je datová struktura pojmenovaná FB-trie (Forward -
-Backward)~\cite{Boytsov:2011:IMA:1963190.1963191}, která vytvoří dvě trie.
-První je stejná jako ta výše popsaná a druhá pouze s rozdílem, že zaindexuje
-slova v obráceném pořadí. Díky tomu, že prohledávání v trii je výhodné až od
-několikátého písmene, využije se druhé trie, která nalezne zbylá slova po
-odřezání větví prvního písmene v první trii. Jiný používaný přístup je
-penalizovat neshodu na prvních pozicích vyšší vahou.
+Backward)~\cite{Mihov:2004:FAS:1105587.1105590}, která sestává z dvou instancí
+trie. První je stejná jako ta výše popsaná a druhá pouze s rozdílem, že
+zaindexuje slova v obráceném pořadí. Díky tomu, že prohledávání v trii je
+výhodné až od několikátého písmene, využije se druhé trie, která nalezne zbylá
+slova po odřezání větví prvního písmene v první trii.  Podle experimentálního
+srovnání~\cite{Boytsov:2011:IMA:1963190.1963191} je FB-trie nejefektivnější
+reprezentací fuzzy slovníku s praktickým slovníkem.  Jiný používaný přístup pro
+zefektivnění velkého větvení na začátku trie je penalizace neshody na prvních
+pozicích vyšší vahou.
 
 Druhým způsobem je nalezení slov editační vzdáleností s prefixově dynamickým
 prořezáváním. Při omezení limitu pro editační vzdálenost podle délky slova
@@ -2488,20 +2491,19 @@ jejich vlastností a dotaz podle nich přepsat. Např. invertované seznamy dvou
 korelovaných slov \bftt{them} a \bftt{they} budou odpovídat sdílené části
 seznamu $X$ a částem, které nesdílí - respektive $A$ a $B$. Klasické vykonání
 konjunkce disjunkcí by mělo tvar \ref{eq:puvodni}:
-
 \begin{align}
 \bftt{(X OR A) AND (X OR B)} \label{eq:puvodni} \\
 \bftt{(X AND X) OR (X AND A) OR (X AND B) OR (X AND AB)} \label{eq:dlouhy} \\
 \bftt{X OR (A AND B)} \label{eq:kratky}
 \end{align}
 
-. Pomocí booleovského kalkulu ho můžeme změnit na \ref{eq:dlouhy}, nebo rovnou
-na \ref{eq:kratky}. Poslední forma ukazuje, jak zabránit pomalým dotazům, pokud
-bychom potřebovali zjistit ty dokumenty, ve kterých se slova \bftt{them} a
-\bftt{they} nalézají. Jenže vyhledávač není pouze booleovský, ale zaznamenává
-si navíc pozice výskytů pro ohodnocování a zvýrazňování, proto není jednoduché
-přepsání dotazu takhle triviální. Přesto tato myšlenka může být odrážecím
-můstkem, jak tenhle problém v budoucnu vyřešit.
+Pomocí booleovského kalkulu ho můžeme změnit na \ref{eq:dlouhy}, nebo rovnou do
+minimální formy \ref{eq:kratky}. Poslední forma ukazuje, jak zabránit pomalým
+dotazům, pokud bychom potřebovali zjistit ty dokumenty, ve kterých se slova
+\bftt{them} a \bftt{they} nalézají. Jenže vyhledávač není pouze booleovský, ale
+zaznamenává si navíc pozice výskytů pro ohodnocování a zvýrazňování, proto není
+jednoduché přepsání dotazu takhle triviální. Přesto tato myšlenka může být
+odrážecím můstkem, jak tenhle problém v budoucnu vyřešit.
 
 \subsubsection{Kompozitní slova}
 Tím, že index uvažuje text jako posloupnost slov, dělají mu potíže složená
@@ -2534,8 +2536,9 @@ slovech. Před tím, než uživatel zadá celý dotaz, dostane se do momentu, kd
 vyhledávač vrátí výsledky prefixu \bftt{já jsem}. Vyhledávač může postupného
 zadávání využít a uložit si mezivýsledky tohoto prefixu do krátkodobé
 mezipaměti. Jakmile uživatel zadá poslední slovo, stačí použít mezivýsledek,
-najít poslední slovo \bftt{doma} a provést sloučení. Tuhle techniku využívají
-fuzzy vyhledávací systémy CompleteSearch~\cite{Bast:2006:TLF:1148170.1148234}
+najít poslední slovo \bftt{doma} a provést sloučení invertovaných seznamů.
+Tuhle techniku využívají fuzzy vyhledávací systémy
+CompleteSearch~\cite{Bast:2006:TLF:1148170.1148234}
 a~Tastier~\cite{Ji:2009:EIF:1526709.1526760}.
 
 %\subsubsection{Zvýrazňovač pro editační vzdálenost}
@@ -2568,11 +2571,12 @@ a~Tastier~\cite{Ji:2009:EIF:1526709.1526760}.
 \section{Shrnutí}
 Záměrem této práce je poukázat na alternativní techniky v oblasti vyhledávání a
 demonstrovat možný vyhledávací systém, který je implementuje. Tento systém by
-měl být vhodnější pro potřeby jednotlivců i firem, které vyžadují od
-vyhledávacího systému robustnost proti malým změnám v dotazu. Uplatnění by měl
-nalézt v menších datových sadách, než na které je dnes kladen důraz, protože
-díky omezené velikosti dat je možné přebytečný výpočetní výkon použít k těmto
-náročnějším technikám.
+měl být vhodný pro potřeby jednotlivců i firem, které vyžadují od vyhledávacího
+systému robustnost proti malým textovým změnám v dotazu. Toho dosahuje
+zaměřením se na techniky pro prefixové a přibližné vyhledávání. Uplatnění by
+měl nalézt v menších datových sadách, než na které je dnes kladen důraz,
+protože díky omezené velikosti dat je možné přebytečný výpočetní výkon použít k
+těmto náročnějším technikám.
 
 % Některé z popisovaných technik byly dlouho opomíjené, protože jejich
 % implementace není jednoduchá, nebo dlouho nebyla výpočetně výhodná. Pokrok ve
@@ -2582,20 +2586,20 @@ náročnějším technikám.
 Navržený vyhledávací systém byl implementován jako prototyp obsahující popsané
 techniky a porovnán s několika dalšími vyhledávači, které byly vytvořeny jako
 různé konfigurace v některých populárních open source vyhledávacích systémech
-tak, aby odpovídaly popsaným požadavkům.
+tak, aby odpovídaly podobným vlastnostem.
 
 Implementovaný prototyp byl vytvořen tak, aby byl schopný v první řadě
-demonstraci popsaných technik a byl dostatečně flexibilní pro potřeby
+demonstrovat popsané techniky a byl dostatečně flexibilní pro potřeby
 experimentování. Výkonově není reprezentativní kvůli implementaci v zvoleném
 dynamicky typovaném programovacím jazyce Python, ale byla použita stejná
-architektura, kterou by bylo možné pouze přepsat do výkonnějšího jazyka. Bylo
-proto provedeno relativní porovnání výkonu mezi určitými typy dotazů s vyšší
-mírou tolerance pro běh dotazu, které ukázalo že pro běžný dotaz by vyhledávač
-splňoval kritéria pro vyhledávání v reálném čase.
+architektura, kterou by bylo možné v další fázi pouze přepsat do výkonnějšího
+jazyka. Bylo provedeno relativní porovnání výkonu mezi určitými typy dotazů s
+vyšší mírou tolerance pro běh dotazu, které ukázalo že pro běžný dotaz by
+vyhledávač měl splňovat kritéria pro vyhledávání v reálném čase.
 
 Analýza nejhorších případů ukázala na typ dotazů, které by mohly být zneužity
-proti vyhledávači. Pro tento případ byl nastíněn způsob, jak ho řešit, ač by
-zkomplikoval původně jednoduchou architekturu.
+proti vyhledávači. Pro tento případ byl nastíněn způsob, jak ho řešit, přestože
+by mohl zkomplikoval původně jednoduchou architekturu.
 
 V porovnání s alternativami založených na ngramové podobnosti není navržený
 systém robustní v případech oddělených slov nebo naopak kompozitních slov.
