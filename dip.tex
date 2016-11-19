@@ -78,11 +78,13 @@ Textové vyhledávání se stalo populární v 90. letech s nástupem Webu a s n
 masivního nárůstu informací, které jsou dostupné prakticky každému po pár
 kliknutích myši. Toho bylo dosaženo vzestupem velkých webových vyhledávačů ,
 které byly schopné exponenciálně rostoucí růst informací
-zkrotit~\cite{search_history}. Alespoň do jisté míry, protože tyto vyhledávače
-umožňují přítup pouze k té části webu, ke které se lze dostat následováním
-hypertextových odkazů. Většina informací není skrze pouhé odkazy dostupná (deep
-web), protože je např. skrytá v interních databázích, k nimž se lze dostat
-pouze interním vyhledávacím systémem.
+zkrotit~\cite{search_history}.
+
+% Alespoň do jisté míry, protože tyto vyhledávače
+% umožňují přítup pouze k té části webu, ke které se lze dostat následováním
+% hypertextových odkazů. Většina informací není skrze pouhé odkazy dostupná (deep
+% web), protože je např. skrytá v interních databázích, k nimž se lze dostat
+% pouze interním vyhledávacím systémem.
 
 Popularita webových vyhledávačů zapříčinila zájem o vyhledávací systémy i u
 jednotlivců a firem. Stejné techniky začaly být dostupné v open source
@@ -119,19 +121,19 @@ Bez použití specializovaného vyhledávacího systému je nejčastějším ře
 vyhledávání v databázi použití technik, které poskytují databázové systémy.
 Časté řešení je rozdělení textových polí na více částí a vyhledávání separátně
 v každé z nich pomocí operátoru \bftt{like}, který umožňuje omezené přibližné
-vyhledávání. U databáze lidských jmen se často rozděluje text jména na části
-jméno, příjmení a někty titul a prostřední jméno. Problémy pak nastávají v méně
+vyhledávání. Např. u databáze lidských jmen se často rozděluje text jména na části
+jméno, příjmení a někdy titul a prostřední jméno. Problémy pak nastávají v méně
 častých případech, kdy osoby např. nemají příjmení, jejich jméno je složeno z
 více slov, než je počet kolonek ve formuláři, apod~\cite{name_falsehoods}.
 Často by přitom stačilo modelovat jméno pouze jako jedno textové pole.
 
-Nejčastějším řešením, kdy je požadované pokročilé vyhledávání, které databázové
-systémy neposkytují, je duplikace dat z primární databáze (např. MySQL,
-Postgres) do sekundárního systému pro vyhledávání (Solr, ElasticSearch,
-Sphinx). Přitom by bylo jednodušší, kdyby databázové systémy přímo podporovaly
-solidní vyhledávací systém formou externí komponenty. Např. databázový systém
-Postgres některé vyhledávací doplňky poskytuje, ale očividně ne v takové formě,
-aby se lidem nevyplatilo fragmentovat data do více systémů.
+Nejčastějším řešením, kdy je požadované pokročilé textové vyhledávání, které
+databázové systémy neposkytují, je duplikace dat z primární databáze (např.
+MySQL, Postgres) do sekundárního systému pro vyhledávání (např. Solr,
+ElasticSearch, Sphinx). Přitom by bylo jednodušší, kdyby databázové systémy
+přímo podporovaly solidní vyhledávací systém formou externí komponenty. Např.
+databázový systém Postgres některé vyhledávací doplňky poskytuje, ale očividně
+ne v takové formě, aby se lidem nevyplatilo fragmentovat data do více systémů.
 
 % BIg Noise - Silver
 % Gargage In - Garbage Out
@@ -169,10 +171,11 @@ komplikovanější problémy.
 
 První z těchto směrů se stal v poslední době velmi populární z několika důvodů.
 Jednak se zvýšila dostupnost výpočetní kapacity díky firmám pronajímajícím
-volnou kapacitu ve svých datových centrech (cloud). Vzestup tzv. NoSQL databází
-a distribuovaného výpočetního modelu MapReduce přinesl běžným uživatelům
-možnost používat distribuované algoritmy a datové struktury pro rozsáhlé datové
-sady přesahující kapacity jednoho počítače (Big Data) bez větší námahy.
+volnou kapacitu ve svých datových centrech (cloud computing). Vzestup tzv.
+NoSQL databází a distribuovaného výpočetního modelu MapReduce přinesl běžným
+uživatelům možnost používat distribuované algoritmy a datové struktury pro
+rozsáhlé datové sady přesahující kapacity jednoho počítače (Big Data) bez větší
+námahy.
 
 Druhý směr je viditelný např. ve vzestupu dynamicky typovaných programovacích
 jazyků, které silně odstiňují programátora od složitostí hardwaru za cenu
@@ -180,36 +183,36 @@ jazyků, které silně odstiňují programátora od složitostí hardwaru za cen
 tolik o plýtvání, pokud se efektivně využije dražší čas programátora.
 
 Třetí směr je opačným jevem k fenoménu Big Data, který by se odvozeně z názvu
-jmenoval Small Data, znamená soustředit se na relativně malé objemy dat, ale s
-použitím vlastností, které byly při minulých výpočetních kapacitách vyhodnoceny
-jako příliš náročné pro praktické použití. Pojem Small Data není tolik
-rozšířený jako Big Data a byl několikrát použit v různých významech. V jednom
-případě se ale shoduje s významem, v jakém je v této práci
+jmenoval Small Data, a znamená soustředit se na relativně malé objemy dat, ale
+s použitím vlastností, které byly při minulých výpočetních kapacitách
+vyhodnoceny jako příliš náročné pro praktické použití. Pojem Small Data není
+tolik rozšířený jako Big Data a byl několikrát použit v různých významech. V
+jednom případě se ale shoduje s významem, v jakém je v této práci
 zamýšlen~\cite{small_data}. Autor navrhuje použití nadbytečného výkonu např.
-pro interaktivitu v publikovaných vědeckých pracích.
+pro interaktivitu v publikovaných vědeckých článcích.
 
 \subsection{Přibližné vyhledávání}
-Motivaci této práce charakterizuje pojem small data, protože hlavní myšlenkou
+Motivaci této práce charakterizuje pojem Small Data, protože hlavní myšlenkou
 je, že spousta problémů firem nepotřebuje produkty pro manipulaci s terabyty
 dat, ale často jsou to pouze datové objemy, které dnešní počítače zvládnou
-hravě bez opuštění rychlé paměti RAM. Například přibližné vyhledávání v
-textu je jednou z oblastí, které není věnováno příliš pozornosti, ačkoliv je
-jeho využití nesmírné.
+hravě bez opuštění rychlé paměti RAM. Například přibližné vyhledávání v textu
+je jednou z oblastí, které není věnováno příliš pozornosti, ačkoliv je jeho
+využití nesmírné.
 
 Znatelný rozdíl je v požadavcích pro vyhledávání ve full-textu, tedy rozsáhlých
 dokumentech (webové stránky, pdf soubory) a v relativně krátkých textových
 řetězcích, jakými jsou např. jména lidí, názvy produktů, geografické lokace,
-krátkých reklamních sděleních, apod. Rozdíl je především ten, že full-text je
-tvořen celými větami jednoho jazyka, zatímco názvy a pojmenování jsou tvořeny
-často jen několika málo slovy, které netvoří větu, a často nejsou tvořená slovy
+krátké reklamní sdělení, apod. Rozdíl je především ten, že full-text je tvořen
+celými větami jednoho jazyka, zatímco názvy a pojmenování jsou tvořeny často
+jen několika málo slovy, které netvoří větu, a často nejsou ani tvořená slovy
 jednoho jazyka.
 
-U názvů produktů často nelze rozlišit jazyk, protože jsou slova unikátní a tím,
-že obsahují číslice, nelze o nich ani hovořit jako o slovech. Např. \bftt{MSI
-GeForce GTX 1060 GAMING X 6G, 6GB GDDR5} je název grafické karty, \bftt{Bosch
-TDA502412E} a \bftt{Tefal Autoclean ANTI CALC FV9640} jsou příklady názvů pro
-žehličku a \bftt{55" LG OLED55E6V} a \bftt{55" HISENSE H55M3300} jsou názvy
-televizorů.
+Např. u názvů produktů často nelze rozlišit jazyk, protože jsou slova unikátní
+a tím, že obsahují číslice, nelze o nich ani hovořit jako o slovech. Např.
+\bftt{MSI GeForce GTX 1060 GAMING X 6G, 6GB GDDR5} je název grafické karty,
+\bftt{Bosch TDA502412E} a \bftt{Tefal Autoclean ANTI CALC FV9640} jsou příklady
+názvů pro žehličku a \bftt{55" LG OLED55E6V} a \bftt{55" HISENSE H55M3300} jsou
+názvy televizorů.
 
 V databázích jmen se často vyskytují jména osob různých národností a i přes
 znalost národnosti nelze správně určit jazyk jména. Např. Jakými jazyky by byla
@@ -227,7 +230,7 @@ chybovost stroje a náročný proces, který by musel opravit tyto chyby před
 vložením do databáze. Robustnost přibližného vyhledávače by se s chybami
 vypořádala až během vyhledávání. Možná právě absence efektivního přibližného
 vyhledávacího systému je důvodem, proč ještě neexistuje populární vyhledávač v
-textech zaznamenaných v audio nebo video souborech.
+textech zaznamenaných z audio nebo video souborů.
 
 %  Full-text obsahuje celé věty a tedy obsahuje tzv. stop slova
 % (a, já, jsem, tu, k, nebo, ...), která pomáhají plynulosti jazyka a navazování
@@ -250,7 +253,7 @@ vykonávání některých uživatelských rozhraní a pokročilých typů dotazu
 % pamětí a obecně pokrok v hardwaru pro ně ale poskytuje novou příležitost.
 
 Důraz je kladen především na prefixové a přibližné vyhledávání, která jsou
-považovaná za výpočetně velmi náročná. Další navrhovanou technikou je
+považována za výpočetně velmi náročná. Další navrhovanou technikou je
 ohodnocení podle blízkosti (proximity) slov ve výsledcích.
 
 Systém, který je v této práci navrhován se nesnaží být nejlepším řešením pro
@@ -264,13 +267,12 @@ Práce je koncipována tak, aby přiblížila opomíjené příležitosti v čis
 orientovaném vyhledávání, přiblížila dosavadní výzkum v těchto oblastech a na
 prototypové aplikaci demonstrovala praktickou proveditelnost navrhovaného
 řešení. Prototyp bude porovnán s některými populárními open source
-vyhledávacími systémy nakonfigurovanými konfigurovány tak, aby splňovaly
-podobné požadavky.
+vyhledávacími systémy nakonfigurovanými tak, aby splňovaly podobné požadavky.
 
 \section{Porovnání}
-Protože je dalších vyhledávacích systémů mnoho, bude vytvořeno pouze několik
-konfigurací pro ElasticSearch a Postgres, které v současnosti reprezentují
-nejpoužívanější open source systémy s porovnatelnými schopnostmi.
+Protože je dalších vyhledávacích systémů mnoho, pro porovnání bylo vytvořeno
+pouze několik konfigurací pro ElasticSearch a Postgres, které v současnosti
+reprezentují nejpoužívanější open source systémy s porovnatelnými schopnostmi.
 
 \subsection{Relevance}
 Vyhodnocení toho, který systém je lepší nebo horší, je z velké míry subjektivní
@@ -279,28 +281,28 @@ metrik přesnost (precision) a výtěžnost (recall), pokud se výsledky vyhled�
 uvažují pouze jako množiny. Pro srovnání výsledků vyhledávačů nás bude více
 zajímat pořadí, ve kterém se relevantní výsledky vyskytnou a robustnost
 vyhledávače při změnách dotazu. Pro uživatele je frustrující, pokud má
-vyhledávač vlastnost, že při malé změně dotazu, např.  změnou koncovky slova,
-mu systém vrátí naprosto odlišné výsledky, rozdílný počet, nebo při této změně
+vyhledávač vlastnost, že při malé změně dotazu, např. změnou koncovky slova, mu
+systém vrátí naprosto odlišné výsledky, rozdílný počet, nebo při této změně
 dokonce nic nevrátí. U webového vyhledávání to tolik nevadí, protože i přes
-změnu dotazu vyhledávač vrátí velkou množinu výsledků.  Uživatel nepozná,
-jestli se výsledky ztratily, nebo byly pouze seřazeny níže. U menších dat dojde
-k tomu, že se záznamy z výsledků ztratí, čehož si uživatel ihned všimne.
+změnu dotazu vyhledávač vrátí velkou množinu výsledků. Uživatel nepozná, jestli
+se výsledky ztratily, nebo byly pouze seřazeny níže. U menších dat dojde k
+tomu, že se záznamy z výsledků ztratí, čehož si uživatel ihned všimne.
 
-Porovnání proběhne na několika datových sadách o několika stovkách tisíc
-záznamech, které budou reprezentovat datové sady pro případy, ve kterých by se
-navrhovaný vyhledávač měl nejlépe uplatnit. Porovnáním jsou ukázky interakce a
-zhodnocení několika uživatelů, kterým byl systém prezentován v porovnání s
-ostatními implementovanými vyhledávači.
+Porovnání bylo vyhodnoceno na několika datových sadách o několika stovkách
+tisíc záznamech, které budou reprezentovat datové sady pro případy, ve kterých
+by se navrhovaný vyhledávač měl nejlépe uplatnit. Porovnáním jsou ukázky
+interakce a zhodnocení několika uživatelů, kterým byl systém prezentován v
+porovnání s ostatními implementovanými vyhledávači.
 
 \subsection{Výkon}
 U instantního vyhledávání platí pravidlo, že dotazy vykonané pod hranici
 100\,ms jsou lidmi vnímány jako instantní~\cite{sto_ms}. Do této doby se musí
 vejít jednak samotné vykonání algoritmu, a jednak doba pro přenos dat, která
 nebude zanedbatelná, pokud bude vyhledávací aplikace poskytována jako služba ze
-vzdáleného počítače.
+vzdáleného serveru.
 
-Protože bude návrh nového vyhledávače prezentován pouze jako prototyp v
-dynamicky typovaném Pythonu, kvůli čemuž nelze provést objektivní srovnání
+Návrh nového vyhledávače je prezentován v dosavadní fázi jako prototyp napsaný
+v dynamicky typovaném Pythonu, kvůli čemuž nelze provést objektivní srovnání
 výkonu. Rychlost běhu programu v Pythonu se oproti nativní implementaci liší
 řádově, a proto bude použito hrubé pravidlo jedné vteřiny, tedy pokud očekáváme
 výkon prototypu desetkrát pomalejší, pak by se měla doba běhu vejít do
@@ -458,18 +460,19 @@ Několik náhodných zásahů na disk by znamenalo instantní porušení hranice
 
 \chapter{Textové vyhledávání}
 V této části práce budou představena teoretická východiska - tedy techniky,
-kolem kterých práce staví. Budou představena pokročilá uživatelská rozhraní pro
-vyhledávací systémy, algoritmy pro vyhledávání v textu a rozšiřující algoritmy
-pro techniky, na které se práce zaměřuje.
+kolem kterých práce staví. Budou představena některá pokročilá uživatelská
+rozhraní pro vyhledávací systémy, algoritmy pro vyhledávání v textu a
+rozšiřující algoritmy pro techniky, na které se práce zaměřuje.
 
 \section{Definice problému vyhledávání}
-Problém vyhledávání, které se zde budeme zabývat spočívá v existenci velké
+Problém vyhledávání, kterým se zde budeme zabývat spočívá v existenci velké
 datové sady (kolekce) jednotlivých položek obsahujících text, které nazveme
 záznamy nebo také dokumenty. Samotné vyhledávání přichází ve chvíli, kdy
 uživatel vyšle požadavek na vyhledávací systém (dotaz) sestávající z několika
 slov a vzápětí od systému očekává odpověď, která mu vrátí nejpřesnější možný
-výsledek nebo výsledky dle relevance k jeho dotazu. Možnosti uživatelského
-rozhraní takového systému jsou popsány v \S\,\ref{sec:uzivatelske_rozhrani}.
+výsledek nebo množinu několika výsledků seřazených dle relevance k jeho dotazu.
+Možnosti uživatelského rozhraní takového systému jsou popsány v
+\S\,\ref{sec:uzivatelske_rozhrani}.
 
 \section{Povaha textových dat}
 V této práci se budeme zabývat textem, který reprezentuje přirozený jazyk.
@@ -481,72 +484,78 @@ zpracováním těchto dat zabývá.
 
 \paragraph{Zipfův zákon} říká, že kdybychom seřadili slova nějaké větší textové
 sady podle počtu výskytů, pak pořadí jednoho takového slova $\bftt{i}$ vzhledem
-k jeho frekvenci $f_i$ bude nepřímo úměrné podle vztahu \[i \propto
-\frac{k}{f_i}\]. Zipfův zákon charakterizuje danou textovou sadou konstantou
+k jeho frekvenci $f_i$ bude nepřímo úměrné podle vztahu \[i \propto \frac{k}{f_i}\]
+
+Zipfův zákon charakterizuje danou textovou sadou konstantou
 \bftt{k}. Např. pro jednu datovou sadu, se kterou zde budeme pracovat (databáze
 filmů) jsou pěti nejfrekventovanějšími slovy \bftt{the} ($80\,999\times$),
 \bftt{of} ($31\,026\times$), \bftt{a} ($24\,499\times$), \bftt{in} ($12\,226
 \times$) a \bftt{la} ($11\,417\times$). Na první pohled je patrná exponenciálně
 klesající frekvence s rostoucím pořadím, jejichž součin je zhruba konstantní.
 Modifikace tohoto zákona, která ještě blíže odpovídá reálným datům je
-Zipf-Mandelbrotův, nebo také Zipf-Paretův zákon.
+Zipf-Mandelbrotův, nebo také Zipf-Paretův zákon~\cite{neumann_zipf}.
 
-\paragraph{Heapsův zákon} popisuje druhou charakteristiku textu přirozeného
-jazyka, se kterým musí algoritmy počítat. Ten empiricky vyjadřuje počet slov
-dané textové kolekce v závislosti na její velikosti. Tedy kolik unikátních slov
-bude text obsahovat, pokud bude obsahovat celkově 1\,000, 100\,000,
-10\,000\,000, ... slov. Heapsův zákon empiricky stanovuje závislost \[k \times
-n^b\] s klíčovou konstantou \bftt{b}, která je sice závislá na textové kolekci,
-ale prakticky má hodnotu kolem $0.5$. Tedy počet unikátních slov roste jako
+\paragraph{Heapsův zákon} popisuje druhou charakteristiku slovníku textu
+přirozeného jazyka, se kterým musí algoritmy počítat. Ten empiricky vyjadřuje
+počet slov dané textové kolekce v závislosti na její velikosti. Tedy kolik
+unikátních slov bude text obsahovat, pokud obsahuje celkově 1\,000, 100\,000,
+10\,000\,000, ... slov. Heapsův zákon stanovuje závislost \[k \times n^b\] s
+klíčovou konstantou \bftt{b}, která je sice závislá na textové kolekci, ale
+prakticky má hodnotu kolem $0.5$. Tedy počet unikátních slov roste jako druhá
 odmocnina celkového počtu slov. Zajímavé je pozorování, že počet slov neustále
-roste, přestože by se mohlo zdát, že jazyk má pouze omezený počet slov. Čím
-více dat ale máme, tím větší je šance, že se v něm budou objevovat různá jména,
-smyšlená slova a překlepy, které se také počítají jako unikátní slova.
+roste, přestože by se mohlo zdát, že jazyk má omezený počet slov. Čím více dat
+ale máme, tím větší je šance, že se v něm budou objevovat různá jména, smyšlená
+slova a překlepy, které se ale také počítají jako unikátní slova.
 
 \section{Uživatelské rozhraní} \label{sec:uzivatelske_rozhrani}
 Základním uživatelským rozhraní pro textové vyhledávání je obyčejný řádek, do
-kterého uživatel napíše svůj dotaz a po potvrzení mu vyhledávač obratem pošle
-sadu dokumentů, které ohodnotí jako nejrelevantnější vzhledem k jeho dotazu.
-Tento koncept se silně osvědčil díky svojí jednoduchosti. Některé vyhledávače
-rozšiřují tento jednoduchý koncept například tím, že s uživatelem reagují už
-během jeho vkládání dotazu a nečekají na potvrzení. Tahle vlastnost se začala
-rozšiřovat v první dekádě tisíciletí, kdy začaly webové stránky více používat
-techniku AJAX - tedy komunikace webové stránky se serverem bez toho, aniž by
-uživatel explicitně vyslal požadavek.
+kterého uživatel napíše svůj dotaz a po potvrzení mu vyhledávač obratem zašle
+sadu záznamů (dokumentů), které ohodnotí jako nejrelevantnější vzhledem k jeho
+dotazu.  Tento koncept se silně osvědčil díky svojí jednoduchosti. Některé
+vyhledávače rozšiřují tento jednoduchý koncept například tím, že s uživatelem
+reagují už během jeho vkládání dotazu a nečekají na potvrzení.
+
+% Tahle vlastnost se začala
+% rozšiřovat na počátku tisíciletí, kdy začaly webové stránky více používat
+% techniku AJAX - tedy komunikace webové stránky se serverem bez toho, aniž by
+% uživatel explicitně vyslal požadavek.
 
 Vyhledávače interpretují dotaz nejčastěji tak, že text rozdělí na slova a
-naleznou všechny dokumenty, které obsahují všechna zároveň. Kdybychom si chtěli
-dotaz představit v explicitní formě, pak by dotaz \bftt{forrest gump} vypadal
-jako \bftt{forrest AND gump}, kde operátor \bftt{AND} označuje konjunkci.
+naleznou všechny dokumenty, které obsahují všechna tato slova zároveň.
+Kdybychom si chtěli dotaz představit v explicitní formě, v jaké ji vidí
+vyhledávač, pak by např. dotaz \bftt{forrest gump} vypadal jako \bftt{forrest
+AND gump}, kde operátor \bftt{AND} označuje konjunkci.
 
-Pak záleží na vyhledávačích, jaké další funkce uživateli poskytnou. Mezi
-populární patří operátory \bftt{NOT} a frázové vyhledávání. \bftt{NOT} se
-vztahuje ke konkrétnímu slovu a má efekt, že tohle slovo nesmí být přítomno ve
-výsledcích. Frázové vyhledávání slouží k odfiltrování výsledků, které nejsou
-těsně vedle sebe. Ačkoliv jsou tyto dva operátory takřka standardem, přesto
-jsou v různých vyhledávačích implementovány různým způsobem, např. symbolem
-\bftt{-} nebo slovem \bftt{NOT}, a frázové vyhledávání se interpretuje různě v
-závislosti na vyhledávači. Navíc samotné vyhledávače obměňují svoji rozšířenou
-funkcionalitu, a proto i operátory, které dříve fungovaly a spousta uživatelů
-si na ně zvykla, buďto už nefungují, nebo nesplňují dřívější očekávání.
+Záleží na vyhledávačích, jaké další funkce uživateli poskytnou. Mezi populární
+patří operátory \bftt{NOT} a frázové vyhledávání. Operátor \bftt{NOT} se
+vztahuje ke konkrétnímu slovu a má efekt, že tohle slovo nesmí být přítomno v
+nalezených dokumentech. Frázové vyhledávání slouží k odfiltrování výsledků,
+které nemají slova fráze těsně vedle sebe. Ačkoliv jsou tyto dva operátory
+takřka standardem, přesto jsou v různých vyhledávačích implementovány různým
+způsobem, např. právě slovem \bftt{NOT} nebo symbolem \bftt{-}, a frázové
+vyhledávání se interpretuje různě v závislosti na vyhledávači. Navíc samotné
+vyhledávače obměňují svoji rozšířenou funkcionalitu, a proto i operátory, které
+dříve fungovaly a spousta uživatelů si na ně zvykla, buďto už nefungují, nebo
+nesplňují dřívější
+očekávání~(např.~\cite{google_operator_kill1,google_operator_kill2}).
 
 Ve výsledku jsou rozšiřující funkce vyhledávačů vlastností pro stálé a
 pokročilé uživatele. Pokud tedy implementujeme nový vyhledávač, který nemá
 letitou stálou základnu uživatelů, musíme implementovat pokročilé vlastnosti
 bez použití pokročilých operátorů. Tedy vyhledávač dostane pouze základní
-textovou informaci, kterou pak může inteligentně interpretovat.
+textovou informaci, kterou pak musí inteligentně interpretovat.
 
 \subsubsection{Inkrementální vyhledávání} \label{sec:inkrementalni_vyhledavani}
 Jednou technikou, kterou může vyhledávací systém implementovat bez nutnosti
 učit uživatele svým pokročilým funkcím, je vyhledávání ještě před tím, než
 uživatel dokončí svůj dotaz. Této technice se říká mnoha způsoby - kromě
-inkrementálního vyhledávání - instantní vyhledávání, typeahead search, search
-as you type, a další. Pro uživatele je tento způsob interakce pohodlný jednak v
-tom, že nemusí dokončovat svůj dotaz, a jednak že dokonce nemusí znát svůj
-dotaz úplně, a přesto mu vyhledávač nalezne odpověď. Inkrementální vyhledávání
-zkracuje interakční smyčku s uživatelem. Ten namísto opakovaného vkládání a
-potvrzování nového dotazu, pokud mu nevyhovují výsledku, pouze mění svůj dotaz
-a vyhledávač reaguje instantně.
+inkrementálního vyhledávání také instantní vyhledávání, typeahead search,
+search as you type, a další. Pro uživatele je tento způsob interakce pohodlný
+jednak v tom, že nemusí dokončovat svůj dotaz, a jednak že dokonce nemusí znát
+svůj dotaz úplně, a přesto mu vyhledávač nalezne odpověď. Inkrementální
+vyhledávání zkracuje interakční smyčku s uživatelem. Ten namísto opakovaného
+vkládání a potvrzování nového dotazu, pokud mu nevyhovují výsledku, pouze mění
+svůj dotaz a vyhledávač reaguje instantně.
 
 V plné formě by měl inkrementální vyhledáváč totožné rozhraní pro výsledky,
 které uživateli prezentuje ještě před dokončením a zároveň pro ty, které
@@ -564,19 +573,21 @@ mezipaměti s krátkou žívotností.  Populární je slabší forma inkrementá
 vyhledávání využívající dvou uživatelských rozhraní, která vykoná pouze
 výpočetně méně náročnou verzi dotazu při každém novém písmenu.  Jejím příkladem
 by mohlo být vyhledávání pouze v titulcích nebo názvech dokumentů při
-našeptávání a plné vyhledání v celé datové sadě po potvrzení dotazu.  Jiným
-způsobem je využití záznamu všech dotazů (query log). Toho využívají rozsáhlé
-webové vyhledávače, díky velkého počtu svých uživatelů a jimi vykonaných
-dotazů. Statistické informace jsou zpětně zabudovány do našeptávače, který pak
-doplňuje nové dotazy jejich nejpopulárnějším dokončením.
+našeptávání a plné vyhledání v celé datové sadě po potvrzení dotazu.
 
-Prefixově interpretovaný dotaz může mít dvě základní varianty. V té první se
-každé zadané slovo dotazu uvažuje jako prefix nedokončeného slova. Např. dotaz
-\bftt{motor pil} bychom interpretovali prefixově v notaci \bftt{motor* pil*} a
-očekávali od něj výsledek \bftt{motorová pila}. V druhé variantě interpretujeme
-prefixově pouze poslední slovo, tedy \bftt{motor pil*}. Odůvodněním je, že
-očekáváme, že uživatel vkládá nová písmena na konec dotazu a ne, že je vkládá
-v náhodném pořadí.
+Jiným způsobem je využití záznamu všech dotazů uživatelů (query log). Toho
+využívají velké webové vyhledávače, které díky velkému počtu svých uživatelů a
+velkého množství jimi vykonaných dotazů mohou tuto informaci zpětně zabudovat
+do našeptávače. Statistickými metodami pak určí nejlepší možné dokončení
+částečně zadaného dotazu~\cite{Bar-Yossef:2008:MSE:1453856.1453868}.
+
+Prefixově interpretovaný dotaz může vyhledávač vyhodnotit dvěma základními
+způsoby. V prvním každé zadané slovo dotazu uvažuje jako prefix nedokončeného
+slova. Např. dotaz \bftt{motor pil} bychom interpretovali prefixově v notaci
+\bftt{motor* pil*} a očekávali od něj výsledek např. \bftt{motorová pila}. V
+druhé variantě interpretujeme prefixově pouze poslední slovo, tedy \bftt{motor
+pil*}. Odůvodněním je, že očekáváme, že uživatel vkládá nová písmena na konec
+dotazu a ne, že je vkládá v náhodném pořadí.
 
 \subsection{Přibližné vyhledávání}
 V některých případech je žádoucí, když vyhledávač pomáhá vyhledávat navzdory
@@ -584,35 +595,35 @@ morfologii jazyka. Při prohledávání celých textových dokumentů je pro už
 frustrující situace, kdy hledá výraz - nejčastěji v prvním mluvnickém pádu -
 ale výskyt fráze je v dokumentu v jiném pádu nebo čísle. Přibližným (fuzzy)
 vyhledáváním se také rozumí, pokud dokáže systém napovědět, nebo rovnou
-vyhledat výsledky, přestože dotaz obsahuje překlepy (\bftt{metamatyka}
+vyhledat výsledky, přestože dotaz obsahuje překlepy (např. \bftt{metamatyka}
 $\rightarrow$ \bftt{matematika}), zdvojená písmena nebo naopak (\bftt{forest
 gump}  $\rightarrow$ \bftt{forrest gump}), nesprávné rozdělení slov (\bftt{i
 phone}  $\rightarrow$ \bftt{iphone}), inteligentní nahrazování některých slov
 jejich synonymy, nebo expanze zkratek na plný výraz (\bftt{U.S.  $\rightarrow$
 United States}).
 
-Některé techniky je obtížné implementovat, protože závisí na podrobné analýze
-dat. Např. přibližná shoda slov na základě morfologie závisí na správné detekci
-jazyka dokumentu, nebo dokonce jednotlivých slov, protože v dnešním
-globalizovaném světě není netypické míchání cizích slov do textu jiného jazyka.
-Nahrazování slov synonymy a expanze zkratek mohou být závislé na oblasti, ze
-které dokumenty pocházejí, a vyžadovat definování nahrazovacích pravidel
-experty z oblasti. Oproti tomu kontrolování překlepů je relativně snadno
-implementovatelné, protože je závislé pouze na znalosti kompletního slovníku
-datové kolekce.
+Některé techniky pro přibližné vyhledávání je obtížné implementovat, protože
+závisí na podrobné analýze textu. Např. přibližná shoda slov na základě
+morfologie závisí na správné detekci jazyka dokumentu, nebo dokonce
+jednotlivých slov, protože v dnešním globalizovaném světě není netypické
+míchání cizích slov do textu jiného jazyka.  Nahrazování slov synonymy a
+expanze zkratek mohou být závislé na oblasti, ze které dokumenty pocházejí, a
+vyžadovat definování nahrazovacích pravidel experty z oblasti. Oproti tomu
+kontrolování překlepů je relativně snadno implementovatelné, protože je závislé
+pouze na znalosti kompletního slovníku datové kolekce.
 
 \subsection{Filtrované vyhledávání} \label{sec:faceted_search}
 Textové vyhledávání může být kombinováno s různými filtry pro vlastnosti, které
 výsledky obsahují. Dokonce ještě přes započetím vkládání dotazu může být
 uživateli prezentována omezená množina celé kolekce, seřazená např. podle
-popularity v poslední době. Vedle této množiny mohou být představeny různé
-filtry nebo všechny (nebo alespoň nejpopulárnější) kategorie, kterými lze
+popularity v poslední době. Vedle této množiny mohou být uživateli představeny
+různé filtry nebo všechny (nebo alespoň nejpopulárnější) kategorie, kterými lze
 datovou sadu rozdělit. Uživatel pak dokonce nemusí ani vepisovat dotaz a pouze
 se k výsledkům dopracuje postupnou interakcí s nabízenými filtry, které
 postupně reflektují zmenšující se množinu. Tedy např. z nabídky filtrů zmizí
 všechny kategorie, které nemají v omezené množině zastoupení. Pole pro
 vyhledávání pak lze chápat jako pouze další filtr. Tomuto rozhraní se také říká
-facetové vyhledávání.
+facetové vyhledávání~\cite{tunkelang2009faceted}.
 
 
 \section{Algoritmy pro textové vyhledávání}
@@ -1136,7 +1147,7 @@ vyhledávání~\cite{Brin:1998:ALH:297810.297827}.
 1, \bftt{a}:           [1, 3]        & \bftt{a-d}: [1:1, 1:2, 2:2, 3:1] \\
 2, \bftt{dokument}:    [1, 2]        & \bftt{i-j}: [1:3, 2:3, 2:4, 4:3, 4:5] \\
 3, \bftt{index}:       [1, 2, 4]     & \bftt{p-t}: [1:7, 2:6, 2:7, 3:7, 4:6, 4:7] \\
-4, \bftt{invertovaný}: [2] & \\ 
+4, \bftt{invertovaný}: [2] & \\
 5, \bftt{je}:          [4] & \\
 6, \bftt{pro}:         [2, 4] & \\
 7, \bftt{text}:        [1, 2, 3, 4] & \\
@@ -1696,7 +1707,7 @@ Kromě vlastní implementace byly pro systém ElasticSearch nakonfigurovány
 dva systémy. V systému Postgres byl vytvořen jeden trigramový
 vyhledávač. Všechny systémy byly porovnány na počítači s 16\,GB paměti a
 procesorem Intel Core2 Quad Q8400 (2.66\,GHz).
- 
+
 \subsubsection{Vlastní implementace}
 Protoyp nového systému vychází z výše popsaného návrhu vyhledávacího systému.
 Implementace je prototyp napsaný v dynamicky typovaném Pythonu, a tedy nemůže z
@@ -1722,7 +1733,7 @@ Jako základní řešení sloužící pro porovnání jsem nakonfiguroval Elasti
 tak, jak by se měl doporučeně nastavit pro full-textové vyhledávání ve větších
 textových dokumentech. Text je stematizován zabudovaným stematizérem pro
 češtinu. Cílem bude ukázat, že tohle nastavení bude mít potíže s vícejazykovou
-datovou sadou, jmény a s některými případy morfologie v češtině. 
+datovou sadou, jmény a s některými případy morfologie v češtině.
 
 \subsubsection{ElasticSearch - trigramový vyhledávač} \label{sec:trigram_implementation}
 Pro ukázku fuzzy vyhledávání pomocí n-gramů byla vytvořena další konfiguraci
@@ -2459,7 +2470,7 @@ slovo, které navíc obsahuje pouze první znak (např. dotaz \bftt{s*}). Výhod
 invertovaného indexu je, že dokáže efektivně zúžit počet výsledné množiny.
 Prefixový dotaz tohoto typu prování minimální prořezávání Nalezení všech
 výsledků je náročné i v optimálním případě, kdy je výpočetní náročnost určena
-pouze velikostí nalezené množiny. 
+pouze velikostí nalezené množiny.
 
 V případě, že použijeme prefixovou schopnost vyhledávače pro vyhledávání typu
 search-as-you-type, pak v každém případě uživatel pocítí počáteční zpoždění,
