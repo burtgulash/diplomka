@@ -692,8 +692,8 @@ každý dokument.
 Protože je typickým dotazem velmi krátký text v porovnání s dlouhým dokumentem,
 průchod obyčejným indexem od začátku do konce vrátí pouze malé množství
 nalezených dokumentů poměrně k počtu všech dokumentů. Invertovaný index
-(inverted index) je datová struktura, která umožňuje rychle nalézt pouze ty
-dokumenty, které obsahují konkrétní slovo.
+(inverted index) je datová struktura, která tohohle využije, protože umožňuje
+rychle nalézt pouze ty dokumenty, které obsahují konkrétní slovo.
 % TODO průměrná délka dotazu google, yahoo, atd.
 
 Obyčejný index lze převést na invertovaný index tak, že k sobě sloučíme všechny
@@ -708,91 +708,93 @@ dokumentu, je sloučení velmi rychlou lineární operací nad více invertovan�
 seznamy.
 
 Indexu se říká invertovaný, protože se efektivně v ntici výskytu zamění pořadí
-dokumentu a slova a obyčejný index se seřadí dle tohoto nového pořadí. Pro k
-invertovanému indexu budeme nazývat obyčejný index jako dopředný index (forward
-index). Invertovaný index by měl být znám všem, kdo čtou knihy, protože
-rejstřík na posledních stránkách není ničím jiným než právě invertovaným
-indexem, kde jedním záznamem je stránka knihy.
+dokumentu a slova a obyčejný index se seřadí dle tohoto nového pořadí. Pro
+kontrast k invertovanému indexu budeme nazývat obyčejný index jako dopředný
+index (forward index). Invertovaný index by měl být znám všem, kdo čtou knihy,
+protože rejstřík na posledních stránkách není ničím jiným než právě
+invertovaným indexem, kde jedním záznamem je stránka knihy.
 
 Invertovaný index má ještě lepší kompresní vlastnosti než dopředný index,
-protože může pro používat oproti instantním efektivnější blokové kompresní
+protože může místo instantních kódů používat efektivnější blokové kompresní
 metody, které drasticky sníží velikost invertovaných seznamů odpovídajících
 často se opakujícím slovům. Má však horší kompresní vlastnosti pro záznamy o
 pozicích výskytu, protože se v tomhle schématu nevyskytují striktně za sebou.
+Komprese bude detailněji popsána dále v \S\,\ref{sec:compression}.
 
 
 \subsection{Prefixové vyhledávání} \label{sec:prefix_search}
 Instantní vyhledávání můžeme implementovat více způsoby. Nejjednodušším je
-zaindexováním všech možných prefixů a slova samotného. Tedy pro slovo
-\bftt{podlaha} se zaindexují výrazy \bftt{p}, \bftt{po}, \bftt{pod},
-\bftt{podl}, \bftt{podla}, \bftt{podlah}, \bftt{podlaha}. Při vyhledávání není
-nutné dotaz nijak upravovat, protože při existující shodě v dokumentech bude
-odpovídající výraz v takovém indexu přítomný. Nevýhodou je násobná velikost
-výsledného indexu, protože se efektivně indexuje kvadratické množství slov.
-Často se velké množství omezuje minimální a maximální délkou prefixů¸ které se
-zaindexují.  Očividně pak vyhledávač nemůže vyhledávat při krátkých dotazech a
-nebude přesný pro delší prefixy.
+zaindexování všech možných prefixů (předpon slova) a slova samotného. Tedy
+např. pro slovo \bftt{podlaha} se zaindexují prefixy \bftt{p}, \bftt{po},
+\bftt{pod}, \bftt{podl}, \bftt{podla}, \bftt{podlah}, \bftt{podlaha}. Při
+vyhledávání není nutné uživatelem nedokončený dotaz nijak upravovat, protože
+při existující shodě v dokumentech bude odpovídající výraz v takovém indexu
+přítomný. Nevýhodou je několikanásobná velikost výsledného indexu, protože se
+efektivně indexuje kvadratické množství slov. Často se velké množství omezuje
+minimální a maximální délkou prefixů¸ které se zaindexují. V takovém případě
+pak zjevně vyhledávač nemůže vyhledávat při krátkých dotazech a nebude přesný
+pro delší prefixy.
 
 Jiným způsobem je použít klasický invertovaný index beze změny a vypočítat
-prefixy až při dotazování.  Docílíme toho přepsáním dotazu do formy konjunkce
-více disjunkcí. Např. dotaz \bftt{motor* pil*} by byl přepsán do tvaru
+prefixy až při dotazování. Docílíme toho přepsáním dotazu do formy konjunkce
+disjunkcí. Např. dotaz \bftt{motor* pil*} by byl přepsán do tvaru
 \[\bftt{(motorová OR motorových OR ...) AND (pila OR pil OR pilách OR ...)}\]
-podle všech odpovídajících slov ve slovníku.
-
-Problém nastane u krátkých prefixů, protože odpovídají velkému počtu slov.
-Dotaz s disjunkcí tisíců invertovaných seznamů bude pravděpodobně méně výkonný
-než prostý průchod celou datovou kolekcí.
-
-Řešením bude poloinvertovaný index popsaný v sekci ...
-% TODO reference na sekci
+podle všech odpovídajících slov ve slovníku. Problém nastane u krátkých
+prefixů, protože odpovídají velkému počtu slov. Dotaz s disjunkcí tisíců
+invertovaných seznamů může být i méně výkonný než prostý průchod celou datovou
+kolekcí. Řešením velké disjunkce je poloinvertovaný index popsaný v sekci
+\S\,\ref{sec:half_inverted}.
 
 \section{Algoritmy pro přibližné vyhledávání}
-V této práci se budeme zabývat pouze technikami, které uvažují slova pouze jako
-posloupnost znaků. Tedy vynecháme hledání synonym nebo expanzi zkratek, které
-silně závisí na kontextu a na obsahu dat.
+Tato práce se zabývá přibližným vyhledáváním pouze z čistě textového pohledu.
+Text je považován pouze za posloupnost znaků, slov nebo jejich kombinaci, ale
+nijak neuvažuje v potaz význam slov. Tedy nejsou uvažovány techniky jako
+hledání synonym nebo expanze zkratek, které silně závisí na kontextu a na
+obsahu dat.
 
 \subsection{Stematizace}
 Velkým problémem textových vyhledávačů je tvarosloví jazyka (morfologie - různé
-tvary slov, např. dobrý, dobrou, dobrému, dobrých).  Například při dotazování
+tvary slov, např. dobrý, dobrou, dobrému, dobrých). Například při dotazování
 vyhledávače na výraz \bftt{motorová pila} nás jistě budou zajímat i výsledky,
 které obsahují text \bftt{motorové pile} nebo \bftt{motorových pilách}. Nelze
 po uživateli požadovat, aby vyjmenoval všechny tvary slov, které zadává.
 
 V češtině a v dalších indoevropských jazycích dochází k nejvíce morfologickým
 změnám na koncích slov. Klasickým řešením je před indexováním dat provést
-jazykovou analýzu a převést slova na kmenový tvar (stematizace). Ve výsledku se
-místo slova \bftt{motorových} zaindexujeme slovo \bftt{motor} a poté při
+jazykovou analýzu a převést slova na kmenový tvar (stematizace). Ve výsledku
+místo slova \bftt{motorových} zaindexujeme kmen \bftt{motor} a poté při
 vyhledávání se provede identická konverze dotazovaných slov. Vyhledávač by tedy
-původní výraz \bftt{motorová pila} nejprve převedl na \bftt{motor pil} a
-vykonal dotaz s tímto modifikovaným výrazem. Co se považuje za kmen slova je
-určeno vybraným algoritmem. Kromě stematizace existuje ještě technika
+původní výraz \bftt{motorová pila} nejprve převedl na kmenový tvar \bftt{motor
+pil} a vykonal dotaz s tímto modifikovaným výrazem. Co se považuje za kmen
+slova je určeno vybraným algoritmem. Kromě stematizace existuje ještě technika
 lemmatizace, která místo kmenu slova hledá jeho základní (slovníkový) tvar.
 
 V jazykové analýze existuje mnoho problémů. Především je závislá na konkrétním
-jazyce. Může se stát, že některé datové kolekce obsahují záznamy ve více
-jazycích. Pokud je text dostatečně dlouhý nebo obsahuje znaky specifické jen
-pro daný jazyk, lze jazyk záznamu detekovat frekvenční analýzou před
-morfologickým rozborem. V jiném případě může datová sada obsahovat záznamy v
-jednom jazyce, ale jednotlivá slova mohou být v jiném. Pak jednoduchá
-frekvenční analýza nebude dostačovat a museli bychom zvolit složitější techniky
-pro jazykový rozbor, které jsou ale mimo rozsah této práce.
+jazyce. Některé datové kolekce navíc obsahují záznamy ve více jazycích. Pokud
+je text dostatečně dlouhý nebo obsahuje znaky specifické jen pro daný jazyk,
+lze jazyk záznamu detekovat frekvenční analýzou před morfologickým rozborem. V
+jiném komplikovaném případě může textová sada obsahovat záznamy v jednom
+jazyce, ale jednotlivá slova mohou být v jiném. Pak jednoduchá frekvenční
+analýza nebude dostačovat a museli bychom zvolit složitější techniky pro
+jazykový rozbor, které jsou ale mimo rozsah této práce.
 
-Problém s lemmatizací je také nejednoznačnost základního tvaru. Například slovo
-\bftt{tancích} může mít základní tvar \bftt{tank} nebo \bftt{tanec} podle
-významu slova, který by člověk určil z kontextu věty.
+Problém se stematizací a lemmatizací je navíc nejednoznačnost základního tvaru.
+Například slovo \bftt{tancích} může mít základní tvar \bftt{tank} nebo
+\bftt{tanec} podle významu slova, který by člověk určil z kontextu věty.
 
 \subsection{Editační vzdálenost}
-Obecně můžeme podobnost dvou textů můžeme měřit pomocí tzv. editační
+Obecně můžeme podobnost dvou textových řetězců měřit pomocí tzv. editační
 vzdálenosti (edit distance). Základní editační vzdálenost měří minimální počet
 písmen, které musí být odebrány nebo přidány, aby z prvního řetězce vzniknul
 druhý. Např. mezi slovy \bftt{karel} a \bftt{kremrole} je editační vzdálenost
-5, protože bychom první slovo transformovali na druhé odebráním znaku \bftt{a}
+5, protože bychom první slovo přeměnili na druhé odebráním znaku \bftt{a}
 a přidáním znaků \bftt{m},~\bftt{r},~\bftt{o}~a~\bftt{l} na patřičná místa.
 Základní editační vzdálenost můžeme alternativně vypočítat jako \[\bftt{edit}(x,
-y) = |x| + |y| - 2\,\bftt{lcs}(x, y)\], kde $\bftt{lcs}$ (longest common
-subsequence) označuje nejdelší společný podřetězec textů $x$ a $y$ a $|x|$
-znamená délku textu $x$.  Tato metrika se proto také označuje jako vzdálenost
-největších společných podřetězců.
+y) = |x| + |y| - 2\,\bftt{lcs}(x, y)\]
+
+kde $\bftt{lcs}$ (longest common subsequence) označuje nejdelší společný
+podřetězec textů $x$ a $y$ a $|x|$ znamená délku textu $x$. Tato metrika se
+proto také označuje jako vzdálenost nejdelších společných podřetězců.
 
 \paragraph{Levenshteinova vzdálenost} je rozšířením~\cite{Levenshtein66}, které
 kromě odebrání a přidání uvažuje navíc záměnu písmen (substituce) za jednu
@@ -804,31 +806,30 @@ pojmem editační vzdálenost právě ji.
 
 \paragraph{Damerau-Levenshteinova vzdálenost} je druhým
 rozšířením~\cite{Damerau:1964:TCD:363958.363994}, které navíc uvažuje záměnu
-dvou sousedících písmen (transpozice) jako operaci s vahou 1.  Bez této
-podmínky by byla vzdálenost transpozice vypočtena jako jedno odebrání a jedno
-přidání celkem s váhou 2.
+dvou sousedících písmen (transpozice) jako operaci s vahou 1. Bez této podmínky
+by byla vzdálenost transpozice vypočtena jako jedno odebrání a jedno přidání
+celkem s váhou 2.
 
 \paragraph{Prefixovou editační vzdálenost} definujeme abychom mohli zkombinovat
 inkrementální vyhledávání s tolerancí překlepů. Vypočteme ji jako nejmenší
 editační vzdálenost prvního řetězce k prefixům druhého \[\bftt{p\_edit}(x, y) =
-\min_{p \in prefix(y)} \bftt{edit}(x, p)\], kde $prefix(y)$ označuje množinu
-všech prefixů řetězce $y$~\cite{Bast:2013:EFS:2457465.2457470}. Př.
-$\bftt{p\_edit}(ker, karel) = 1$, protože $\bftt{edit}(ker, kar) = 1$. Oproti
-předchozím metrikám není symetrická v $x$ a $y$.
+\min_{p \in prefix(y)} \bftt{edit}(x, p)\]
 
-% TODO damerau paper?
+kde $prefix(y)$ označuje množinu všech prefixů řetězce
+$y$~\cite{Bast:2013:EFS:2457465.2457470}. Př.  $\bftt{p\_edit}(ker, karel) =
+1$, protože $\bftt{edit}(ker, kar) = 1$. Oproti předchozím metrikám není
+symetrická v $x$ a $y$.
+
 
 \subsection{Výpočet editační vzdálenosti}
 Pro obyčejnou, Levenshteinovu i Damerau-Levenshteinovu vzdálenost se používá
-Wagner-Fisherův tabulkový algoritmus s kvadratickou náročností
-$\Theta(|x||y|)$, kde $|x|$ a $|y|$ jsou délky dvou porovnávaných řetězců.
-Algoritmus byl nezávisle objeven více lidmi (např. Vintsyuk, Needleman -
-Wunsch, a další)~\cite{Navarro:2001:GTA:375360.375365}.
-
+Wagner-Fischerův tabulkový algoritmus~\cite{Wagner:1974:SCP:321796.321811} s
+kvadratickou náročností $\Theta(|x||y|)$, kde $|x|$ a $|y|$ jsou délky dvou
+porovnávaných řetězců.  Algoritmus byl nezávisle objeven více lidmi (např.
+Vintsyuk, Needleman - Wunsch, a další)~\cite{Navarro:2001:GTA:375360.375365}.
 Obdobný tabulkový algoritmus se používá pro výpočet nejdelšího řetězce se
-stejnou kvadratickou náročností, proto nepomůže výpočet přes alternativní
-formu. Náročnost lze snížit, pokud nastavíme strop pro maximální možnou
-editační vzdálenost pomocí Ukkonenova algoritmu nebo Ukkonenova prořezávání.
+stejnou kvadratickou náročností, proto nepomůže výpočet přes tuto alternativní
+cestu.
 
 \subsection{Hranice pro editační vzdálenost}
 Ohodnocení všech položek slovníku editační vzdáleností ku dotazovanému slovu je
@@ -850,27 +851,33 @@ Jako řešení můžeme definovat relativní editační vzdálenost jako
 konfigurovatelnou hranici podle délky vyhledávaného slova. Např. pro slovo
 delší než 10 znaků se použije limit 4, pro slova delší než 7 limit 3, apod.
 
-% TODO ukkonen popsat
-
+Díky omezení maximální editační vzdálenosti lze snížit náročnost algoritmu.
+Místo vypočítání celé tabulky vypočteme pouze hodnoty ve vzdálenosti $k$ od
+diagonály s náročností $\mathcal{O}(\min (|x|, |y|) \cdot
+k)$~\cite{Ukkonen:1985:AAS:4620.4626}.
 
 
 \subsection{N-gramová podobnost}
-Pro přibližné vyhledávání můžeme indexovat jiné díly původního textu než slova
-- n-gramy (nebo také q-gramy). N-gram je posloupnost několika po sobě jdoucích
-znaků. Např. n-gramy slova \bftt{podlaha} o délce 3 (trigramy) jsou \bftt{pod},
-\bftt{odl}, \bftt{dla}, \bftt{lah}, \bftt{aha}. V tomto případě se jejich znaky
-překrývají, a proto hovoříme o překrývajících se trigramech.
+Pro přibližné vyhledávání můžeme indexovat jiné díly původního textu než
+jednotlivá slova. N-gram (také q-gram) je posloupnost několika po sobě
+jdoucích znaků. Např. n-gramy slova \bftt{podlaha} o délce 3 (trigramy) jsou
+\bftt{pod}, \bftt{odl}, \bftt{dla}, \bftt{lah}, \bftt{aha}. V tomto případě se
+jejich znaky překrývají, a proto hovoříme o překrývajících se trigramech.
 
-Podobnost dvou textů pomocí n-gramů můžeme efektivně zjistit pomocí Jaccardovy
-podobnosti množin (coherence). Tu zjistíme jako poměr velikosti průniku ku
-velikosti sjednocení obou množin \[\bftt{jacc}(X, Y) = |X \cap Y|\ /\ |X \cup
-Y|\]. Pokud porovnávané texty reprezentujeme jako dvě množiny jejich n-gramů,
-vypočteme jejich podobnost jako podobnost těchto množin.
+Podobnost dvou řetězců pomocí n-gramů můžeme efektivně zjistit pomocí
+Jaccardovy podobnosti množin (coherence). Tu zjistíme jako poměr velikosti
+průniku ku velikosti sjednocení obou množin \[\bftt{jacc}(X, Y) = |X \cap Y|\
+/\ |X \cup Y|\]
+
+Pokud porovnávané texty reprezentujeme jako dvě množiny jejich n-gramů,
+vypočteme jejich podobnost jako podobnost těchto množin. Jaccardova podobnost
+může dosahovat pouze hodnot od $0$ do $1$ a díky tomu můžeme jednoduše odvodit
+vztah pro Jaccardovu vzdálenost jako $1 - \bftt{jacc}$.
 
 Tento způsob funguje pro krátké řetězce a nízkou toleranci odlišnosti. Podobná
 slova budou sdílet všechny n-gramy vzdálené $n$ pozic od místa, kde mezi nimi
-došlo ke změně. Např. slova \bftt{kremrole} a \bftt{kremrule} se
-levenshteinovou vzdáleností 1 budou mít Jaccardovu vzdálenost trigramů pouze
+došlo ke změně. Např. téměř totožná slova \bftt{kremrole} a \bftt{kremrule} s
+Levenshteinovou vzdáleností 1 budou mít Jaccardovu podobnost trigramů pouze
 $0.5$. Aby metoda fungovala, musí být text dlouhý alespoň dvakrát delší než
 velikost n-gramu, pokud ke změně dojde uprostřed textu. Proto tenhle způsob
 selhává u kratších slov.
@@ -878,15 +885,15 @@ selhává u kratších slov.
 Kromě Jaccardovy podobnosti můžeme použít i další metriky pro podobnost množin
 jako euklidovskou, kosínovou nebo Jaro-Winklerovu vzdálenost, pokud převedeme
 množiny na vektory, kde jedna dimenze označuje přítomnost jednoho znaku nebo
-n-gramu textu.
+n-gramu textu (vector space model pro textové řetězce).
 
 % Vztah mezi Jaccardovou metrikou a základní editační vzdáleností je
 % $\bftt{jacc}(x, y) = 1 - |\bftt{lcs}(x, y)|\ /\ (|\bftt{lcs}(x, y)| +
 % \bftt{edit}(x, y))$, pokud jsou prvky množiny jednotlivá písmena textu.
 
 \subsection{Reprezentace slovníku}
-Pokud zvolíme fuzzy technikou stematizaci, pak lze implementaci slovníku pro
-invertovaný index provést jednoduchou hashovací tabulkou, která si u
+Pokud zvolíme jako fuzzy techniku stematizaci, pak lze implementaci slovníku
+pro invertovaný index provést jednoduchou hashovací tabulkou, která si u
 záznamenaných kmenů slov poznamená všechny původní tvary. V praxi se odvozené
 tvary často zahazují a nerozlišuje se ve výsledcích vyhledávání rozdíl mezi
 přesným zásahem a odvozeným tvarem. Slovník pro index s podporou n-gramového
@@ -1062,7 +1069,7 @@ indexů ve vzrůstající velikosti a změny z dynamického indexu postupně s t
 slučovat od nejmenšího po největší~\citep[kap.~4]{Manning:2008:IIR:1394399}.
 Tenhle přístup používá knihovna Apache Lucene~\cite{lsm_lucene}.
 
-\subsubsection{Komprese}
+\subsubsection{Komprese} \label{sec:compression}
 Invertované seznamy jsou pouze seznamy identifikátorů dokumentů - tedy celých
 čísel, které bývají uloženy v seřazeném pořadí. To umožňuje efektivní kompresi
 tím, že uložíme pouze rozdíly mezi identifikátory (delta komprese), které budou
@@ -1105,7 +1112,7 @@ Experimentální srovnání různých typů komprese pro invertované seznamy by
 provedeno např. v~\citep[addenda~6]{buttcher2010information}
 nebo~\cite{Zhang:2008:PCI:1367497.1367550}.
 
-\subsubsection{Poloinvertovaný index}
+\subsubsection{Poloinvertovaný index} \label{sec:half_inverted}
 Velkou výpočetní zátěží u prefixových a fuzzy indexů je, pokud musí provést
 disjunktivní sloučení (sloučení - OR) většího množství invertovaných seznamů.
 Většinou v literatuře potkáme konjunktivní sloučení (průnik - AND), které je
