@@ -626,19 +626,24 @@ vyhledávání pak lze chápat jako pouze další filtr. Tomuto rozhraní se tak
 facetové vyhledávání~\cite{tunkelang2009faceted}.
 
 
+\newpage
 \section{Algoritmy pro textové vyhledávání}
-Implementace a výběr algoritmů bude záviset na vlastnostech, které po
-vyhledávači požadujeme a na povaze dat, ve kterých bude vyhledávat. Budeme
-předpokládat, že datová sada, ve které se bude vyhledávat, je dostupná celá
-nebo její většina, ještě před tím, než dojde k prvnímu dotazu. V takovém
-případě nás budou zajímat tzv. offline a statické algoritmy.  Opakem by byla
+Implementace a výběr algoritmů závisí na vlastnostech, které po vyhledávači
+požadujeme a na povaze dat, ve kterých bude vyhledávat. Budeme předpokládat, že
+datová sada, ve které se bude vyhledávat, je dostupná celá nebo její většina
+ještě před tím, než dojde k prvnímu dotazu. V takovém případě hovoříme o
+offline vyhledávání a můžeme použít čistě statické algoritmy.  Opakem by byla
 situace, kdy text přichází jako proud jednotlivých záznamů, a v tomto případě
 hovoříme o tzv. online problému. Pokud bychom neměli možnost uchovat všechny
-tyto přicházející záznamy v nějaké datové struktuře, pak bychom museli použít
-tzv. streamovací algoritmy. Opačně bychom datovou strukturu budovali postupně.
-Takový algoritmus se v kontrastu ke statickému nazývá dynamický. Oproti
-statickému musí být přizpůsobený na postupné úpravy datové struktury a zároveň
-vykonávat dotazy přícházející od uživatelů.
+tyto přicházející záznamy v nějaké datové struktuře, ale pouze nějakou omezenou
+část, pak bychom museli použít tzv. streamovací algoritmy. Pokud bychom mohli
+uchovat všechny záznamy, ale neměli bychom je všechny dostupné předem, pak
+bychom datovou strukturu budovali postupně a využili k tomu dynamické algoritmy
+(v kontrastu ke statickým). Oproti statickým datovým strukturám musí být
+dynamické přizpůsobeny na postupné přidávání nových záznamů, jejich úpravy a
+odebrání a zároveň vykonávat dotazy přícházející od uživatelů. Statická datová
+struktura je jednou vytvořena a dále se nemění - je tedy vytvořena pouze pro
+čtení.
 
 Dynamické algoritmy jsou obtížné na implementaci, protože musí neustále
 synchronizovat přístup do datových struktur zvlášť pro zápis a pro čtení.
@@ -647,9 +652,9 @@ např. provedením těsné komprese dat, která by v případě dynamické datov
 struktury ztěžovala vkládání nových záznamů. Algoritmy pro textové vyhledávání
 mají často statický charakter, protože se velká část dat nemění. Nové záznamy
 nebo úpravy stávajících záznamů lze proto uchovat ve vejdlejší a menší
-dynamické datové struktuře a při dosažení určité velikosti se sloučí s větší
-statickou v jednorázové dávkové operaci. Sloučení nemusí vyústit pouze v jednu
-velkou datovou strukturu, ale může se slučovat postupně. Takové datové
+dynamické datové struktuře a při dosažení určité velikosti provést sloučení s
+větší statickou v jednorázové dávkové operaci. Sloučení nemusí vyústit pouze v
+jednu velkou datovou strukturu, ale může se slučovat postupně. Takové datové
 struktuře říkáme vícegenerační, protože je tvořena několika generacemi, ve
 kterých musíme paralelně provést vstupní dotaz a následně sloučit výsledky.
 
@@ -658,17 +663,17 @@ Textová data, ve kterých se vyhledává, můžeme ponechat v původní textov�
 reprezentaci, nebo ji zakódovat tak, aby se urychlilo vyhledávání. Pokud
 uvažujeme text jako posloupnost slov, pak je jednoduchým indexovacím schématem
 převést každé slovo v textu na nějaké celé číslo a uchovat si k němu pozici, na
-které se v původním textu nachází. Ntici (identifikátor dokumentu,
+které se v původním textu nachází. Ntice (identifikátor dokumentu,
 identifikátor slova, pozice v dokumentu) bude unikátně označovat jeden výskyt.
-Překlad ze slov na konkrétní číslo (identifikátor) bude uložen v datové
-struktuře, kterou označíme jako slovník (lexikon).
+Informace o překladu ze slov na konkrétní číslo (identifikátor) bude uložena v
+datové struktuře, kterou označíme jako slovník (lexikon).
 
 Výhodou uchování datové sady v indexovaném formátu bude její menší velikost,
-čehož dosáhneme navíc díky kompresi, která využívá nerovnoměrné povahy
-textových dat. Často se vyskytujícím slovům mohou být přiřazena malá čísla a
-naopak unikátnějším slovům větší čísla. Menší velikost datové struktury
-znamená, že se jí více vejde do paměti, což umožňuje vyhnout se pomalým dotazům
-na externí ůložiště.
+čehož dosáhneme navíc díky kompresi, která může využít nerovnoměrné povahy
+textových dat (podle zipfova zákona). Často se vyskytujícím slovům mohou být
+přiřazena malá čísla a naopak unikátnějším slovům větší čísla. Menší velikost
+datové struktury bude znamenat, že se jí více vejde do paměti, což umožňuje
+vyhnout se pomalým dotazům na externí perzistentní úložiště.
 
 Vyhledání slova v takové datové struktuře znamená převod vstupních slov na
 korespondující identifikátory pomocí slovníku a následný průchod celou datovou
@@ -676,9 +681,10 @@ kolekcí. Při průchodu si zaznamenáme všechny dokumenty, které obsahují z�
 všechna dotazovaná slova a jejich pozice v dokumentu.
 
 Indexu, který si ponechává informaci o pozicích výskytu, říkáme poziční index.
-Ten je ekvivalentní s původními daty a proto i při zamíchání ntic výskytu
-můžeme data zpětně zrekonstruovat. Pozice ukládat nemusíme, a v takovém případě
-bude index odpovídat množině slov pro každý dokument.
+Ten je ekvivalentní s původními daty ve smyslu, že je i při zamíchání ntic
+výskytu můžeme zpětně zrekonstruovat. Pozice ale nutně ukládat nemusíme
+(nepoziční index), a v takovém případě bude index odpovídat množině slov pro
+každý dokument.
 
 % TODO codes.
 
@@ -2255,7 +2261,6 @@ husté (\bftt{x*}) disjunkce. Podle očekávání by měla dominovat implementac
 jednoduchost obyčejného seznamu v případech \bftt{list} a \bftt{list-prune}.
 
 \subsection{Výkon hybridních seznamů}
-\mbox{}\\
 \noindent\makebox[\textwidth][c]{%
     \begin{minipage}[H]{.5\textwidth}\vspace{0pt}
     \begin{figure}[H]
