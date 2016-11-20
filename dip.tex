@@ -69,7 +69,9 @@
 \begin{document}
 \frontmatter
 
+% TITLEPAGE
 \begin{titlepage}
+\thispagestyle{empty}
 \centering
 \begingroup
 {\LARGE\bfseries Vysoká škola ekonomická v Praze\par}
@@ -97,8 +99,28 @@
 \endgroup
 \end{titlepage}
 
+% PROHLÁŠENÍ
+\newpage
+\chapter*{Prohlášení}
+\noindent Prohlašuji, že jsem diplomovou práci zpracoval samostatně a že jsem uvedl
+všechny použité prameny a literaturu, ze které jsem čerpal.\par
+\vspace{2.4cm}
+\noindent V Praze \today \hfill \dotfill \hspace{2em} \par
+\hfill \strut Jméno a příjmení \hspace{3.5em} \strut
+
+
+% CZ Abstrakt
+\newpage
+\chapter*{Abstrakt}
+\paragraph{Klíčová slova}
+
+% EN Abstract
+\newpage
+\chapter*{Abstract}
+\paragraph{Keywords}
 
 % TOC section
+\newpage
 {\hypersetup{hidelinks}
     \tableofcontents
 }
