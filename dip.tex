@@ -68,6 +68,37 @@
 
 \begin{document}
 \frontmatter
+
+\begin{titlepage}
+\centering
+\begingroup
+{\LARGE\bfseries Vysoká škola ekonomická v Praze\par}
+{\Large\bfseries Fakulta informatiky a statistiky\par}
+{\Large\bfseries Katedra informačních technologií\par}
+\vspace{1.8cm}
+{\large Studijní program: Aplikovaná informatika\par}
+\vspace{.2em}
+{\large Obor: Informační systémy a technologie\par}
+\vspace{2.4cm}
+{\Huge\bfseries Návrh vyhledávacího systému pro moderní potřeby\par}
+\vspace{.5cm}
+{\scshape\LARGE\bfseries diplomová práce\par}
+\vspace{3.2cm}
+\def\arraystretch{1.6}
+\begin{tabular}{rl}
+{\Large Student:} & {\Large Tomáš Maršálek \par} \\
+{\Large Vedoucí:} & {\Large RNDr. Helena Palovská, Ph.D. \par} \\
+{\Large Oponent:} & {\Large doc. RNDr. Petr Strossa, CSc. \par} \\
+\end{tabular}
+\par
+\vspace{3.8cm}
+{\Large\bfseries 2016\par}
+\vfill
+\endgroup
+\end{titlepage}
+
+
+% TOC section
 {\hypersetup{hidelinks}
     \tableofcontents
 }
@@ -822,28 +853,28 @@ symetrická v $x$ a $y$.
 
 
 \subsection{Výpočet editační vzdálenosti}
-Pro obyčejnou, Levenshteinovu i Damerau-Levenshteinovu vzdálenost se používá
-Wagner-Fischerův tabulkový algoritmus~\cite{Wagner:1974:SCP:321796.321811} s
-kvadratickou náročností $\Theta(|x||y|)$, kde $|x|$ a $|y|$ jsou délky dvou
-porovnávaných řetězců.  Algoritmus byl nezávisle objeven více lidmi (např.
-Vintsyuk, Needleman - Wunsch, a další)~\cite{Navarro:2001:GTA:375360.375365}.
-Obdobný tabulkový algoritmus se používá pro výpočet nejdelšího řetězce se
-stejnou kvadratickou náročností, proto nepomůže výpočet přes tuto alternativní
-cestu.
+Pro obyčejnou, Levenshteinovu i Damerau-Levenshteinovu vzdálenost se běžně
+používá Wagner-Fischerův tabulkový
+algoritmus~\cite{Wagner:1974:SCP:321796.321811} s kvadratickou náročností
+$\Theta(|x||y|)$, kde $|x|$ a $|y|$ jsou délky dvou porovnávaných řetězců.
+Algoritmus byl nezávisle objeven více lidmi (např.  Vintsyuk, Needleman -
+Wunsch, a další)~\cite{Navarro:2001:GTA:375360.375365}.  Obdobný tabulkový
+algoritmus se používá pro výpočet nejdelšího řetězce se stejnou kvadratickou
+náročností, proto nepomůže výpočet přes tuto alternativní cestu.
 
 \subsection{Hranice pro editační vzdálenost}
 Ohodnocení všech položek slovníku editační vzdáleností ku dotazovanému slovu je
-zbytečně obecný problém. Nám bude stačit nalezení slov do určité vzdálenosti,
-jehož výpočet je efektivnější a hlavně při správně zvolené datové struktuře
-nemusí vypočítávat vzdálenost ke všem slovům.
+pro naše potřeby zbytečně obecný problém. Nám bude stačit nalezení slov do
+určité vzdálenosti, jehož výpočet je efektivnější a hlavně při správně zvolené
+datové struktuře nemusí vypočítávat vzdálenost ke všem slovům.
 
 Omezení se provádí adaptivně podle délky slova. Vysoká tolerance pro krátká
-slova by znamenala spoustu shod, které by uživatel nevyhodnotil jako podobné.
-Např. vzdálenost mezi krátkými slovy \bftt{na} a \bftt{ty} je 2, přitom spolu
-nemají slova pranic společného. Naopak u delších slov je větší šance, že dojde
-k překlepům, proto práh můžeme zvýšit. Dokonce pro velmi dlouhá slova bude
-platit, že ve slovníku bude pouze omezené množství dlouhých a zároveň podobných
-slov, proto si můžeme dovolit limit nastavit poměrně vysoko.
+slova by znamenala spoustu shod mezi slovy, které by ale uživatel nevyhodnotil
+jako podobné. Např. vzdálenost mezi krátkými slovy \bftt{na} a \bftt{ty} je 2,
+přitom spolu nemají slova pranic společného. Naopak u delších slov je větší
+šance, že dojde k překlepům, proto pro ně můžeme práh zvýšit. Dokonce pro velmi
+dlouhá slova bude platit, že ve slovníku bude pouze omezené množství dlouhých a
+zároveň podobných slov, proto si můžeme dovolit limit nastavit poměrně vysoko.
 
 Jako řešení můžeme definovat relativní editační vzdálenost jako
 \[\bftt{edit\_rel}(x, y) = \frac{\max (|x|, |y|) - edit(x, y)}{\min (|x|,
@@ -859,10 +890,10 @@ k)$~\cite{Ukkonen:1985:AAS:4620.4626}.
 
 \subsection{N-gramová podobnost}
 Pro přibližné vyhledávání můžeme indexovat jiné díly původního textu než
-jednotlivá slova. N-gram (také q-gram) je posloupnost několika po sobě
-jdoucích znaků. Např. n-gramy slova \bftt{podlaha} o délce 3 (trigramy) jsou
-\bftt{pod}, \bftt{odl}, \bftt{dla}, \bftt{lah}, \bftt{aha}. V tomto případě se
-jejich znaky překrývají, a proto hovoříme o překrývajících se trigramech.
+jednotlivá slova. N-gram (také q-gram) je posloupnost několika po sobě jdoucích
+znaků. Např. n-gramy slova \bftt{podlaha} o délce 3 (trigramy) jsou \bftt{pod},
+\bftt{odl}, \bftt{dla}, \bftt{lah}, \bftt{aha}. V tomto případě se jejich znaky
+překrývají, a proto hovoříme o překrývajících se trigramech.
 
 Podobnost dvou řetězců pomocí n-gramů můžeme efektivně zjistit pomocí
 Jaccardovy podobnosti množin (coherence). Tu zjistíme jako poměr velikosti
@@ -894,31 +925,32 @@ n-gramu textu (vector space model pro textové řetězce).
 \subsection{Reprezentace slovníku}
 Pokud zvolíme jako fuzzy techniku stematizaci, pak lze implementaci slovníku
 pro invertovaný index provést jednoduchou hashovací tabulkou, která si u
-záznamenaných kmenů slov poznamená všechny původní tvary. V praxi se odvozené
-tvary často zahazují a nerozlišuje se ve výsledcích vyhledávání rozdíl mezi
-přesným zásahem a odvozeným tvarem. Slovník pro index s podporou n-gramového
-indexu rovněž postačí obyčejná hashovací tabulka.
+zaznamenaných kmenů slov poznamená všechny nalezené původní tvary slova. V
+praxi se původní slova často zahazují a nerozlišuje se ve výsledcích
+vyhledávání rozdíl mezi přesným zásahem a odvozeným tvarem. Pro slovník
+n-gramového indexu rovněž postačí obyčejná hashovací tabulka.
 
 \subsection{Prefixový slovník}
 Pro nalezení všech slov v prefixovém indexu, které odpovídají jednomu prefixu
 můžeme použít reprezentaci slovníku seřazeným seznamem
 slov~\citep[kap.~4]{buttcher2010information}. V něm nalezneme první a poslední
-slovo, které odpovídají prefixu. Všechna slova mezi nimi jsou výsledkem
-hledání.  Tuto reprezentaci můžeme efektivně komprimovat technikou
-Front-Coding, která rozdělí seřazený seznam na bloky o konstantní velikosti
-(např. 8) a pro každý blok uloží nejdelší prefix, který sdílí všechna slova
-bloku. Technika funguje pro slova přirozeného jazyka, protože díky tendenci
-výskytu morfologie ke konci slov se ve slovníku bude objevovat značné množství
-silně komprimovatelných úseků jako hody, hodnota, hodnoty, hodný, hodná,
-hodnému, atd. Implementace obyčejnou hashovací tabulkou je pro prefixy
-nevhodná, protože si neuchovává informaci o lexikografickém pořadí slov.
+slovo, které odpovídají prefixu. Všechna slova mezi nimi jsou výsledkem hledání
+prefixu. Tuto reprezentaci můžeme efektivně komprimovat technikou Front-Coding,
+která rozdělí seřazený seznam na bloky o konstantní velikosti (např. 8) a pro
+každý blok uloží nejdelší prefix, který sdílí všechna slova bloku. Technika
+funguje pro slova přirozeného jazyka, protože díky tendenci výskytu morfologie
+ke konci slov se ve slovníku bude objevovat značné množství silně
+komprimovatelných úseků jako např. \bftt{hody}, \bftt{hodnota}, \bftt{hodnoty},
+\bftt{hodný}, \bftt{hodná}, \bftt{hodnému}, atd. Implementace obyčejnou
+hashovací tabulkou je pro prefixy nevhodná, protože si neuchovává informaci o
+lexikografickém pořadí slov.
 
 \subsection{Fuzzy slovník}
 U n-gramového přibližného vyhledávání se přibližnost vyhodnocuje až po získání
-množiny všech n-gramů v dokumentu. Naopak editační vzdálenost se vyhodnotí už ve
-slovníku ještě před přístupem do invertovaných seznamů. Existuje více datových
-struktur, které umožňují efektivní vyhledání všech slov do určité vzdálenosti
-od hledaného - tedy bez vyčerpávajícího průchodu celým slovníkum.
+množiny všech n-gramů v dokumentu. Naopak editační vzdálenost se vyhodnotí už
+ve slovníku ještě před přístupem do invertovaných seznamů. Existuje více
+datových struktur, které umožňují efektivní vyhledání všech slov do určité
+vzdálenosti od hledaného - tedy bez vyčerpávajícího průchodu celým slovníkum.
 
 \subsubsection{Metrické stromy}
 Protože editační vzdálenost splňuje trojúhelníkovou nerovnost
