@@ -1142,7 +1142,7 @@ Invertované seznamy jsou pouze seznamy identifikátorů dokumentů - tedy celý
 čísel, které bývají uloženy v seřazeném pořadí. To umožňuje efektivní kompresi
 tím, že uložíme pouze rozdíly mezi identifikátory (delta komprese), které budou
 vždy nezáporné, protože je posloupnost vzrůstající. Tyto rozdíly budou oproti
-původním identifikátorům pouze poměrně malá čísla, které můžeme zmenšit
+původním identifikátorům pouze poměrně malá čísla, která můžeme zmenšit
 efektivními kompresními kódy pro celá čísla.
 
 Komprese invertovaných seznamů má několik opodstatnění. Zmenšením velikosti
@@ -1162,17 +1162,21 @@ zkomprimovat menší čísla na úkor větších. Příkladem jsou bitově orien
 kódy Elias $\gamma$ a $\delta$ a Golomb/Rice, nebo bytově orientované schéma
 VByte. Bitové kódy jsou kompaktnější, ale bytové rychlejší pro dekódování na
 současných procesorových architekturách.
+% TODO cite Elias codes
 
 \paragraph{Blokové kódy} naopak počítají při kompresi s celými bloky, které se
 snaží maximálně zkomprimovat jako celek. Výhodou je vyšší komprese, protože se
-využívá charakter distribuce čísel. Nevýhodou je pomalejší přístup, pokud
-chceme získat pouze jeden prvek, pak musí být prakticky dekódován celý blok.
-Proto se volí kompromis a velikost bloku je omezená pouze na několik stovek až
-tisíců prvků. Při sekvenčním přístupu u slučování invertovaných seznamů se ale
-využije velká část prvků bloku, proto jsou bloková schémata pro invertované
-indexy efektivní. Příkladem jsou např. kompresní rodiny Frame of Reference (bit
-packing, FOR, PFor, PForDelta, ...) a v poslední době se rožšiřující velmi
-efektivní kódování
+využívá charakter distribuce čísel v celém bloku. Instantní kódy také mohou
+využívat statistiky frekvencí jednotlivých čísel, ale pouze globálně. Blokový
+kód může využít lokální distribuce čísel.
+
+Nevýhodou blokových kódů je pomalejší přístup, pokud chceme získat pouze jeden
+prvek, pak musí být prakticky dekódován celý blok.  Proto se volí kompromis a
+velikost bloku je omezená pouze na několik stovek až tisíců prvků. Při
+sekvenčním přístupu u slučování invertovaných seznamů se ale využije velká část
+prvků bloku, proto jsou bloková schémata pro invertované indexy efektivní.
+Příkladem jsou např.  kompresní rodiny Frame of Reference (bit packing, FOR,
+PFor, PForDelta, ...) a v poslední době se rožšiřující velmi efektivní kódování
 Elias-Fano~\cite{DBLP:journals/corr/abs-1206-4300,Curtiss:2013:USS:2536222.2536239}.
 
 ~\\
@@ -1181,34 +1185,34 @@ provedeno např. v~\citep[addenda~6]{buttcher2010information}
 nebo~\cite{Zhang:2008:PCI:1367497.1367550}.
 
 \subsubsection{Poloinvertovaný index} \label{sec:half_inverted}
-Velkou výpočetní zátěží u prefixových a fuzzy indexů je, pokud musí provést
-disjunktivní sloučení (sloučení - OR) většího množství invertovaných seznamů.
-Většinou v literatuře potkáme konjunktivní sloučení (průnik - AND), které je
-naopak tím efektivnější, čím více invertovaných seznamů v něm učinkuje.
-Analogicky ke konjunkci množin - čím více náhodných množin, tím menší je
-pravděpodobnost, že bude jejich prvek ve všech najednou. U disjunkce platí, že
-čím více množin, tím bude sloučená množina zpravidla větší.
+Velkou výpočetní zátěží u prefixových a fuzzy indexů je disjunktivní sloučení
+(OR) většího množství invertovaných seznamů.  Většinou v literatuře textového
+vyhledávání potkáme techniky pro konjunktivní sloučení (AND), které je naopak
+tím efektivnější, čím více invertovaných seznamů v něm učinkuje.  Analogicky ke
+konjunkci množin - čím více náhodných množin, tím menší je pravděpodobnost, že
+bude jejich prvek ve všech najednou. U disjunkce platí, že čím více množin, tím
+bude sloučená množina zpravidla větší.
 
 Sloučení invertovaných seznamů je problém, pokud jejich množství narůstá.
 Zejména to platí pro krátké prefixy, protože ve slovníku k nim budou
 korespondovat tisíce slov. Problém velkého množství slov u krátkých prefixů je
 i u hranových n-gramů, jenže u nich jsou invertované seznamy předsloučeny během
-indexování. Právě zde přichází myšlenka hybridního indexu, který během
-indexování spolu předsloučí ty invertované seznamy, které mají velkou šanci, že
-by byly sloučeny během vykonání dotazu (materializace invertovaných seznamů).
-Tahle technika je obzvlášť vhodná pro čistě prefixové indexy bez fuzzy
-rozšíření. Velkou pravděpodobnost sloučení totiž mají slova, která jsou
-abecedně blízko sebe.
+indexování. Právě zde přichází myšlenka poloinvertovaného (hybridního) indexu,
+který během indexování spolu předsloučí ty invertované seznamy, které mají
+velkou šanci, že by byly sloučeny během vykonání dotazu (materializace
+invertovaných seznamů). Tahle technika je obzvlášť vhodná pro čistě prefixové
+indexy bez fuzzy rozšíření. Velkou pravděpodobnost sloučení totiž mají slova,
+která jsou abecedně blízko sebe.
 
 Pokud je index rozšířený o pozicovou informaci, pak sloučením všech
 invertovaných záznamů získáme zpět původní datovou sadu, pouze zakódovanou
-(dopředný index, forward index). Index se nazývá hybridní, protože je hybridem
-mezi invertovaným a dopředným indexem. Hybridní index je velmi podobný
-dopřednému indexu v jednom z prvních popisů architektury Googlu. To, co se
-myslí skupinou slov v hybridním indexu, odpovídá barelu (barrel) v jejich
-indexu. S rozdílem, že oba pojmy slouží k jinému účelu. Jejich dopředný index
-byla pouze mezifáze před vytvořením invertovaného indexu, zatímco u hybridního
-indexu se tahle datová struktura struktura používá přímo k
+(dopředný index). Index se nazývá hybridní, protože je hybridem mezi
+invertovaným a dopředným indexem. Hybridní index je velmi podobný dopřednému
+indexu v jednom z prvních popisů architektury Googlu. To, co se zde myslí
+skupinou slov v hybridním indexu, odpovídá barelu (barrel) v jejich
+architektuře.  Pouze s rozdílem, že oba pojmy slouží k jinému účelu. Jejich
+dopředný index byla pouze mezifáze před vytvořením invertovaného indexu,
+zatímco u hybridního indexu se tahle datová struktura struktura používá přímo k
 vyhledávání~\cite{Brin:1998:ALH:297810.297827}.
 
 \mbox{}
@@ -1240,29 +1244,31 @@ vyhledávání~\cite{Brin:1998:ALH:297810.297827}.
 
 \subsubsection{HYB} \label{sec:hyb} je typ hybridního invertovaného indexu,
 který během indexování předsloučí invertované seznamy slov v abecedním
-rozsahu~\cite{Bast:2006:TLF:1148170.1148234}.  Materializované seznamy mohou
-mít rozsahy např. \bftt{[A-EN], [EN-NUL], [NUL-QU], [QU-Z]} - první invertovaný
-seznam by obsahoval slova začínající na \bftt{A} až \bftt{EN}. Disjunktivní
-dotaz v téhle struktuře je už buďto předsloučený, nebo během vykonání dotazu za
-běhu sloučí pouze malé množství sousedících materializovaných seznamů. Ke
-každému záznamu ve sloučeném seznamu musí být poznamenáno, ke kterému slovu
-patří. Dotazy, které nevyužijí celý rozsah seznamu se díky této dodatečné
-informaci vyfiltrují od slov, které zúženému rozsahu neodpovídají.
+rozsahu~\cite{Bast:2006:TLF:1148170.1148234}. Předsloučené (materializované)
+seznamy mohou mít rozsahy např. \bftt{[A-EN], [EN-NUL], [NUL-QU], [QU-Z]} -
+tedy první invertovaný seznam by obsahoval slova začínající na \bftt{A} až
+\bftt{EN}. Disjunkce dotazu v téhle struktuře je už buďto předsloučená, nebo
+během vykonání dotazu za běhu sloučí pouze malé množství sousedících
+materializovaných seznamů. Ke každému záznamu ve sloučeném seznamu musí být
+poznamenáno, ke kterému slovu patří. Dotazy, které nevyužijí celý rozsah
+seznamu se díky této dodatečné informaci vyfiltrují od slov, které zúženému
+rozsahu neodpovídají.
 
 Tím, že jsou některé seznamy sloučeny do většího, budou dotazy, které by těchto
 seznamů využily, penalizovány. Naopak komplexní disjunktivní dotazy budou
 efektivnější než bez materializace. V klasickém invertovaném indexu je kvůli
-zipfově distribuci velký nepoměr náročnosti při zpracování krátkých a dlouhých
+zipfově zákonu velký nepoměr náročnosti při zpracování krátkých a dlouhých
 seznamů. Hybridní index tenhle rozdíl srovnává za cenu, že původně efektivní
 dotazy budou běžet zhruba stejně dlouho, jako ty původně náročné.
 
 Bylo by možné materializovat všechny prefixy, které se ve slovníku budou
-nacházet a prefixové dotazy by díky odpadnutí disjunkcí byly velmi efektivní,
-ale u fuzzy dotazů nelze dopředu předpovědět, které invertované seznamy v nich
-budou figurovat, protože závisí na dotazu. Tohle schéma by navíc bylo velmi
-paměťově náročné. HYB oproti tomu, až na nutnost uložení identifikátoru slova
-ke každému výskytu dokumentu, zabírá v paměti stejně místa jako obyčejný
-invertovaný index
+nacházet a prefixové dotazy by díky odpadnutí disjunkcí až při dotazování byly
+velmi efektivní, ale u fuzzy dotazů nelze dopředu předpovědět, které
+invertované seznamy v nich budou figurovat, protože závisí na konkrétním slovu
+dotazu. Tohle schéma by navíc bylo velmi paměťově náročné (na druhou stranu by
+mělo být vysoce kompresibilní). HYB oproti tomu, až na nutnost uložení
+identifikátoru slova ke každému výskytu dokumentu, zabírá v paměti stejně místa
+jako obyčejný invertovaný index
 
 \subsubsection{Bitmapy}
 Protože představuje jeden invertovaný seznam množinu všech dokumentů, ve
