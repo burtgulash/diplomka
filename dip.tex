@@ -900,9 +900,10 @@ zároveň podobných slov, proto si můžeme dovolit limit nastavit poměrně vy
 
 Jako řešení můžeme definovat relativní editační vzdálenost jako
 \[\bftt{edit\_rel}(x, y) = \frac{\max (|x|, |y|) - edit(x, y)}{\min (|x|,
-|y|)}\], která zohledňuje délku obou slov. Nebo jednoduše nastavit
-konfigurovatelnou hranici podle délky vyhledávaného slova. Např. pro slovo
-delší než 10 znaků se použije limit 4, pro slova delší než 7 limit 3, apod.
+|y|)}\]
+která zohlední délku obou slov. Nebo jednoduše nastavit konfigurovatelnou
+hranici podle délky vyhledávaného slova. Např. pro slovo delší než 10 znaků se
+použije limit vzdálenosti 4, pro slova delší než 7 limit 3, apod.
 
 Díky omezení maximální editační vzdálenosti lze snížit náročnost algoritmu.
 Místo vypočítání celé tabulky vypočteme pouze hodnoty ve vzdálenosti $k$ od
@@ -952,16 +953,16 @@ praxi se původní slova často zahazují a nerozlišuje se ve výsledcích
 vyhledávání rozdíl mezi přesným zásahem a odvozeným tvarem. Pro slovník
 n-gramového indexu rovněž postačí obyčejná hashovací tabulka.
 
-\subsection{Prefixový slovník}
+\subsection{Prefixový slovník} \label{sec:prefix_dict}
 Pro nalezení všech slov v prefixovém indexu, které odpovídají jednomu prefixu
 můžeme použít reprezentaci slovníku seřazeným seznamem
 slov~\citep[kap.~4]{buttcher2010information}. V něm nalezneme první a poslední
-slovo, které odpovídají prefixu. Všechna slova mezi nimi jsou výsledkem hledání
-prefixu. Tuto reprezentaci můžeme efektivně komprimovat technikou Front-Coding,
+slovo, která odpovídají prefixu. Všechna slova mezi nimi jsou výsledkem
+hledání. Tuto reprezentaci můžeme efektivně komprimovat technikou front-coding,
 která rozdělí seřazený seznam na bloky o konstantní velikosti (např. 8) a pro
 každý blok uloží nejdelší prefix, který sdílí všechna slova bloku. Technika
-funguje pro slova přirozeného jazyka, protože díky tendenci výskytu morfologie
-ke konci slov se ve slovníku bude objevovat značné množství silně
+dobře funguje pro slova přirozeného jazyka, protože díky tendenci výskytu
+morfologie ke konci slov se ve slovníku bude objevovat značné množství silně
 komprimovatelných úseků jako např. \bftt{hody}, \bftt{hodnota}, \bftt{hodnoty},
 \bftt{hodný}, \bftt{hodná}, \bftt{hodnému}, atd. Implementace obyčejnou
 hashovací tabulkou je pro prefixy nevhodná, protože si neuchovává informaci o
@@ -969,25 +970,29 @@ lexikografickém pořadí slov.
 
 \subsection{Fuzzy slovník}
 U n-gramového přibližného vyhledávání se přibližnost vyhodnocuje až po získání
-množiny všech n-gramů v dokumentu. Naopak editační vzdálenost se vyhodnotí už
-ve slovníku ještě před přístupem do invertovaných seznamů. Existuje více
-datových struktur, které umožňují efektivní vyhledání všech slov do určité
-vzdálenosti od hledaného - tedy bez vyčerpávajícího průchodu celým slovníkum.
+množiny všech n-gramů v dokumentu. Naopak editační vzdálenost se může
+vyhodnotit už ve slovníku ještě před přístupem do invertovaných seznamů.
+Existuje více datových struktur, které umožňují efektivní vyhledání všech slov
+do určité vzdálenosti od hledaného - tedy bez vyčerpávajícího průchodu celým
+slovníkum.
 
 \subsubsection{Metrické stromy}
 Protože editační vzdálenost splňuje trojúhelníkovou nerovnost
-\[\bftt{edit}(x,y) \leq \bftt{edit}(x,z) + \bftt{edit}(z,y)\]. lze pro hledání
-v prostoru řetězců použít tzv. metrické stromy, které díky ní efektivně
-prořezávají prostor s objekty. Burkhard-Kellerův strom
-(BK-strom)~\cite{Burkhard:1973:ABF:362003.362025} je metrický strom, který se
-používá pro diskrétní metriky, jakou je právě editační vzdálenost.
+\[\bftt{edit}(x,y) \leq \bftt{edit}(x,z) + \bftt{edit}(z,y)\]
 
-Představme si, že strom ve výchozím stavu obsahuje pouze jediné slovo (kořen).
-Vložení druhého proběhne tak, že se mezi těmito slovy vypočte jejich vzdálenost
-\bftt{d} a nové slovo se vloží jako potomek se štítkem \bftt{d}. Další slova se
-vloží stejným způsobem, pouze s rozdílem, že když dojde ke kolizi - tedy
-potomek se štítkem \bftt{d} už existuje - vloží se nové slovo rekurzivně jako
-potomek tohoto slova. Slovník sestavíme obdobným vložením všech slov z datové sady.
+lze pro hledání v prostoru řetězců použít tzv. metrické stromy, které díky ní
+efektivně prořezávají prostor s objekty, které lze danou metrikou porovnat.
+Burkhard-Kellerův strom (BK-strom)~\cite{Burkhard:1973:ABF:362003.362025} je
+metrický strom, který se používá pro diskrétní metriky, jakou je právě editační
+vzdálenost.
+
+Představme si, že strom ve výchozím stavu obsahuje pouze jediné slovo (kořen
+stromu). Vložení druhého slova proběhne tak, že se mezi těmito slovy vypočte
+jejich vzdálenost \bftt{d} a nové slovo se vloží jako potomek se štítkem
+\bftt{d}. Další slova se vloží stejným způsobem, pouze s rozdílem, že když
+dojde ke kolizi - tedy potomek se štítkem \bftt{d} už existuje - vloží se nové
+slovo rekurzivně jako potomek tohoto slova. Slovník sestavíme vložením všech
+slov z datové sady.
 
 Vyhledání začíná porovnáním dotazovaného slova s kořenem stromu. Pokud je
 vzdálenost mezi těmito slovy \bftt{d} menší než zvolený limit \bftt{k}, bude
@@ -1006,7 +1011,7 @@ zaindexujeme tak, že do hashovací tabulky vložíme všechny jejich odvozené 
 podřetězce. Ty pro každé slovo získáme odstraněním všech podmnožin písmen do
 požadované velikosti. Např. pokud slovník omezíme pro vyhledávání do
 vzdálenosti 2, pak do tabulky vložíme jako klíč všechna odvozená slova, která
-vzniknou odstraněním všech $n$ písmen a všech ${n \choose 2}$ párů písmen. Jaho
+vzniknou odstraněním všech $n$ písmen a všech jejich ${n \choose 2}$ párů. Jaho
 hodnotu klíče v tabulce použijeme původní slovo. Např. slovo \bftt{ruka}
 zaindexujeme odvozenými podřetězci \bftt{uka}, \bftt{rka}, \bftt{rua},
 \bftt{ruk}, \bftt{ka}, \bftt{ua}, \bftt{uk}, \bftt{ra}, \bftt{rk}, \bftt{ru}.
@@ -1014,7 +1019,8 @@ Při hledání podobných slov provedeme stejnou operaci s dotazovaným slovem a
 zkusíme najít shodu v tabulce pro každý jeho odvozený podřetězec. Každý
 nalezený zásah prověříme vypočtením vzdálenosti klasickým tabulkým algoritmem,
 protože tahle metoda může přestřelit. Např. $\bftt{edit}(ruka, karu) = 4$,
-přestože by došlo k zásahu na podřetězcích \bftt{ru} a \bftt{ka}.
+přestože by došlo k zásahu na podřetězcích \bftt{ru} a \bftt{ka} vzniklých
+odstraněním pouze dvou znaků.
 
 Tato metoda je jednou z nejrychlejších, ale za cenu obrovské náročnosti na
 paměť, jelikož je pro maximální strop editační vzdálenosti \bftt{k} každé slovo
@@ -1030,22 +1036,27 @@ kompaktnější verzi s názvem DeleteMax, která řeší problém s velikostí.
 
 \subsubsection{Trie} \label{sec:trie}
 Populární datovou strukturou, do které lze relativně kompaktně uložit sadu slov
-a která podporuje rychlé vyhledávání je trie, také známá jako radixový nebo
-prefixový strom. Jedno slovo do trie uložíme tak, že ho rozdělíme na písmena a
-každé z nich vložíme jako jeden uzel cesty ve stromu. Např. slovo \bftt{ruka} a
-\bftt{ruda} se uloží jako \bftt{/r/u/k/a} a \bftt{/r/u/d/a}, pokud použijeme
-notaci pro zápis cest v hierarchii souborového systému. V tomto případě budou v
+a která podporuje rychlé vyhledávání je trie, také známá jako prefixový strom.
+Jedno slovo do trie uložíme tak, že ho rozdělíme na písmena a každé z nich
+vložíme jako jeden uzel cesty ve stromu. Např. slovo \bftt{ruka} a \bftt{ruda}
+se uloží jako \bftt{/r/u/k/a} a \bftt{/r/u/d/a}, pokud použijeme notaci pro
+zápis cest v hierarchii souborového systému. V tomto případě budou v
 \uv{adresáři} \bftt{u} dva podadresáře \bftt{k} a \bftt{d}. Trii lze
 komprimovat tím, že se sloučíme všechny cesty, které mají pouze jednoho
 potomka. Stejný příklad by byl v komprimované trii reprezentován cestami
 \bftt{/ru/ka} a \bftt{/ru/da}, kde adresář \bftt{/ru} obsahuje dva podadresáře
-\bftt{ka} a \bftt{da}. Úspory paměti je docíleno sdílením prefixů.
+\bftt{ka} a \bftt{da}. Úspory paměti je docíleno sdílením prefixů. Trie je v
+podstatě kompresní technika front-coding (viz~\S\,\ref{sec:prefix_dict})
+aplikovaná rekurzivně, a proto má tahle datová struktura pro prefixové
+vyhledávání podobné vlastnosti jako seřazený seznam slov. Pro přibližné
+vyhledávání je ještě efektivnější, protože pro jakýkoliv prefix je schopna
+velmi rychle vrátit všechny potomky.
 
 Výpočet editační vzdálenosti mezi dvěma slovy proběhne standardně tabulkovou
 metodou. U vyhledání všech podobných slov ale proběhne pouze jednou pro řádky
 tabulky u všech slov, které odpovídají sdílenému prefixu mezi těmito slovy.
-Např. pokud v trii z příkladu hledáme slovo \bftt{luka}, pak můžeme vyhodnotit
-editační vzdálenost mezi prefixy \bftt{lu} a \bftt{ru} pro obě slova
+Např. pokud v trii z předchozího příkladu hledáme slovo \bftt{luka}, pak můžeme
+vyhodnotit editační vzdálenost mezi prefixy \bftt{lu} a \bftt{ru} pro obě slova
 \bftt{ruka} a \bftt{ruda} a dokonat zbytek výpočtu pro obě slova zvlášť.
 
 Při průchodu trií jsou jednotlivé větve postupně prořezávány, pokud hodnota
@@ -1062,9 +1073,9 @@ Backward)~\cite{Mihov:2004:FAS:1105587.1105590}, která sestává z dvou instanc
 trie. První je stejná jako ta výše popsaná a druhá pouze s rozdílem, že
 zaindexuje slova v obráceném pořadí. Díky tomu, že prohledávání v trii je
 výhodné až od několikátého písmene, využije se druhé trie, která nalezne zbylá
-slova po odřezání větví prvního písmene v první trii.  Podle experimentálního
+slova po odřezání větví prvního písmene v první trii. Podle experimentálního
 srovnání~\cite{Boytsov:2011:IMA:1963190.1963191} je FB-trie nejefektivnější
-reprezentací fuzzy slovníku s praktickým slovníkem.  Jiný používaný přístup pro
+reprezentací fuzzy slovníku s praktickým slovníkem. Jiný používaný přístup pro
 zefektivnění velkého větvení na začátku trie je penalizace neshody na prvních
 pozicích vyšší vahou.
 
@@ -1077,7 +1088,7 @@ Využijeme toho, že v trii procházíme postupně prefixy dotazovaného slova, 
 které stanovíme stejné prořezávací limity, jako kdybychom postupně prohledávali
 prefixy jako celá slova. Tedy při délce prefixu 3 budou prořezány všechny větve
 s prefixovou editační vzdáleností vyšší než 1, při délce prefixu 5 vyšší než 2,
-apod.
+apod. 
 
 Tenhle způsob je omezený pro překlepy na začátcích slov, ale díky vyššímu
 prořezávání můžeme stanovit vyšší limity pro delší slova. Efektem bude vyšší
@@ -1086,7 +1097,9 @@ míře na koncích slov v důsledku morfologie, můžeme uvažovat jako překlep
 Tenhle způsob bude pro tyto případy výpočetně efektivní a můžeme ho použít jako
 náhradu stematizace, která je nezávislá na jazyce. Podmínkou je pouze, že
 uvažujeme jazyk, který má většinu morfologie na koncích slov, jakým je zejména
-čeština.
+čeština. Tato metoda je experimentálně otestována v \S\,\ref{sec:results} jako
+metoda \bftt{edit\_dyn} a \bftt{edit\_dyn\_prefix}.
+
 
 
 \subsubsection{Jiné metody}
@@ -1108,20 +1121,21 @@ které odpovídají změnám v datech. Současné operační a souborové systé
 nejsou přizpůsobené pro miliony malých souborů a navíc by došlo k plýtvání
 místem, protože i soubory obsahující pouze jeden znak si uchovávají větší
 strukturu s metadaty. Řešením je invertované seznamy uchovat sekvenčně v jednom
-velkém souboru. Tenhle způsob je kompromis mezi efektivitou při vyhledávání a
+velkém souboru. Tenhle způsob je kompromisem mezi efektivitou při vyhledávání a
 možností modifikovat index. Jeden velký soubor lze prakticky modifikovat pouze
 jako celek. Za každým blokem invertovaného seznamu je mozné nechat nějaké volné
 místo, a předpokládat, že úpravy budou přicházet rovnoměrně, ale i přesto bude
 občas nutné provést změnu celého souboru.
 
-Index může být rozdělen na dva podindexy. Hlavní statický a neefektivní pro
-jednotlivé úpravy a vedlejší dynamický, který přijímá změny v reálném čase a
-postupně je dávkově slučuje s hlavním. Hlavní index je přizpůsobem pro vysoký
-výkon a kompaktnost a vedlejší je přizpůsobem pro zápis. Efektivní způsob, jak
-zabránit nákladné rekonstrukci hlavního indexu je použít množství menších
-indexů ve vzrůstající velikosti a změny z dynamického indexu postupně s těmito
-slučovat od nejmenšího po největší~\citep[kap.~4]{Manning:2008:IIR:1394399}.
-Tenhle přístup používá knihovna Apache Lucene~\cite{lsm_lucene}.
+Index může být rozdělen na dva podindexy. Hlavní statický, rychlý pro čtení,
+ale neefektivní pro jednotlivé úpravy a vedlejší dynamický, který přijímá změny
+v reálném čase a postupně je dávkově slučuje s hlavním. Hlavní index je
+přizpůsobem pro vysoký výkon a kompaktnost a vedlejší je přizpůsobem pro zápis.
+Efektivní způsob, jak zabránit nákladné rekonstrukci hlavního indexu je použít
+množství menších indexů ve vzrůstající velikosti a změny z dynamického indexu
+postupně s těmito slučovat od nejmenšího po
+největší~\citep[kap.~4]{Manning:2008:IIR:1394399}.
+%  Tenhle přístup používá knihovna Apache Lucene~\cite{lsm_lucene}.
 
 \subsubsection{Komprese} \label{sec:compression}
 Invertované seznamy jsou pouze seznamy identifikátorů dokumentů - tedy celých
@@ -1129,7 +1143,7 @@ Invertované seznamy jsou pouze seznamy identifikátorů dokumentů - tedy celý
 tím, že uložíme pouze rozdíly mezi identifikátory (delta komprese), které budou
 vždy nezáporné, protože je posloupnost vzrůstající. Tyto rozdíly budou oproti
 původním identifikátorům pouze poměrně malá čísla, které můžeme zmenšit
-kompresními kódy pro celá čísla.
+efektivními kompresními kódy pro celá čísla.
 
 Komprese invertovaných seznamů má několik opodstatnění. Zmenšením velikosti
 indexu docílíme, že větší množství dat může být obslouženo bez jejich hledání
@@ -1762,7 +1776,7 @@ dotazu (zde 2), bude těmto primitivním případům zabráněno.
 
 
 
-\chapter{Výsledky porovnání}
+\chapter{Výsledky porovnání} \label{sec:results}
 V této části budou nejprve shrnuty konfigurace a vlastnosti alternativních
 implementovaných vyhledávacích systémů a datové soubory použité pro
 experimentální analýzu.  První část analýzy je porovnání vlastností
