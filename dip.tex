@@ -113,11 +113,14 @@ všechny použité prameny a literaturu, ze které jsem čerpal.\par
 \newpage
 \chapter*{Abstrakt}
 \paragraph{Klíčová slova}
+Přibližné Vyhledávání v Textu, Prefixové Vyhledávání, Blízkost, Autocomplete, Search As You Type, Vyhledávání s Tolerancí Chyb, Poloinvertovaný index, Hybridní index, Invertovaný index
 
 % EN Abstract
 \newpage
 \chapter*{Abstract}
 \paragraph{Keywords}
+Approximate Text Search, Prefix Search, Proximity Search, Autocomplete, Search As You Type, Error Tolerant Text Search, Half-Inverted Index, Hybrid Index, Inverted Index
+
 
 % TOC section
 \newpage
@@ -1005,7 +1008,7 @@ vzdálenost méně časově i podle paměťové náročnosti výkonné než jin�
 které budou představeny
 dále~\cite{Celikik:2009:FES:1529282.1529669,Boytsov:2011:IMA:1963190.1963191}.
 
-\subsubsection{Hashovací metoda}
+\subsubsection{Hashovací metoda} \label{sec:hash_fuzzy}
 Dvě podobná slova sdílejí netriviální nejdelší společný podřetězec (lcs). Slova
 zaindexujeme tak, že do hashovací tabulky vložíme všechny jejich odvozené lcs
 podřetězce. Ty pro každé slovo získáme odstraněním všech podmnožin písmen do
@@ -1032,7 +1035,7 @@ větší vzdálenosti bylo popsáno nezávisle na sobě jako FastSS~\cite{FastSS
 Boytsov~\cite{Boytsov:2011:IMA:1963190.1963191} a Symmetric
 Delete~\cite{Faroo_symmetric_delete}. Několik variant algoritmu je popsáno
 v~\cite{FastSS} a~\cite{Bast:2013:EFS:2457465.2457470} popisuje modifikovanou
-kompaktnější verzi s názvem DeleteMax, která řeší problém s velikostí.
+kompaktnější verzi s názvem DeleteMatch, která řeší problém s velikostí.
 
 \subsubsection{Trie} \label{sec:trie}
 Populární datovou strukturou, do které lze relativně kompaktně uložit sadu slov
@@ -1779,6 +1782,53 @@ obě slova dotazu zasáhnou jediný výskyt \bftt{2015}. Tím, že nastolíme
 požadavek, že výsledek musí mít alespoň tolik výsledků (zde 1), kolik je slov v
 dotazu (zde 2), bude těmto primitivním případům zabráněno.
 
+\section{Podobné práce}
+% COMPLETE SEARCH
+% TASTIER
+Navarro a spol. představili online vyhledávací
+systém~\cite{Navarro:2003:MFA:638683.638685}, který pravidelně zpracovává nové
+přicházející články z právní oblasti a vyhledává v nich jména právníků a názvy
+firem dle předchozího nastavení. Vstupem je sada textových dokumentů a seznam
+názvů k prohledání a výstupem je seznam všech přibližných výskytů těchto názvů
+ve vstupních datech. Systém tedy provede všechny dotazy najednou. Systém je
+typu online, jelikož před zpracováním neprovádí indexaci textu. Ta není
+potřeba, protože systém provede jeden velký dotaz při získání nové sady a poté
+už s ním systém nepracuje.
+
+Podobnější této práci jsou v tomto smyslu offline systémy s podporou
+prefixového nebo přibližného vyhledávání 
+Tastier~\cite{Ji:2009:EIF:1526709.1526760} a
+CompleteSearch\cite{Bast:2006:TLF:1148170.1148234}, které text zaindexují a pak
+ho zpřístupňují uživatelům pro jejich zvolené dotazy.
+
+Ji a spol. se~v~\cite{Ji:2009:EIF:1526709.1526760} zaměřují na ukládání
+mezivýsledků inkrementálního vyhledávání a jak adaptovat datové struktury pro
+podporu ukládací mezipaměti. Jejich řešení pro konjunkci disjunkcí spočívá v
+kombinaci invertovaného a dopředného indexu. Nejprve se nalezne nejkratší z
+disjunkcí, kterou se projde od začátku do konce. Každý nalezený potenciální
+dokument se vyhledá v dopředném indexu a binárním vyhledáváním se zjistí
+přítomnost slov z ostatních disjunkcí. V jejich práci poskytují výsledky
+porovnání této metody s HYB indexem a materializovanými seznamy. Kombinace
+posledních dvou je nejpodobnější přístupu zvoleném v této práci.
+
+Systém CompleteSearch představený v~\cite{Bast:2006:TLF:1148170.1148234} byl
+původně vytvářen pro efektivní prefixové vyhledávání díky HYB indexu. Autoři
+ukázali, že tento prefixový systém lze použít na facetové
+vyhledávání~\cite{Bast_abstractwhen} a~dokonce jako efektivní databázový
+systém pro sémantické full-textové
+vyhledávání~\cite{Bast:2007:EES:1277741.1277856}.
+
+Rozšíření systému CompleteSearch pro přibližné hledání bylo podrobněji popsáno
+v~\cite{Bast:2013:EFS:2457465.2457470}. Pro implementaci fuzzy slovníku je
+použita kombinace hashovací metody (viz~\ref{sec:hash_fuzzy}) pro krátká slova
+(DeleteMatch) a~metody založené na permutovaném lexikonu (PermuteScan) pro
+delší slova a trie. Ve výsledku autoři konstatují, že jejich navržené řešení se
+přibližuje optimálnímu uspořádání, které lze dosáhnout u indexu operujícím
+čistě v paměti RAM a jejich úzké hrdlo spočívá v získávání invertovaných
+seznamů z disku. Přiznávají, že přibližné vyhledávání je (překvapivě) velmi
+náročný problém pro rozsáhlé datové sady.
+
+% TODO algolia, flamingo, elasticsearch
 
 
 
