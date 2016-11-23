@@ -1798,7 +1798,7 @@ už s ním systém nepracuje.
 Podobnější této práci jsou v tomto smyslu offline systémy s podporou
 prefixového nebo přibližného vyhledávání 
 Tastier~\cite{Ji:2009:EIF:1526709.1526760} a
-CompleteSearch\cite{Bast:2006:TLF:1148170.1148234}, které text zaindexují a pak
+CompleteSearch~\cite{Bast:2006:TLF:1148170.1148234}, které text zaindexují a pak
 ho zpřístupňují uživatelům pro jejich zvolené dotazy.
 
 Ji a spol. se~v~\cite{Ji:2009:EIF:1526709.1526760} zaměřují na ukládání
@@ -1828,8 +1828,14 @@ přibližuje optimálnímu uspořádání, které lze dosáhnout u indexu operuj
 seznamů z disku. Přiznávají, že přibližné vyhledávání je (překvapivě) velmi
 náročný problém pro rozsáhlé datové sady.
 
-% TODO algolia, flamingo, elasticsearch
-
+Z komerčních se prefixovému přibližnému vyhledávání a s důrazem na blízkost
+věnují systémy Srch2~\cite{srch2_website} a Algolia~\cite{algolia_website}.
+Z~open source systémů se přibližnému vyhledávání na základě editační
+vzdálenosti částečně věnuje Lucene, ale podle některých dosahuje pro fuzzy
+dotazy nepřijatelného
+výkonu~\cite{Bast:2013:EFS:2457465.2457470,algolia_vs_elasticsearch}. Přibližné
+vyhledávání na základě trigramů je celkem rozšířená technika, kterou podporuje
+Lucene~\cite{lucene_website} i~Postgres~\cite{postgres_website}.
 
 
 \chapter{Výsledky porovnání} \label{sec:results}
