@@ -885,7 +885,9 @@ $\Theta(|x||y|)$, kde $|x|$ a $|y|$ jsou délky dvou porovnávaných řetězců.
 Algoritmus byl nezávisle objeven více lidmi (např.  Vintsyuk, Needleman -
 Wunsch, a další)~\cite{Navarro:2001:GTA:375360.375365}.  Obdobný tabulkový
 algoritmus se používá pro výpočet nejdelšího řetězce se stejnou kvadratickou
-náročností, proto nepomůže výpočet přes tuto alternativní cestu.
+náročností, proto nepomůže výpočet přes tuto alternativní cestu. Pro vyšší
+výkon můžeme použít Myersovu bitově paralelní adaptaci tohoto
+algoritmu~\cite{Myers:1999:FBA:316542.316550}.
 
 \subsection{Hranice pro editační vzdálenost}
 Ohodnocení všech položek slovníku editační vzdáleností ku dotazovanému slovu je
@@ -1288,33 +1290,36 @@ Tato reprezentace množiny poskytuje vysokou kompresi pro množiny s vysokou
 hustotou. Velikost reprezentace je přesně $\bftt{n}\ /\ 8$ bytů, kde \bftt{n}
 je počet dokumentů. Bohužel kvůli zipfově distribuci slov je většina
 invertovaných seznamů velmi řídká, a proto nejsou bitmapy pro invertované
-indexy používány. Navíc řeší pouze množinový problém, jestli dokument obsahuje
-dané slovo, ale neřeší dodatečné informace o multiciplitě a pozici výskytů.
+indexy používány. 
 
-Bitmapy ukládají pouze množinovou informaci o existenci slova v dokumentu, ale
-takto jednoduše v nich nelze uložit pozicovou informaci. To z nich dělá
-nevhodného kandidáta pro potřeby vyhledávače, který ohodnocuje výsledky podle
-blízkosti slov a zvýrazňuje výsledky na základě právě pozicové informace.
+Bitmapy navíc ukládají pouze množinovou informaci o existenci slova v
+dokumentu, ale takto jednoduše v nich nelze uložit pozicovou informaci. To z
+nich dělá nevhodného kandidáta pro potřeby vyhledávače, který ohodnocuje
+výsledky podle blízkosti slov a zvýrazňuje výsledky na základě právě pozicové
+informace.
 
 U hybridního indexu se sloučenými seznamy je hustota množiny vyšší, ale přesto
 z experimentálního měření není dostatečná, aby zdůvodnila použití bitmap. Pro
-komprimované bitmapy by se snížila účinnost jednoduchých bitových operací a
+datovou sadu filmů a minimální velikost hybridního seznamu 2000 byla naměřena
+hodnota 34 jako průměrný rozdíl mezi po sobě jdoucími identifikátory dokumentů.
+To znamená, že v průměru by se v bitmapě objevil jeden kladný bit po každých 34
+záporných bitech, což je pro odůvodnění bitmapy příliš málo.
+
+Pro komprimované bitmapy by se snížila účinnost jednoduchých bitových operací a
 vzájemně by si mohla překážet s relativně vysokou hustotou u hybridního
 seznamu, protože kompresní schémata pro bitmapy (např. WAH, EWAH, Concise nebo
-Roaring~\cite{DBLP:journals/corr/LemireKK16}) jsou stavěné pro řídké množiny.
-
-% popiš kompresi bitmapy tabulky s hustotou
+Roaring~\cite{DBLP:journals/corr/LemireKK16}) jsou stavěné pro velmi řídké
+množiny.
 
 \subsubsection{Jiné přístupy}
 Invertované indexy jsou použitelné zejména pro lidský jazyk, který odpovídá
-vlastnostem zipfova a heapsa zákona. Text je modifikován odstraněním
+vlastnostem zipfova a heapsova zákona. Text je modifikován odstraněním
 neabecedních znaků a rozdělením na slova. V důsledku odstranění některých částí
 textu není možné text z indexu zpětně rekonstruovat.
 
 Jiné přístupy, které jsou vhodné i pro text neodpovídající lidské řeči (např.
 biologické sekvence) jsou založené na suffixových stromech, suffixových polích
 nebo waveletových stromech.
-
 
 Kromě invertovaného indexu existují i alternativní datové struktury umožňující
 rychlé vykonání dotazu a v některých případech i kompaktnější index. V poslední
@@ -1326,22 +1331,18 @@ reprezentace invertovaného
 indexu~\cite{Ferragina:2007:CRS:1240233.1240243,FERRAGINA2009849}. Tento
 přístup je poměrně nový a neprobádaný a má proti klasickému invertovanému řadu
 výhod (kompaktnost, možnost více seřazení~\cite{Navarro2010}), ale ten stále
-zůstává dle rychlosti vykonání dotazu nepokořen.  Důvodem je zejména jeho
+zůstává dle rychlosti vykonání dotazu nepokořen. Důvodem je zejména jeho
 uspořádání v paměti umožňující téměř perfektní sekvenční přístup, který
 současné hardwarové architektury silně zvýhodňují. AutoTree~\cite{Weber2007} je
 obdoba waveletového stromu s aplikací pro prefixové dotazy.
 
-% TODO forward index fuzzy search
-
-% TODO
-
 \section{Algoritmy pro sloučení invertových seznamů}
 První část vykonání dotazu, prohledání slovníku, a poslední část, ohodnocení a
 seřazení výsledků, by měly být relativně rychlé. Slovník odpovídá pro lidské
-jazyky heapsově zákonu, a proto je oproti velikosti všech dat relativně malý.
-Stejně tak počet výsledků by v průměrném případě měl být malý. Získání a
-sloučení invertovaných seznamů by proto mělo dominovat celkovému času doby
-vykonání dotazu. Ty totiž tvoří většinu uložených dat indexu.
+jazyky heapsově zákonu, a proto je jeho velikost oproti velikosti všech dat
+relativně malá.  Stejně tak počet výsledků by v průměrném případě měl být
+poměrně malý. Získání a sloučení invertovaných seznamů by proto mělo dominovat
+celkovému času doby vykonání dotazu.
 
 Konstantním výzkumem na poli vyhledávačů jsou algoritmy pro jejich efektivní
 slučování zejména v konjunktivní formě (průnik, intersection). V této práci nás
@@ -1350,24 +1351,25 @@ velkou roli v prefixových a fuzzy variantách indexu.
 
 Invertovanými seznamy se rozumí vzrůstající posloupnosti identifikátorů
 dokumentů. Ty mohou být obohaceny o pozicovou informaci a ohodnocení, ale pro
-jednoduchost zed uvažujeme pouze dokumentové identifikátory.
+jednoduchost zde budeme uvažovat pouze identifikátory dokumentů.
 
 \subsection{Strategie sloučení}
 Existují dvě hlavní strategie, jak seznamy
-sloučit~\cite{Lacour_efficiencycomparison}. První z nich sloučení slovo po
+sloučit~\cite{Lacour_efficiencycomparison}. První z nich tzv. sloučení slovo po
 slovu (term-at-a-time, \bftt{taat}). Ta nejprve získá invertované seznamy
 každého slova a postupně buduje výsledný seznam sloučením mezivýsledku a
 dalšího seznamu v pořadí. Např. v konjunktivním sloučení nejprve zpracuje první
-dva seznamy do jejich průniku a tenhle mezivýsledek postupně slučuje se
-zbylými. V konjunktivním sloučení se vyplatí seřadit seznamy podle velikosti od
+dva seznamy do jejich průniku a tenhle mezivýsledek postupně slučuje se zbylými
+seznamy. V konjunktivním sloučení se vyplatí seřadit seznamy podle velikosti od
 nejmenšího po nejdelší, protože průnik množin je nejefektivnější u sloučení s
 co nejmenší množinou.
 
-Druhou strategií prochází všechny slučované seznamy naráz jeden dokumentový
-identifikátor po druhém (document-at-a-time, \bftt{daat}). I zde platí, že konjunkce
-je nejefektivnější po předseřazení seznamů podle velikosti. Oproti prvnímu má
-tenhle způsob výhodu, že nemusí materializovat jednotlivé disjunkce, ale tvoří
-je za běhu.
+V druhé strategii procházíme všechny slučované seznamy naráz, jeden dokumentový
+identifikátor po druhém (document-at-a-time, \bftt{daat}). I zde platí, že
+konjunkce je nejefektivnější po předseřazení seznamů podle velikosti. Oproti
+prvnímu má tenhle způsob výhodu, že nemusí materializovat jednotlivé disjunkce,
+ale tvoří je za běhu. Tím je výhodnější, pokud musí být data nejprve nalezena v
+externím úložišti, protože se ušetří množství dat, které se musí nalézt.
 
 \subsubsection{Konjunkce}
 Nejjednodušším způsobem vykonání průniku je lineární průchod seznamy a postupným
