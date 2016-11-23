@@ -1093,7 +1093,7 @@ Využijeme toho, že v trii procházíme postupně prefixy dotazovaného slova, 
 které stanovíme stejné prořezávací limity, jako kdybychom postupně prohledávali
 prefixy jako celá slova. Tedy při délce prefixu 3 budou prořezány všechny větve
 s prefixovou editační vzdáleností vyšší než 1, při délce prefixu 5 vyšší než 2,
-apod. 
+apod.
 
 Tenhle způsob je omezený pro překlepy na začátcích slov, ale díky vyššímu
 prořezávání můžeme stanovit vyšší limity pro delší slova. Efektem bude vyšší
@@ -1290,7 +1290,7 @@ Tato reprezentace množiny poskytuje vysokou kompresi pro množiny s vysokou
 hustotou. Velikost reprezentace je přesně $\bftt{n}\ /\ 8$ bytů, kde \bftt{n}
 je počet dokumentů. Bohužel kvůli zipfově distribuci slov je většina
 invertovaných seznamů velmi řídká, a proto nejsou bitmapy pro invertované
-indexy používány. 
+indexy používány.
 
 Bitmapy navíc ukládají pouze množinovou informaci o existenci slova v
 dokumentu, ale takto jednoduše v nich nelze uložit pozicovou informaci. To z
@@ -1303,7 +1303,7 @@ z experimentálního měření není dostatečná, aby zdůvodnila použití bit
 datovou sadu filmů a minimální velikost hybridního seznamu 2000 byla naměřena
 hodnota 34 jako průměrný rozdíl mezi po sobě jdoucími identifikátory dokumentů.
 To znamená, že v průměru by se v bitmapě objevil jeden kladný bit po každých 34
-záporných bitech, což je pro odůvodnění bitmapy příliš málo.
+záporných bitech, což je pro odůvodnění bitmapy příliš řídké.
 
 Pro komprimované bitmapy by se snížila účinnost jednoduchých bitových operací a
 vzájemně by si mohla překážet s relativně vysokou hustotou u hybridního
@@ -1798,7 +1798,7 @@ potřeba, protože systém provede jeden velký dotaz při získání nové sady
 už s ním systém nepracuje.
 
 Podobnější této práci jsou v tomto smyslu offline systémy s podporou
-prefixového nebo přibližného vyhledávání 
+prefixového nebo přibližného vyhledávání
 Tastier~\cite{Ji:2009:EIF:1526709.1526760} a
 CompleteSearch~\cite{Bast:2006:TLF:1148170.1148234}, které text zaindexují a pak
 ho zpřístupňují uživatelům pro jejich zvolené dotazy.
