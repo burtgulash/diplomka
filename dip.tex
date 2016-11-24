@@ -1329,9 +1329,9 @@ Takovou datovou strukturou je např. waveletový
 strom~\cite{Grossi:2003:HET:644108.644250} který našel uplatnění i jako
 reprezentace invertovaného
 indexu~\cite{Ferragina:2007:CRS:1240233.1240243,FERRAGINA2009849}. Tento
-přístup je poměrně nový a neprobádaný a má proti klasickému invertovanému řadu
-výhod (kompaktnost, možnost více seřazení~\cite{Navarro2010}), ale ten stále
-zůstává dle rychlosti vykonání dotazu nepokořen. Důvodem je zejména jeho
+přístup je poměrně nový a má proti klasickému invertovanému řadu výhod
+(kompaktnost, možnost více seřazení~\cite{Navarro2010}), ale ten stále zůstává
+dle rychlosti vykonání průměrného dotazu nepokořen. Důvodem je zejména jeho
 uspořádání v paměti umožňující téměř perfektní sekvenční přístup, který
 současné hardwarové architektury silně zvýhodňují. AutoTree~\cite{Weber2007} je
 obdoba waveletového stromu s aplikací pro prefixové dotazy.
@@ -1346,8 +1346,9 @@ celkovému času doby vykonání dotazu.
 
 Konstantním výzkumem na poli vyhledávačů jsou algoritmy pro jejich efektivní
 slučování zejména v konjunktivní formě (průnik, intersection). V této práci nás
-bude zajímat i disjunktivní forma sloučení (sjednocení, union, merge), která má
-velkou roli v prefixových a fuzzy variantách indexu.
+kvůli prefixům a překlepům bude zajímat i disjunktivní forma sloučení
+(sjednocení, union, merge), která má velkou roli v prefixových a fuzzy
+variantách indexu.
 
 Invertovanými seznamy se rozumí vzrůstající posloupnosti identifikátorů
 dokumentů. Ty mohou být obohaceny o pozicovou informaci a ohodnocení, ale pro
@@ -1368,20 +1369,20 @@ V druhé strategii procházíme všechny slučované seznamy naráz, jeden dokum
 identifikátor po druhém (document-at-a-time, \bftt{daat}). I zde platí, že
 konjunkce je nejefektivnější po předseřazení seznamů podle velikosti. Oproti
 prvnímu má tenhle způsob výhodu, že nemusí materializovat jednotlivé disjunkce,
-ale tvoří je za běhu. Tím je výhodnější, pokud musí být data nejprve nalezena v
-externím úložišti, protože se ušetří množství dat, které se musí nalézt.
+ale tvoří je za běhu. Tím je výhodnější v případě výskytu invertovaných seznamů
+v pomalejším externím úložišti.
 
 \subsubsection{Konjunkce}
-Nejjednodušším způsobem vykonání průniku je lineární průchod seznamy a postupným
-zaznamenáváním prvku, který se vyskytuje ve všech seznamech - algoritmus
-\bftt{zipper}. V situaci, kdy slučujeme dva seznamy - jeden velmi krátký oproti
-druhému - je efektivní použít nějaké přeskakovací schéma v delším seznamu,
-protože většina dokumentů delšího seznamu nemusí být brána v úvahu. Algoritmy s
-přeskakováním jsou např. binární nebo exponenciální \bftt{galloping}
-vyhledávání ve zbytku delšího seznamu, nebo použití přeskakovacích tabulek
-(\bftt{skip list}, \bftt{skipper}, \bftt{lookup}).
-\cite{Sanders:2007:III:2791188.2791195} poskytuje experimentální měření
-efektivity těchto algoritmů i při použití delta komprese.
+Nejjednodušším způsobem vykonání průniku je lineární průchod seznamy a
+postupným zaznamenáváním prvku, který se vyskytuje ve všech seznamech -
+algoritmus \bftt{zipper}. V situaci, kdy slučujeme dva seznamy - jeden velmi
+krátký oproti druhému - je efektivní použít nějaké přeskakovací schéma v delším
+seznamu, protože většina dokumentů delšího seznamu nemusí být vůbec brána v
+úvahu. Algoritmy s přeskakováním jsou např. binární nebo exponenciální
+\bftt{galloping} vyhledávání ve zbytku delšího seznamu, nebo použití
+přeskakovacích tabulek (metody \bftt{skip list}, \bftt{skipper},
+\bftt{lookup}).  \cite{Sanders:2007:III:2791188.2791195} poskytuje
+experimentální měření efektivity těchto algoritmů i při použití delta komprese.
 
 \subsubsection{Disjunkce} \label{sec:disjunctive_merge}
 Disjunktivní sloučení je stejný problém jako sloučení podseznamů v řadícím
@@ -1406,9 +1407,10 @@ více přizpůsobit přeskakování oproti posunutím po jednom dokumentu tak, �
 seznamy seřadíme od největšího po nejmenší a přeskočení ukončíme v momentu, kdy
 alespoň jeden seznam vrátí prvek, na který přeskakujeme. Pouze si uchováme
 informaci, že později musíme dorovnat zbytek seznamů k témuž dokumentu. Seznamy
-seřadíme od největšího, protože očekáváme větší šanci výskytu dokumentu v
-delším seznamu, čímž zvýšíme šanci předčasného ukončení operace. Tyto metody
-jsou experimentálně vyzkoušeny v \S\,\ref{sec:rychlost_vyhledavani}.
+seřadíme od největšího, protože očekáváme větší pravděpodobnost výskytu
+dokumentu v delším seznamu, čímž zvýšíme šanci předčasného ukončení operace.
+Tyto metody jsou experimentálně porovnány dále
+v~\S\,\ref{sec:rychlost_vyhledavani}.
 
 
 
@@ -1436,7 +1438,8 @@ nízkým ohodnocením šanci se do nich vejít.
 Výpočetně by bylo výhodnější, pokud by se uvažovalo pouze předdefinované
 pořadí, protože by bylo možné ho předpočítat během indexování a invertovaný
 index seřadit podle něj. Případně index uložit ve více pořadích za cenu více
-potřebného úložného prostoru.
+potřebného úložného prostoru. Více uložených pořadí používá např. sloupcová
+databáze C-Store~\cite{Stonebraker:2005:CCD:1083592.1083658}.
 
 \subsubsection{Business metriky}
 Předdefinovanou váhou může být zvolena jakákoliv metrika relevantní pro datovou
@@ -1474,46 +1477,43 @@ modelu říká \bftt{tf.idf}. Intuice \bftt{tf} je, že čím vícekrát se slov
 dokumentu objevuje, tím je pravděpodobnější, že je k dokumentu relevantní.
 \bftt{idf} je korekcí pro často se vyskytující slova. Větší váhu dá těm slovům,
 která jsou v datové kolekci objevují málo často (vysoká hodnota \bftt{idf}),
-protože mají vysokou rozlišovací schopnost. Častá slova jako předložky nebo
-zájmena o dokumentu prakticky nic nevypoví. Výsledný vztah pro funkci
-\bftt{tf.idf} je \[\bftt{tf.idf}_{t, d} = (1 + \log \bftt{tf}_{t, d}) \times
-\log_{10} N / \bftt{df}_{t}\]
+protože mají vysokou rozlišovací schopnost. Četná slova jako předložky nebo
+zájmena o dokumentu prakticky nic nevypoví. Vztah pro základní funkci
+\bftt{tf.idf} kombinující obě statistiky je \[\bftt{tf.idf}_{t, d} = (1 + \log
+\bftt{tf}_{t, d}) \times \log_{10} N / \bftt{df}_{t}\]
 
 \subsubsection{Problémy statistických přístupů}
 Už od počátků velkých webových vyhledávačů v 90. letech se čistě textové
-statistické metody založené na tf.idf zneužívaly, protože každý mohl
-přizpůsobit text na své webové stránce, aby se lépe přizpůsobila
-jednoduchým statistikám.
+statistické metody založené na tf.idf zneužívaly, protože každý mohl upravit
+text na své webové stránce tak, aby se lépe jednoduchým statistikám
+přizpůsobila.
 
-Stačí stránku zahltit co největším počtem různých slov (Keyword stuffing), aby
+Stačí stránku zahltit co největším počtem různých slov (keyword stuffing), aby
 byla zvýšená pravděpodobnost, že ji vyhledávač uzná relevantní při náhodném
 dotazu. Pro ještě větší úspěšnost lze důležitá slova na stránce duplikovat pro
 zvýšení parametru \bftt{tf}. Tenhle problém do nějaké míry řeší pokročilá
 modifikace \bftt{tf.idf} funkcí nazvaná BM25
 (Best~Match)~\cite{Robertson:2009:PRF:1704809.1704810}.
 
-U přibližného vyhledávání nastává problém s parametrem \bftt{idf}, protože slova,
-která odpovídají překlepům, se vyskytují vzácně v porovnání s jejich správnou
-verzí. Protože ale \bftt{idf} slouží ke zvýšení váhy u vzácných slov, bude mít
-u přibližného vyhledávání nežádoucí efekt~\cite{elastic_fuzzy}.
+U přibližného vyhledávání nastává problém s parametrem \bftt{idf}, protože
+slova, která odpovídají překlepům, se vyskytují vzácně v porovnání s jejich
+správnou verzí. Protože ale \bftt{idf} slouží ke zvýšení váhy u vzácných slov,
+bude mít u přibližného vyhledávání nežádoucí efekt~\cite{elastic_fuzzy}.
 
 \subsection{Ohodnocení pro přibližné vyhledávání}
 Vyhledávač by měl umožnit uživatelům volbu preferenčního pořadí výsledků (podle
 času, podle ceny, počtu zhlédnutí, apod.). Přesto by měla mít textová shoda
-největší význam, jinak by mohl mít uživatel pocit, že si buď vyhledávač
+největší význam, jinak by mohl uživatel nabýt dojmu, že si buď vyhledávač
 vymýšlí, má nízkou přesnost, nebo se mu někdo snaží něco vnutit (např.
-upřednostněné produkty v eshopu). Statistické metody pro případ vyhledávače zde
-navrhovaného jsou problematické, a proto se budeme zaměřovat na alternativní
-ohodnocovací způsoby, které jsou závislé pouze na textové shodě. Jiné způsoby
-by vyžadovaly náročnou sémantickou analýzu jednotlivých položek, a proto je pro
-jednoduchost vynecháme.
-
-% TODO Fuzzy a idf! článek od elasticsearch
-% SEO - exploit of google's algorithms. Více vyhledávačů ztěžuje SEO
+upřednostněné produkty v eshopu). Statistické metody pro případ zde
+navrhovaného vyhledávače jsou problematické, a proto se budeme zaměřovat na
+alternativní ohodnocovací způsoby, které jsou závislé pouze na textové shodě.
+Jiné způsoby by vyžadovaly náročnou sémantickou analýzu jednotlivých položek, a
+proto je pro jednoduchost vynecháme.
 
 \subsection{Blízkost}
 Statistiky jako počet slov v textu ztrácí v krátkém textu význam. Např. film
-nebude více zelený, pokud se v jeho názvu bude vícekrát vyskytovat slovo
+nebude více \uv{zelený}, pokud se v jeho názvu bude vícekrát vyskytovat slovo
 \bftt{zelený}. V krátkém textu by byly nadměrně hodnoceny delší texty, které
 slovo obsahují vícekrát, protože většina textů v kolekci bude slovo obsahovat
 jenom jednou.
@@ -1526,14 +1526,19 @@ ale stačí pouze na konci seřadit výsledky podle nejmenší vzdálenosti mezi
 slovy.
 
 Ohodnocení blízkosti při seřazování výsledků, kdy známe pozice výskytů všech
-slov uživatelova dotazu, můžeme jednoduše sečíst velikosti mezer mezi
+slov dotazu uživatele, můžeme jednoduše sečíst velikosti mezer mezi
 jednotlivými výskyty a zprůměrovat počtem slov. Čím kratší mezery, tím lépe
 bude výsledek ohodnocený, tak jak očekáváme. Problém nastane, pokud výsledek
 obsahuje více výskytů téhož slova, s tím že jedno patří do hledané fráze a
-druhé je velmi vzdálené od této fráze. Velká vzdálenost tohoto slova, které by
-mělo mít menší váhu, protože nepřispívá k frázi, zapříčiní nárůst naší metriky
-vzdálenosti. To naznačuje, že musíme uvažovat minimální vzdálenost výskytů -
-tedy délku minimálního intervalu, který obsahuje všechna slova dotazu.
+druhé je velmi vzdálené od této fráze. Např. při dotazu \bftt{dobrý den} by
+mohl nalezený dokument obsahovat více výskytů druhého slova (\texttt{Krásný
+\bftt{dobrý den} .... sobota je \bftt{den} volna}) a v tomto případě by druhý
+výskyt znehodnotil přesnou shodu nalezenou dříve.
+
+Velká vzdálenost tohoto slova od fráze, ke které nepřispívá zapříčiní nárůst
+téhle naivní metriky. To naznačuje, že musíme uvažovat minimální vzdálenost
+výskytů - tedy délku minimálního intervalu, který obsahuje všechna slova
+dotazu.
 
 \subsubsection{Nalezení minimálního intervalu} \label{sec:find_minimal_interval}
 \paragraph{Algoritmus.} Vstupem algoritmu je seznam všech výskytů slov v
@@ -1542,16 +1547,16 @@ obsahuje všechna unikátní slova alespoň jednou. Tento seznam je seřazen
 vzestupně podle pozice výskytu a během algoritmu v něm postupujeme od
 nejmenšího k největšímu, tedy zleva doprava, a udržuje si frekvenční tabulku
 všech viděných slov.  V prvním kroku nalezneme první interval, který obsahuje
-zástupce každého slova - kandidát na minimální interval. Ve druhém kroku
-rozšiřujeme interval slovy na pravo od něj, dokud nenarazíme na první slovo
-dosavadního nalezeného intervalu. Tento interval jistě obsahuje zástupce
-každého slova, protože jsme zatím žádné neodebrali, ale obsahuje některé
-vícekrát. Zmenšíme ho opět na minimální možnou velikost tím, že zleva
+zástupce každého slova - ten označíme jako kandidát na minimální interval. Ve
+druhém kroku rozšiřujeme tento interval slovy napravo od něj, dokud nenarazíme
+na první slovo dosavadního nalezeného intervalu. Tento interval jistě obsahuje
+zástupce každého slova, protože jsme zatím žádné neodebrali, ale obsahuje
+některé vícekrát. Interval zmenšíme opět na minimální velikost tím, že zleva
 odstraníme všechny výskyty tak, aby jej žádné ze slov neopustilo (postupně
 sledujeme frekvenční tabulku pro každé slovo a zastavíme se, pokud odstraňovaný
 prvek má hodnotu 1). Postupně projedeme celý seznam rozšiřováním intervalu
 výskyty napravo a odebíráním výskytů zleva. Všechny nalezené kandidáty seřadíme
-podle velikosti a vrátímeminimální interval.
+podle velikosti a vrátíme jako výstup poslední nalezený minimální interval.
 
 \subsubsection{Jiné přístupy}
 Index s rychlou podporou omezení blízkosti, ale za cenu velkého indexu
@@ -1566,21 +1571,22 @@ modifikací z~prvního z~nich.
 
 \subsubsection{Zvolení vah}
 Celkové ohodnocení shody se vypočte jako součet všech dílčích faktorů
-ohodnocených různými vahami. U přibližného vyhledávání by důležitost shody měla
+ohodnocených různými váhami. U přibližného vyhledávání by důležitost shody měla
 být v první řadě určena vzdáleností výsledku od dotazu podle editační
 vzdálenosti. V druhé řadě by to měla být minimální vzdálenost mezi slovy ve
 výsledku. Tohle pořadí pak může doupravit uživatelem zvolené pořadí, ale mělo
-by mít menší váhu než textová shoda.
+by mít menší váhu než čistě textová shoda.
 
 \subsubsection{Tie-breaking} \label{sec:tie-breaking}
 Jiný způsob výpočtu důležitosti používá implementace komerčního vyhledávače
-Algolia~\cite{algolia_ranking}. V něm se určí pořadí jednotlivých faktorů podle
-důležitosti a nižší faktory se uvažují pouze pokud dojde ke shodě ve vyšších
-faktorech (tie-breaking). Např.  pokud je vzdálenost několika prvních výsledků
-dotazu od dotazu 0 - tedy přesná shoda, pak teprve se přistoupí k ohodnocení
-podle předdefinovaného pořadí, blízkosti, nebo jiného faktoru. Tie-breaking
-sice ulehčuje výpočetní náročnost i pro složitější ohodnocovací funkce, ale
-neposkytuje flexibilitu v její modifikaci.
+Algolia~\cite{algolia_website,algolia_ranking}. Podle jejich popisu se určí
+pořadí jednotlivých faktorů podle důležitosti a nižší faktory se uvažují pouze
+pokud dojde ke shodě ve vyšších faktorech (tie-breaking). Např. pokud je
+vzdálenost několika prvních výsledků dotazu od dotazu 0 - tedy přesná shoda,
+pak teprve se přistoupí k ohodnocení podle předdefinovaného pořadí, blízkosti,
+nebo jiného faktoru. Tie-breaking sice ulehčuje výpočetní náročnost i pro
+složitější ohodnocovací funkce, ale neposkytuje flexibilitu v modifikacích vah,
+a proto nebyl tie-breaking v této práci použit.
 
 \subsection{Indexace}
 Efektivní vytvoření indexu je hluboce prozkoumávaná oblast v literatuře
@@ -1604,26 +1610,27 @@ přímo zaměřené na rychlejší ssd~\cite{Jung201525}.
 
 \subsubsection{Konstrukce seřazením}
 První z nejpopulárnějších metod pro vytvoření invertovaného indexu je
-konstrukce blokovým seřazením. Ta sestává ze dvou fází.  V první dojde k
-vygenerování všech ntic výskytu (viz~\S\,\ref{sec:inverted_index}) a jejich
-postupné seřazení. Druhou fází je seřazení bloků ntic. Seřazení proběhne
-externě, tj. s použitím disku. Ntice jsou rozděleny do bloků o velikosti, aby
-se vešly jednotlivě do paměti. Ty jsou seřazeny běžným řadícím algoritmem. Krok
-externího seřazení vykonáme několika slučovacími kroky mergesortu, které mohou
-zpracovávat jednotlivé bloky proudově - tedy bez celého načtení do paměti.
-Způsob je obdobný jako disjunktivní slučování seznamů při vykonání dotazu,
-který byl popsán v \S\,\ref{sec:disjunctive_merge}.
+konstrukce blokovým seřazením~\citep[kap.~3]{Manning:2008:IIR:1394399}. Ta
+sestává ze dvou fází.  V první dojde k vygenerování všech ntic výskytu
+(viz~\S\,\ref{sec:inverted_index}) a jejich postupné seřazení. Druhou fází je
+seřazení bloků ntic. Seřazení proběhne externě, tj. s použitím disku. Ntice
+jsou rozděleny do bloků o velikosti, aby se vešly jednotlivě do paměti. Ty jsou
+seřazeny běžným řadícím algoritmem. Krok externího seřazení vykonáme několika
+slučovacími kroky mergesortu, které mohou zpracovávat jednotlivé bloky proudově
+- tedy bez celého načtení do paměti.  Způsob je obdobný jako disjunktivní
+slučování seznamů při vykonání dotazu, který byl popsán v
+\S\,\ref{sec:disjunctive_merge}.
 
 \subsubsection{Konstrukce o jednom průchodu}
-Druhou populární metodou, která je experimentálně
-výkonější~\cite{Heinz:2003:ESI:873988.873992}, je v podstatě stejná jako
-vytvoření indexu v paměti, jen v momentu, kdy dojde pro index paměť, je
-dosavadní tabulka seřazena podle lexikografického pořadí slov a zapsána na
-disk. Tímto způsobem se vytvoří a zapíší na disk jednotlivé podindexy a v
-následujícím kroku se sloučí podobným způsobem jako u indexace seřazením.
-Výhodou oproti předchozímu způsobu jsou identifikátory dokumentů ukládány v
-sekvenčním pořadí u každého slova, a díky kompresi umožní uchovat v paměti více
-dat před tím, než bude blok zapsán na disk.
+Druhou populární metodou~\citep[kap.~3]{Manning:2008:IIR:1394399}, která je
+experimentálně výkonější~\cite{Heinz:2003:ESI:873988.873992}, je v podstatě
+stejná jako vytvoření indexu v paměti, jen v momentu, kdy dojde pro index
+paměť, je dosavadní tabulka seřazena podle lexikografického pořadí slov a
+zapsána na disk. Tímto způsobem se vytvoří a zapíší na disk jednotlivé
+podindexy a v následujícím kroku se sloučí podobným způsobem jako u indexace
+seřazením. Výhodou oproti předchozímu způsobu je, že identifikátory dokumentů
+jsou ukládány v sekvenčním pořadí u každého slova, a díky kompresi umožní
+uchovat v paměti více dat před tím, než bude blok zapsán na disk.
 
 \subsubsection{Konstrukce hybridního indexu}
 Rozložení do skupin u hybridního indexu vyžaduje dvoufázové indexování, protože
@@ -1641,13 +1648,14 @@ charakteristikám pevných disků (pomalé posunutí čtecí hlavice při nesekv
 přístupu) a problému mít otevřených tisíce souborů najednou spočívají klasické
 indexační algoritmy v tom, že zapisují částečné indexy sekvenčně na konec
 jednoho souboru, a poté (nebo ještě za běhu) je postupně sloučí do většího.
-Hybridní index ale bude mít pouze omezené množství invertovaných seznamů, které
-lze navíc korigovat. Díky omezenému počtu invertovaných skupin by nemělo být
-takovým problémem vytvořit pro každý invertovaný seznam jeden soubor a vyhnout
-se slučovacímu kroku. V~\cite{Bast:2011:FCH:1993036.1993040} využívají malého
-počtu seznamů a navíc algoritmus optimalizují i pro efektivní přístupy do
-mezipaměti procesoru (L1 cache). Ve výsledku dosahují experimentálně vyššího
-výkonu než doposud nejrychlejší metoda \uv{konstrukce o jednom průchodu}).
+Hybridní index ale bude mít pouze omezené množství invertovaných seznamů,
+jejichž velikosti lze navíc korigovat. Díky omezenému počtu invertovaných
+hybridních skupin by nemělo být takovým problémem vytvořit pro každý
+invertovaný seznam jeden soubor a vyhnout se slučovacímu kroku.
+V~\cite{Bast:2011:FCH:1993036.1993040} využívají malého počtu seznamů a navíc
+algoritmus optimalizují i pro efektivní přístupy do mezipaměti procesoru (L1
+cache). Ve výsledku dosahují experimentálně vyššího výkonu než doposud
+nejrychlejší metoda \uv{konstrukce o jednom průchodu} popsaná výše.
 
 
 %\subsection{Datové struktury}
@@ -1684,7 +1692,7 @@ Pro porovnání podobnosti slov může být použita i klasická editační vzd�
 dynamicky adaptovatelná, která struktury trie využívá (popsáno
 v~\S\,\ref{sec:trie}). Schopnost vyhledávat v prefixech lze kromě
 samodoplňování využít pro facetové filtrování (viz
-~\S\,\ref{sec:faceted_search}). V této prototypovací fázi není facetové
+~\S\,\ref{sec:faceted_search}), ale v této prototypovací fázi není facetové
 filtrování uvažováno. Detailnější popis, jak prefixové vyhledávání tímto
 způsobem použít je v~\cite{Bast_abstractwhen}.
 
@@ -1695,36 +1703,36 @@ hranice jednotlivých sloučených seznamů. Důvodem je, že sloučené skupiny
 invertovaných seznamů by měly být ideálně stejně dlouhé. Není to ale
 jednoduché, protože se různá písmena objevují různě často. Např. obecně bude
 existovat více slov začínající na \bftt{T} než těch, které začínají na
-\bftt{x}. Kdyby se měla každá skupina shodovat alespoň v prvním písmenu, bylo
+\bftt{X}. Kdyby se měla každá skupina shodovat alespoň v prvním písmenu, bylo
 by to v rozporu s požadavkem na stejně dlouhé skupiny. Teoretickým řešením by
 mohlo být předefinování abecedního pořadí dle frekvenční analýzy. Nejpočetnější
 skupiny by mohly být rozděleny do více podskupin (např. \bftt{[TA-TD]},
 \bftt{[TD-TM]}, \bftt{[TM-TZ]}), pro středně početné by existovala právě jedna
 skupina a méně početné by byly sloučeny dohromady (např. \bftt{[U-X]},
-\bftt{[X-Z]}). Kdyby se nepoužilo frekvenční pořadí, mohla by se mezi méně
+\bftt{[X-Z]}). Kdyby se nepoužilo frekvenční pořadí, mohla by se totiž mezi méně
 početnými skupinami vyskytovat vysoce početná skupina zabraňující sloučení těch
 okolních.
 
-Tím, že používám vzdálenostně adaptovanou editační vzdálenost a většina slov
-nalezených ve fuzzy dotazu bude mít podobný prefix, docházelo by k tomu, že
-velká část seznamu bude nevyužita, protože se liší v prvním znaku. Rozmezí slov
-u jedné skupiny může být např. \bftt{[J-M]} a dotaz by začínal na \bftt{M}. Slova v
-seznamu začínající na \bftt{J}, \bftt{K} nebo \bftt{L} by v tomhle případě byla
-nevyužita. Má úprava rozložení skupin oproti abecednímu rozložení u struktury
-HYB se snaží zajistit, aby byly abecední hranice respektovány co nejvíce.
-Výsledkem by měly být skupiny, jejichž hraniční slova sdílejí co nejdelší
-prefixy.
+Tím, že je použita vzdálenostně adaptovaná editační vzdálenost a většina slov
+nalezených ve fuzzy slovníku bude mít podobný prefix, docházelo by k tomu, že
+velká část seznamu by byla nevyužita, protože se liší v prvním znaku. Rozmezí
+slov u jedné skupiny HYB může být např. \bftt{[J-M]} a dotaz by začínal na
+\bftt{M}. Slova v seznamu začínající na \bftt{J}, \bftt{K} nebo \bftt{L} by v
+tomhle případě byla nevyužita. Má úprava rozložení skupin oproti abecednímu
+rozložení u struktury HYB se snaží zajistit, aby byly abecední hranice
+respektovány co nejvíce. Výsledkem by měly být skupiny, jejichž hraniční slova
+sdílejí co nejdelší prefixy.
 
 \subsubsection{Rozdělení skupin respektující abecední hranice} \label{sec:hybrid_algorithm}
 \paragraph{Algoritmus.} Zařazení slova do slučující skupiny lze provést při
-prohledání trie do hloubky.  Začínáme na kořenovém uzlu s tím, že uvažujeme
-jedinou skupinu, do které na začátku všechna slova patří. Pokud při průchodu
-součet délek invertovaných seznamů poduzlů jednoho uzlu překročí stanovenou
-hranici, pak je dosavadní přiřazená skupina uzlu nahrazena skupinou novou.
-Rekurzivní aplikací pro všechny uzly se původně jedna skupina rozpadne na více
-skupin. Jediným parametrem je hranice určující rozpadnutí skupiny, která může
-být staticky daná, nebo být odvozená od dat. Zatím jsem ideální způsob, jak ji
-stanovit.
+prohledání trie obsahující celý slovník do hloubky. Začínáme na kořenovém uzlu
+s tím, že uvažujeme prozatím jedinou skupinu, do které jsou zpočátku všechna
+slova zařazena.  Pokud při rekurzivním průchodu součet délek invertovaných
+seznamů poduzlů jednoho uzlu překročí stanovenou hranici, pak je dosavadní
+přiřazená skupina uzlu nahrazena skupinou novou. Rekurzivní aplikací pro
+všechny uzly se původně jedna skupina rozpadne na více skupin. Jediným
+parametrem je hranice určující rozpadnutí skupiny, která může být staticky
+daná, nebo být odvozená od dat. Zatím jsem ideální způsob, jak ji stanovit.
 
 \subsection{Ohodnocování}
 Prozatím je v prototypové verzi implementováno ohodnocení jednoduchým nalezením
@@ -1733,8 +1741,8 @@ minimálního intervalu se zástupci všech typů výskytu
 implementované vícefázové ohodnocování, protože nalezení minimálního intervalu
 je výpočetně poměrně náročné, pokud se má provést pro každý nalezený záznam.
 Alternativně by problém s efektivitou mohl být vyřešení technikou tie-breaking
-(\S\,\ref{sec:tie-breaking}). Podle očekávání by ale celkový čas vykonání
-dotazu měl být dominován slučováním invertovaných seznamů. Navíc Primární
+(\S\,\ref{sec:tie-breaking}), ale podle očekávání by celkový čas vykonání
+dotazu měl být dominován slučováním invertovaných seznamů. Navíc primární
 určení vyhledávače je pro datové sady s charakteristikou small-data, a tedy
 optimalizování výkonu ohodnocování by mohlo být zbytečně předčasné. V první
 řadě je důležitější flexibilita ohodnocovací funkce, kterou např. tie-breaking
@@ -1747,23 +1755,25 @@ Jednou příčinou pomalých dotazů ve fuzzy vyhledávači je výskyt více pod
 slov v dotazu. Jednoduchým případem pro ilustraci je, pokud dotaz obsahuje více
 totožných slov. Jejich invertované seznamy, případně disjunkce více
 invertovaných seznamů, budou totožné. Dotaz ale proběhne beze změn, a tedy
-provede jejich sloučení. Je snadno vidět, že sloučení dvou totožných seznamů
-bude odpovídat dvojnásobku času průchodu pouze jedním seznamem.
+provede naivně jejich sloučení, přestože jsou stejné. Lze snadno vidět, že
+sloučení dvou totožných seznamů bude odpovídat dvojnásobku času průchodu pouze
+jedním seznamem.
 
 O dvou podobných invertovaných seznamech můžeme hovořit jako o vysoce
 korelovaných. Pokud slučujeme dva nízce korelované seznamy, pak jejich sloučení
-bude relativně malá množina. Vysoce korelované dotazy trpí tím, že pozitivní
-zmenšující efekt konjunkce u nich neplatí a navíc zvyšuje výpočetní náročnost
-lineárně s každým takovým slovem.  Jednoduchým případem pro vyřešení je, pokud
-lze v dotazu identifikovat totožná slova a jednoduše použít jen jedno z nich,
-protože průnik více stejných množin neovlivní výsledek. Pouze se musí zajistit,
-že výsledky skutečně obsahují více výskytů téhož slova, a to lze provést až v
-pozdější fázi po průchodem invertovanými seznamy.  Těžším případem je, pokud se
-v dotazu vyskytují slova, která k sobě mají podle editační vzdálenosti blízko.
-Jejich invertované seznamy, případně disjunkce více seznamů, budou sdílet
-značnou část slov. Kvůli tomu budou jejich invertované seznamy vysoce
-korelované a budou způsobovat degradaci dotazu.  Nicméně tohle už nelze řešit
-pouhým přepsáním dotazu odstraněním duplikovaných slov.
+bude relativně malá množina. Naopak vysoce korelované dotazy trpí tím, že
+pozitivní zmenšující efekt konjunkce u nich neplatí a navíc zvyšuje výpočetní
+náročnost lineárně s každým takovým slovem.  Jednoduchým případem pro vyřešení
+tohoto problému je, pokud lze v dotazu identifikovat totožná slova a jednoduše
+použít jen jedno z nich, protože průnik více stejných množin neovlivní
+výsledek. Pouze se musí zajistit, že výsledky skutečně obsahují více výskytů
+téhož slova, a to lze provést až v pozdější fázi po průchodem invertovanými
+seznamy.  Těžším případem je, pokud se v dotazu vyskytují slova, která k sobě
+mají podle editační vzdálenosti blízko.  Jejich invertované seznamy, případně
+disjunkce více seznamů, budou sdílet značnou část slov. Kvůli tomu budou jejich
+invertované seznamy vysoce korelované a budou způsobovat degradaci dotazu
+popsanou výše. Nicméně tohle už nelze řešit pouhým přepsáním dotazu odstraněním
+duplikovaných slov.
 
 Dalším problémem korelovaných slov je najít každému slovu v dotazu odpovídající
 slovo ve výsledku bez překrytí, tj. pro každé slovo v dotazu, přestože může být
@@ -1775,14 +1785,14 @@ které obsahují alespoň dva výskyty. Proto jsme v dotazu druhé \bftt{the} p�
 použili.
 
 Řešení není úplně snadné, protože algoritmicky odpovídá nalezení maximálního
-párování v bipartitním grafu. Pro svou implementaci používám pouze jednoduchou
-heuristiku, která zajistí, že neodfiltrovaný výsledek obsahuje alespoň tolik
-výskytů, kolik má dotaz celkově slov. To zabrání případům, kdy více podobných
-slov v dotazu zasáhne jediné vyskytující se slovo ve výsledku. Např. dotaz
-\bftt{2015 - 2016} by nesprávně vrátil dokument \bftt{Grand Tour 2015}, protože
-obě slova dotazu zasáhnou jediný výskyt \bftt{2015}. Tím, že nastolíme
-požadavek, že výsledek musí mít alespoň tolik výsledků (zde 1), kolik je slov v
-dotazu (zde 2), bude těmto primitivním případům zabráněno.
+párování v bipartitním grafu. V prototypu této práce je použita pouze
+jednoduchá heuristika, která zajistí, že neodfiltrovaný výsledek obsahuje
+alespoň tolik výskytů, kolik má dotaz celkově slov. To zabrání případům, kdy
+více podobných slov v dotazu zasáhne jediné vyskytující se slovo ve výsledku.
+Např. dotaz \bftt{2015 - 2016} by nesprávně vrátil dokument \bftt{Grand Tour
+2015}, protože obě slova dotazu zasáhnou jediný výskyt \bftt{2015}. Tím, že
+nastolíme požadavek, že výsledek musí mít alespoň tolik výsledků (zde 1), kolik
+je slov v dotazu (zde 2), bude těmto primitivním případům zabráněno.
 
 \section{Podobné práce}
 % COMPLETE SEARCH
@@ -1810,16 +1820,14 @@ kombinaci invertovaného a dopředného indexu. Nejprve se nalezne nejkratší z
 disjunkcí, kterou se projde od začátku do konce. Každý nalezený potenciální
 dokument se vyhledá v dopředném indexu a binárním vyhledáváním se zjistí
 přítomnost slov z ostatních disjunkcí. V jejich práci poskytují výsledky
-porovnání této metody s HYB indexem a materializovanými seznamy. Kombinace
-posledních dvou je nejpodobnější přístupu zvoleném v této práci.
+porovnání jejich metody s HYB indexem a materializovanými seznamy. Kombinace
+posledních dvou je podobná přístupu zvoleném v této práci.
 
 Systém CompleteSearch představený v~\cite{Bast:2006:TLF:1148170.1148234} byl
 původně vytvářen pro efektivní prefixové vyhledávání díky HYB indexu. Autoři
 ukázali, že tento prefixový systém lze použít na facetové
-vyhledávání~\cite{Bast_abstractwhen} a~dokonce jako efektivní databázový
-systém pro sémantické full-textové
-vyhledávání~\cite{Bast:2007:EES:1277741.1277856}.
-
+vyhledávání~\cite{Bast_abstractwhen} a~dokonce jako efektivní databázový systém
+pro sémantické full-textové vyhledávání~\cite{Bast:2007:EES:1277741.1277856}.
 Rozšíření systému CompleteSearch pro přibližné hledání bylo podrobněji popsáno
 v~\cite{Bast:2013:EFS:2457465.2457470}. Pro implementaci fuzzy slovníku je
 použita kombinace hashovací metody (viz~\ref{sec:hash_fuzzy}) pro krátká slova
@@ -1864,20 +1872,21 @@ invertovaný index se slovníkem implementovaným jako trie. Ohodnocovací funkc
 je čistě textově založená - nemá o datech žádné vlastní předpoklady nebo
 přednostní pořadí. V první řadě upřednostňuje shodu dotazu s výsledkem podle
 editační vzdálenosti - pro každé slovo zvlášť. Dále pozitivně hodnotí ty
-výsledky, které obsahují shodu s minimální poziční vzdáleností.  Shody výsledků
-se stejným ohodnocením jsou pak rozbity několika minoritními hodnotami s nízkou
-váhou. Shoda, která je více na začátku záznamu má přednost a shoda, která
-obsahuje více shodujících se slov má přednost - obdobně jako u modelu tf.idf,
-pouze zde má velmi malou váhu a neuvažuje relativní důležitost slova ve shodě
-(idf). Pro porovnání byly vytvořeny dvě varianty. První používá klasickou
-editační vzdálenost (systém \bftt{edit}) a druhá dynamicky adaptovatelnou
-editační vzdálenost (systém \bftt{edit\_dyn}).
+výsledky, které obsahují shodu s minimální poziční vzdáleností. Přesné shody
+výsledků se stejným ohodnocením jsou pak rozbity několika minoritními hodnotami
+s nízkou váhou. Shoda, která je více na začátku záznamu má přednost a shoda,
+která obsahuje více shodujících se slov má přednost - obdobně jako u modelu
+tf.idf, pouze zde má velmi malou váhu a neuvažuje relativní důležitost slova ve
+shodě (idf). Pro porovnání byly vytvořeny dvě varianty. První používá
+Levenshteinovu editační vzdálenost (systém \bftt{edit}) a druhá dynamicky její
+dynamicky adaptovatelnou variantu (systém \bftt{edit\_dyn}), viz
+\S\,\ref{sec:trie}.
 
 \subsubsection{ElasticSearch - základní řešení}
 Jako základní řešení sloužící pro porovnání jsem nakonfiguroval Elasticsearch
 tak, jak by se měl doporučeně nastavit pro full-textové vyhledávání ve větších
 textových dokumentech. Text je stematizován zabudovaným stematizérem pro
-češtinu. Cílem bude ukázat, že tohle nastavení bude mít potíže s vícejazykovou
+češtinu. Cílem je ukázat, že tohle nastavení bude mít potíže s vícejazykovou
 datovou sadou, jmény a s některými případy morfologie v češtině.
 
 \subsubsection{ElasticSearch - trigramový vyhledávač} \label{sec:trigram_implementation}
@@ -1887,30 +1896,23 @@ Dále bude vystupovat pod názvem \bftt{trig\_ES}.
 
 Pokud se v konfiguraci použije n-gramový filtr, pak není podporováno n-gramové
 zvýrazňování výsledků. Musí se použít n-gramový tokenizér, který ale zahazuje
-všechny n-gramy, které jsou kratší než minimální délka n-gramu. Řešením je
-vytvořit dodatečný index se zahozenými krátkými slovy a při dotazování provést
-disjunkci n-gramového a tohoto indexu. Pro zpřesnění výsledků, pokud dojde k
-přesné shodě slova v dotazu a v dokumentu, je do disjunkce přidán ještě třetí
-index s původními neořezanými slovy.
+všechny n-gramy, které jsou kratší než minimální délka n-gramu. Tohle chování
+nelze přenastavit a doporučeným řešením je právě vytvořit dodatečný index pro
+zahozené ngramy. Pro zvýšení přesnosti byl vytvořen ještě třetí index, který
+obsahuje slova v původním tvaru. Dotaz je proveden zároveň ve všech třech
+indexech metodou \bftt{most\_fields}.
 
 Konfigurace dotazu je navržena tak, aby došlo k zásahu, pokud dokument obsahuje
 alespoň $70\%$ trigramů dotazu (odpovídá Jaccardově vzdálenosti $0.3$). Vyšší
-hodnoty začaly rychle ztrácet výsledky a nižší hodnoty vracely příliš
+hodnoty začaly rychle ztrácet výsledky a nižší hodnoty vracely příliš mnoho
 nesouvisejících záznamů.
 
-Dotaz se snaží shodu najít napříč třemi indexy. \bftt{shorts} jsou ngramy
-kratší než $3$, protože je ElasticSearch z nějakého důvodu při indexování
-zahazuje. Tohle chování nelze přenastavita doporučeným řešením je právě
-vytvořit dodatečný index pro zahozené ngramy. Pro zvýšení přesnosti byl
-vytvořen ještě třetí index, který obsahuje slova v původním tvaru. Dotaz je
-proveden zároveň ve všech třech indexech metodou \bftt{most\_fields}.
-
-Zvýrazňovač pro n-gramy funguje, pouze pokud se použije \textit{Fast Vector
-Highlighter}. Přestože je zvýrazňování nastaveno doporučeným způsobem pro tento
-typ dotazu, dochází k chybám, když se n-gramy ve výsledku překrývají. Je možné,
-že je chyba pouze ve verzi Elasticsearch, kterou používám. Protože jsem nikde
-nenašel, jak tohle vyřešit, vytvořil jsem v Pythonu dodatečný zvýrazňovač, aby
-zde prezentované výsledky byly srovnatelné s ostatními systémy.
+Zvýrazňovač pro n-gramy funguje, pouze pokud se použije tzv. \textit{Fast
+Vector Highlighter}. Přestože je zvýrazňování nastaveno doporučeným způsobem
+pro tento typ dotazu, dochází k chybám, když se n-gramy ve výsledku překrývají.
+Je možné, že je chyba pouze ve verzi Elasticsearch, která byla použita. Jako
+řešení byl v Pythonu vytvořen dodatečný zvýrazňovač, aby zde prezentované
+výsledky byly vizuálně srovnatelné s ostatními systémy.
 
 \subsubsection{Postgres - trigramový vyhledávač}
 Databáze Postgres poskytuje více možností pro textové vyhledávání. Rozšíření
