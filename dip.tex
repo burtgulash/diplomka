@@ -1849,11 +1849,11 @@ Lucene~\cite{lucene_website} i~Postgres~\cite{postgres_website}.
 
 
 \chapter{Výsledky porovnání} \label{sec:results}
-V této části budou nejprve shrnuty konfigurace a vlastnosti alternativních
+V této části budou nejprve shrnuty konfigurace a vlastnosti ostatních
 implementovaných vyhledávacích systémů a datové soubory použité pro
 experimentální analýzu.  První část analýzy je porovnání vlastností
-implementovaného systému s alternativními. Druhá část obsahuje ukázku a shrnutí
-nonfunkčních vlastností (rychlost, paměťová náročnost) systémů.
+implementovaného systému s ostatními. Druhá část obsahuje shrnutí výkonnostních
+vlastností (rychlost, paměťová náročnost) systémů.
 
 \section{Porovnávané systémy}
 Kromě vlastní implementace byly pro systém ElasticSearch nakonfigurovány
@@ -1863,13 +1863,13 @@ procesorem Intel Core2 Quad Q8400 (2.66\,GHz).
 
 \subsubsection{Vlastní implementace}
 Protoyp nového systému vychází z výše popsaného návrhu vyhledávacího systému.
-Implementace je prototyp napsaný v dynamicky typovaném Pythonu, a tedy nemůže z
-výkonostního důvodu sloužit k objektivnímu porovnání rychlosti a jiných
-výkonnostních veličin. Protože jsou ale použity relativně malé datové sady,
-neměla by být výkonnost překážkou. Prototyp slouží zejména jako demonstrace
-implementovaných technik. Tou hlavní je výše popsaný modifikovaný hybridní
-invertovaný index se slovníkem implementovaným jako trie. Ohodnocovací funkce
-je čistě textově založená - nemá o datech žádné vlastní předpoklady nebo
+Implementace je prototyp napsaný v dynamicky typovaném Pythonu, a tedy jestě
+nemůže z výkonostního důvodu sloužit k objektivnímu porovnání rychlosti a
+jiných výkonnostních veličin. Protože jsou ale použity relativně malé datové
+sady, neměla by být výkonnost překážkou. Prototyp slouží zejména jako
+demonstrace implementovaných technik. Tou hlavní je výše popsaný modifikovaný
+hybridní invertovaný index se slovníkem implementovaným jako trie. Ohodnocovací
+funkce je čistě textově založená - nemá o datech žádné vlastní předpoklady nebo
 přednostní pořadí. V první řadě upřednostňuje shodu dotazu s výsledkem podle
 editační vzdálenosti - pro každé slovo zvlášť. Dále pozitivně hodnotí ty
 výsledky, které obsahují shodu s minimální poziční vzdáleností. Přesné shody
@@ -1941,19 +1941,18 @@ původním slovem.
 
 \section{Použité datové soubory}
 Cílem je porovnat několik vyhledávačů na datových sadách s relativně krátkými
-dokumenty, které mají navíc různé záludnosti jako více jazyků, nebo slova
+dokumenty, které mají navíc různé záludnosti jako více jazyků nebo slova
 obtížně zpracovatelná jazykovou analýzou (jména nebo odborné pojmy).
 
 \subsubsection{ČSFD - filmy}
 První datovou sadou (\bftt{csfd\_filmy}) jsou názvy filmů z Československé
-filmové databáze (\url{http://csfd.cz}). Přestože je možné rozlišit jazyk
-filmu, protože databáze tuto metainformaci obsahuje, sloučil jsem všechny názvy
-filmů do jedné sady. V datové sadě se tedy film vyskytuje vícekrát, pokud má
-více názvů.
+filmové databáze (ČSFD - \url{http://csfd.cz}). Přestože je možné rozlišit jazyk
+filmu, protože databáze tuto metainformaci obsahuje, byly názvy ve všech
+jazycích sloučeny do jedné kolekce. V datové sadě se tedy film vyskytuje
+vícekrát, pokud má více názvů.
 
-V datovém souboru je celkem \textbf{398\,430} filmů a k nim jsou přidány
-alternativní názvy v jiných jazycích, kterých je dohromady dalších
-\textbf{141\,722}.
+Kolekce celkem obsahuje \textbf{398\,430} filmů. K nim jsou přidány názvy v
+jiných jazycích, kterých je dohromady dalších \textbf{141\,722}.
 
 \subsubsection{ČSFD - filmoví tvůrci}
 Druhá datová sada (\bftt{csfd\_tvůrci}) jsou všichni tvůrci (herci, režiséři,
@@ -1962,9 +1961,10 @@ tvůrci, kteří se podle dat podíleli na filmech z databáze \bftt{csfd\_filmy
 Nejsou uvažováni tvůrci, kteří nejsou přiřazeni k žádnému filmu.
 
 \subsubsection{Česká wikipedia - nadpisy článků}
-Data z wikipedie lze stáhnout z \url{https://dumps.wikimedia.org/cswiki/}. Pro
-nadpisy byl použit soubor \textbf{cswiki-20160111-all-titles.gz}, který
-obsahuje \textbf{907\,094} titulků článků (\bftt{cswiki\_titulky}).
+Data z české wikipedie lze stáhnout z
+\url{https://dumps.wikimedia.org/cswiki/}. Pro nadpisy byl použit soubor
+\textbf{cswiki-20160111-all-titles.gz}, který obsahuje \textbf{907\,094}
+titulků článků (\bftt{cswiki\_titulky}).
 
 
 \mbox{}
@@ -2009,20 +2009,20 @@ Několik následujících příkladů demonstruje záměrně zkomolené nebo jin
 nepřesné dotazy, od kterých ale beztak očekáváme přesný zásah.
 Vyhledávače by neměly vracet příliš mnoho výsledků, protože tyto dotazy
 budou relativně dlouhé a specifické, které by v omezených datových
-sadách měly obsahovat jen několik shodujících se záznamů.
+sadách měly odpovídat jen několika shodujícím se záznamům.
 
 \mbox{}\input{hits/smrt_krasneho_srnce.tex}\mbox{}
 
 Tab.~\ref{tab:result:smrt_krasneho_srnce} ukazuje schopnost vyhledávačů
-vypořádat se s dotazem v jiném pádu a číslu, než je zamýšlený film. K
-povšimnutí stojí rozdíl mezi vyhledávačem \bftt{edit} a jeho dynamickou
+vypořádat se s dotazem v jiném mluvnickém pádu a číslu, než je zamýšlený film.
+K povšimnutí stojí rozdíl mezi vyhledávačem \bftt{edit} a jeho dynamickou
 variantou \bftt{edit\_dyn}. Dynamická editovací vzdálenost má větší toleranci
 pro odlišnosti na koncích slov, proto se dokázala vypořádat s editovací
-vzdáleností \bftt{3} u rozdílu mezi \bftt{krásného} a \bftt{krásných}.
-\bftt{edit} používá vzdálenost \bftt{3} až od délky slova \bftt{9}, jinak by
-došlo k obrovskému nárůstu podobných slov.
+vzdáleností $3$ u rozdílu mezi \bftt{krásného} a \bftt{krásných}.  \bftt{edit}
+používá vzdálenost $3$ až od délky slova $9$, jinak by došlo k obrovskému
+nárůstu podobných slov.
 
-\bftt{cs\_ES} nenašel žádnou shodu, přestože by jeho český stematizátor měl
+\bftt{cs\_ES} nenašel žádnou shodu, přestože by jeho český stematizér měl
 tenhle případ zvládnout. Tím, že se jazyková analýza dotazu
 (\bftt{smrt~krasnh~srnk}) neshoduje s analýzou výsledku
 (\bftt{smrt~krasnych~srnk}), nedojde ke shodě. Vinou zde bude pouze
@@ -2038,10 +2038,10 @@ nahrazeno českým \bftt{Ši} (tab.~\ref{tab:result:sindleruv_seznam}).
 
 \mbox{}\input{hits/veznice_showsank.tex}\mbox{}
 
-Na dotaz jiný zkomolený dotaz \bftt{Věznice Showsank}
-(tab.~\ref{tab:result:veznice_showsank}, který by měl nalézt
-\bftt{Vykoupení z věznice Shawshank} kladně reagují pouze \bftt{edit}
-vyhledávače, protože cizí a specifický název \bftt{Shawshank} neprojde
+Na jiný zkomolený dotaz \bftt{Věznice Showsank}
+(tab.~\ref{tab:result:veznice_showsank}, který by měl nalézt \bftt{Vykoupení z
+věznice Shawshank}, kladně reagují pouze vyhledávače \bftt{edit} a
+\bftt{edit\_dyn} , protože cizí a specifický název \bftt{Shawshank} neprojde
 jazykovou analýzou a trigramový systém selže, protože zasáhne pouze jeden
 trigram \bftt{ank}.
 
@@ -2077,7 +2077,7 @@ konci slova.
 
 U dotazu \bftt{přelet~kukačka} v tab.~\ref{tab:result:prelet_kukacka} opět
 selhal stematizér češtiny. Dotaz se převedl na \bftt{prelt~kukack}, zatímco
-záznam \bftt{Přelet~nad~kukaččím~hnízdem} byl při indexování převeden na
+záznam \bftt{Přelet~nad~kukaččím~hnízdem} byl při indexování stematizován na
 neshodující se \bftt{prelt~nad~kukaccim~hnizd}. \bftt{edit\_dyn} našel shodu i
 pro velmi zkomolený dotaz (tab.~\ref{tab:result:preletela_kukajda}).
 
@@ -2132,7 +2132,7 @@ záznamů.
 
 Žádný vyhledávač se neuplatnil u plně fonetického přepisu u dotazu \bftt{Šón
 Konery}. Musela by být silně zvýšena tolerance editační vzdálenosti pro krátká
-slova (\bftt{son} a \bftt{sean} se liší vzdáleností 2). Nevýhodou by bylo velké
+slova (\bftt{son} a \bftt{sean} se liší vzdáleností $2$). Nevýhodou by bylo velké
 množství nevyhovujících záznamů.
 
 \subsubsection{Názvy produktů}
@@ -2150,7 +2150,7 @@ tab.~\ref{tab:result:mitsubishi_ki} ukazuje, jak může fuzzy vyhledání u
 \bftt{edit} a \bftt{edit\_dyn} pomoci, když je v databázi název firmy produktu
 ve více jazycích, přestože se data tváří, že jsou pouze v jednom jazyce.
 \bftt{trig\_ES} případ nezvládl, protože nelze jednoduše nakonfigurovat dotaz,
-který by vyžadoval alespoň částečný zásah od každého slova v dotazu.
+který by vyžadoval alespoň částečný zásah od každého slova dotazu.
 
 \mbox{}\input{hits/mitsubishi_ki.tex}\mbox{}
 
@@ -2158,13 +2158,13 @@ který by vyžadoval alespoň částečný zásah od každého slova v dotazu.
 
 
 \section{Proximita slov}
-Rozdíl mezi klasickým upřednostňováním počtu shodujících se slov v
-dokumentu a ohodnocením na základě maximální blízkosti slov demonstrují
-dva příklady v
-tab.~\ref{tab:result:the_live}~a~\ref{tab:result:the_live_tour}. Zatímco
-ten první preferuje delší dokumenty, protože mají větší šanci obsahovat
-shodující se slova, ten druhý je k tomuhle imunní. Pro něj je ideální
-shoda taková, kde jsou slova v dokumentu bezprostředně vedle sebe a ve
+Rozdíl mezi klasickým upřednostňováním počtu shodujících se slov v dokumentu
+(\bftt{tf}) a ohodnocením na základě maximální blízkosti slov (pomocí metody
+minimálního intervalu, viz~\S\,\ref{sec:find_minimal_interval}) demonstrují dva
+příklady v tab.~\ref{tab:result:the_live}~a~\ref{tab:result:the_live_tour}.
+Zatímco první metoda preferuje delší dokumenty, protože mají větší šanci
+obsahovat shodující se slova, druhá je k tomuhle imunní. Pro ni je ideální
+taková shoda, kde jsou slova v dokumentu bezprostředně vedle sebe a navíc ve
 stejném pořadí jako v dotazu.
 
 Pro tento příklad byla záměrně použita slova, která se ve filmových datech
@@ -2182,16 +2182,18 @@ výpočetní náročnost.
 
 
 \section{Porovnání trigramových vyhledávačů}
-Pro srovnání schopností trigramového indexu Postgresu (\bftt{trig\_PG}) a
-trigramové konfigurace pro ElasticSearch (\bftt{trig\_ES}) bylo provedeno
-několik dotazů, které poukazují na slabost ostatních vyhledávačů. Těmi jsou
-kompozitní slova. Tab.~\ref{tab:result:trig_god_father} ukazuje, že oba systémy
-si podle očekávání s kompozitními slovy poradí. \bftt{trig\_ES} má oproti
-běžnému trigramovému indexu navíc nakonfigurovanou preferenci přesných shod,
-což mu může dávat výhodu v přesnosti. Přestože pouze dva výsledky obsahují
-přesnou shodu ve slovech \bftt{god} ani \bftt{father}, zdá se, že
-\bftt{trig\_ES} vrací přesnější výsledky. Tab.~\ref{tab:result:trig_auto_mobil}
-ukazuje podobný výsledek pro dotaz \bftt{auto mobil}.
+Pro srovnání schopností trigramového indexu Postgresu (\bftt{trig\_PG})
+a trigramové konfigurace pro ElasticSearch (\bftt{trig\_ES}) bylo
+provedeno několik dotazů, které poukazují na slabost ostatních
+vyhledávačů. Těmi jsou kompozitní slova.
+Tab.~\ref{tab:result:trig_god_father} ukazuje, že oba systémy si podle
+očekávání s kompozitními slovy poradí. \bftt{trig\_ES} má oproti běžnému
+trigramovému indexu navíc nakonfigurovanou preferenci přesných shod, což
+mu může dávat výhodu v přesnosti. Přestože pouze dva výsledky obsahují
+přesnou shodu ve slovech \bftt{god} a \bftt{father}, zdá se, že
+\bftt{trig\_ES} vrací celkově přesnější výsledky.
+Tab.~\ref{tab:result:trig_auto_mobil} ukazuje podobný výsledek pro dotaz
+\bftt{auto mobil}.
 
 \mbox{}\input{hits/trig_god_father.tex}\mbox{}
 
@@ -2223,12 +2225,14 @@ ukazuje podobný výsledek pro dotaz \bftt{auto mobil}.
     \end{minipage}}
 \mbox{}\\
 
-Pro porovnání výkonu bylo náhodně zvoleno 24 dotazů pro vyhledání v databázi
-\bftt{csfd\_filmy}. Obrázky \ref{fig:timings} a \ref{fig:timings_log}
-porovnávají rychlost běhu dotazu mezi systémy \bftt{edit\_dyn} interpretovaného
-v CPythonu, \bftt{edit\_dyn} interpretovaného v PyPy a dvou konfigurací pro
-ElasticSearch \bftt{trig\_ES} a \bftt{cs\_ES}.  Časy jsou průměrem 100 běhů
-dotazu pro každý ze systémů.
+Pro porovnání výkonu bylo náhodně zvoleno 24 dotazů pro vyhledání v
+databázi \bftt{csfd\_filmy}. Obrázky \ref{fig:timings} a
+\ref{fig:timings_log} porovnávají rychlost běhu dotazu mezi systémy
+\bftt{edit\_dyn} interpretovaného v CPythonu, \bftt{edit\_dyn}
+interpretovaného v PyPy, dvou konfigurací pro ElasticSearch
+(\bftt{trig\_ES} a \bftt{cs\_ES}) a trigramového vyhledávače v Postgresu
+(\bftt{trig\_PG}).  Časy jsou průměrem 100 běhů dotazu pro každý ze
+systémů.
 
 Podle očekávání je implementace \bftt{edit\_dyn} výkonově nejslabší kvůli
 dynamicky typovanému Pythonu. Znatelný je rozdíl mezi jednotlivými interpretery
@@ -2289,7 +2293,7 @@ Poměr všech tří fází vykonání dotazu (1. vyhledání podobných slov ve 
 \bftt{slouceni}, 3. ohodnocení nalezených dokumentů \bftt{ohodnoceni}) na
 obrázcích \ref{fig:timings_py_sorted}, \ref{fig:timings_pypy_sorted},
 \ref{fig:timings_py_sorted_log} a~\ref{fig:timings_pypy_sorted_log} je odlišný
-pro různé dotazy. \bftt{ohodnoceni} je přímo závislé na počtu nalezených
+pro různé dotazy. Fáze \bftt{ohodnoceni} je přímo závislá na počtu nalezených
 výsledků, protože se pro každý z nich aplikuje stejná ohodnocující funkce a
 následné seřazení.
 
@@ -2297,14 +2301,15 @@ Ostatní fáze nejsou na počtu výsledků závislé. \bftt{slouceni} není toli
 závislé díky předsloučeným invertovaným seznamům hybridního uspořádání. Zvýšení
 náročnosti je možné pozorovat pro dotazy s frekventovanými slovy \bftt{the} a
 \bftt{of}, protože jejich invertované seznamy a disjunkce seznamů s podobnými
-slovy jsou delší než u průměrného dotazu. Fáze vyhledání všech slov -
-\bftt{trie} - se odvíjí pouze od charakteristiky dat. Tedy pokud existuje více
-podobných slov, pak je vykonání delší. Přesto nedosahuje velikých výkyvů.
+slovy jsou delší než u průměrného dotazu. Fáze prohledání všech slov v lexikonu
+- fáze \bftt{trie} - se odvíjí pouze od charakteristiky dat. Tedy pokud
+existuje více podobných slov, pak je vykonání delší. Přesto nedosahuje
+velikých výkyvů.
 
 Za zmínku stojí změna v pořadí fází \bftt{trie} a \bftt{slouceni} mezi
 interpretery CPython a PyPy. PyPy si lehce poradí se sloučením invertovaných
-seznamů a dominující fází se stane ne tak snadno predikovatelné prohledání ve
-slovníku.
+seznamů a dominující fází se u něj stane ne tak snadno predikovatelné
+prohledání ve slovníku.
 
 
 %\subsubsection{Porovnání implementací disjunkce}
@@ -2329,15 +2334,14 @@ slovníku.
 
 Pro srovnání byly naimplementovány čtyři různé druhy vykonání disjunkce
 invertovaných seznamů, které následně figurují v konjunktivním sloučení.
-
-\bftt{heap} je klasické sloučení za pomocí binární haldy, které se hodí, pokud
-je invertovaných seznamů mnoho. Kvůli hybridizaci invertovaných seznamů jich
-tolik není, a proto by měly být minimálně stejně účinné implementace, kde
-prioritní frontu tvoří pouhý lineární seznam - \bftt{list}. \bftt{list-prune}
-je obdobou, pouze s tím, že z prioritní fronty odstraní invertované seznamy,
-které se dostaly do konce. \bftt{skip} je experimentální implementace
-optimalizující přeskakování v invertovaných seznamech oproti postupnému
-posunování po jednom dokumentu.
+Metoda \bftt{heap} je klasické sloučení za pomocí binární haldy, které se hodí,
+pokud je invertovaných seznamů mnoho. Kvůli hybridizaci invertovaných seznamů
+jich ale není tak mnoho, a proto by měly být minimálně stejně účinné
+implementace, kde prioritní frontu tvoří pouhý lineární seznam - metoda
+\bftt{list}. \bftt{list-prune} je obdobou, pouze s tím, že z prioritní fronty
+odstraní invertované seznamy, které se dostaly do konce. \bftt{skip} je
+experimentální implementace optimalizující přeskakování v invertovaných
+seznamech oproti postupnému posunování po jednom dokumentu.
 
 % V obr.~\ref{fig:timings_union_cpython}~a~\ref{fig:timings_union_pypy} jsou
 % porovnání těchto implementací pro CPython a Pypy na dvaceti náhodně
@@ -2346,6 +2350,7 @@ posunování po jednom dokumentu.
 % zásadní vliv na dobu vykonání dotazu. Každá je v některém případě víceméně tou
 % nejméně vhodnou a naopak.
 
+\newpage
 \subsection{Rychlost sloučení}
 
 \noindent\makebox[\textwidth][c]{%
@@ -2386,20 +2391,21 @@ posunování po jednom dokumentu.
 \mbox{}\\
 
 Obrázky~\ref{fig:timings_prefix_union_x_y},~\ref{fig:timings_prefix_union_x_yy},~\ref{fig:timings_prefix_union_x_yyyy}
-a \ref{fig:timings_prefix_union_xxxx_yyyy} demonstrují rychlost vykonání
+a~\ref{fig:timings_prefix_union_xxxx_yyyy} demonstrují rychlost vykonání
 náhodných prefixových dotazů. U prefixových dotazů najde slovník velké množství
-odpovídajících slov ke každému dotazovanému slovu. Dotazu typu \bftt{x* yyyy*}
-v obr.~\ref{fig:timings_prefix_union_x_yyyy} znamená dotaz o dvou prefixech.
-\bftt{x} a \bftt{yyyy} znázorňují šablony vygenerovaných slov. Tedy náhodně
+odpovídajících slov ke každému dotazovanému slovu. Dotaz typu \bftt{x* yyyy*}
+v~obr.~\ref{fig:timings_prefix_union_x_yyyy} znamená dotaz o dvou prefixech.
+\bftt{x} a~\bftt{yyyy} znázorňují šablony vygenerovaných slov. Tedy náhodně
 vygenerovaný dotaz může vypadat například jako \bftt{s* bene*} nebo \bftt{m*
 tolu*}. U dotazu \bftt{x* y*} očekáváme silný vliv disjunkce na dobu vykonání
 sloučení, protože prefix pouze o jednom znaku odpovídá velkému množství slov. V
 kontrastu dotaz typu \bftt{xxxx* yyyy*}  bude obsahovat menší množství seznamů
 v disjunkci. Dotazy typu \bftt{x* yy*} a \bftt{x* yyyy*} slouží k porovnání
 schopnost implementací přeskakovat dokumenty v kombinaci řídké (\bftt{yyyy*}) a
-husté (\bftt{x*}) disjunkce. Podle očekávání by měla dominovat implementace
-\bftt{skip}, ale není tomu tak. Nejvhodnější implementací se ukázala
-jednoduchost obyčejného seznamu v případech \bftt{list} a \bftt{list-prune}.
+husté (\bftt{x*}) disjunkce. Podle původního očekávání měla dominovat
+implementace \bftt{skip}, ale není tomu tak. Nejvhodnější implementací se
+ukázala jednoduchost obyčejného seznamu v případech \bftt{list} a
+\bftt{list-prune}.
 
 \subsection{Výkon hybridních seznamů}
 \noindent\makebox[\textwidth][c]{%
@@ -2492,21 +2498,12 @@ překladem do nativního kódu by měla být znatelně rychlejší.
 
 
 
+\newpage
 \subsection{Velikost indexu}
-ElasticSearch nabízí bod API se statistikami, které nám řeknou i velikost místa
-zabraného indexem. Alternativně lze velikost indexu zjistit sečtením velikostí
-všech uložených souborů. Obě metody vracejí zhruba stejné výsledky ($\pm 4\%$).
-
-Indexy pro vyhledávače \bftt{edit} a \bftt{edit\_dyn} jsou totožné. Liší se
-pouze formou hledání podobných slov ve slovníku. Nutné je podotknout, že
-prototyp navrhovaného systému reprezentovaný těmito dvěma vyhledávači uchováva
-data naivně v textové reprezentaci bez jakékoliv komprese. Překvapivě se
-pohybuje ve stejné kategorii jako index vyhledávače \bftt{cs\_ES}, přestože by
-měly být jeho hodnoty o poznání větší. Trigramový index je podle očekávaní
-větší než běžný index. Jednak z důvodu, že trigramy se překrývají, a proto se
-indexuje větší množství dat, a jednak protože konkrétní implementace
-\bftt{trigram\_ES} sestává dohromady z více indexů (trigramový, celá slova a
-ngramy s n kratším než 3. viz~\S\,\ref{sec:trigram_implementation}).
+ElasticSearch nabízí ve svém programovatelném rozhraní bod se statistikami,
+které nám řeknou i velikost místa zabraného indexem. Alternativně lze velikost
+indexu zjistit sečtením velikostí všech uložených souborů. Obě metody vracejí
+zhruba stejné výsledky ($\pm 4\%$).
 
 \begin{Verbatim}
 # Součet souborů na disku
@@ -2540,26 +2537,36 @@ http '<uri>/<index>/_stats' | jq .indices.<index>.primaries.store.size_in_bytes
 \end{table}
 \end{tt}
 
+V~tab.~\ref{tab:index_size} je vidět, že indexy pro vyhledávače \bftt{edit} a
+\bftt{edit\_dyn} jsou totožné. Liší se pouze formou hledání podobných slov ve
+slovníku. Nutné je podotknout, že prototyp navrhovaného systému reprezentovaný
+těmito dvěma vyhledávači uchováva data naivně v textové reprezentaci bez
+jakékoliv komprese. Překvapivě se pohybuje ve stejné kategorii jako index
+vyhledávače \bftt{cs\_ES}, přestože by měly být jeho hodnoty kvůli absence
+efektivního binárního formátu o poznání větší.  Trigramový index je podle
+očekávaní větší než běžný index. Jednak z důvodu, že trigramy se překrývají, a
+proto se indexuje větší množství dat, a jednak protože konkrétní implementace
+\bftt{trigram\_ES} sestává dohromady z více indexů (trigramový, celá slova a
+ngramy s n kratším než 3.  viz~\S\,\ref{sec:trigram_implementation}).
+
 \chapter{Závěr}
 
 \section{Další postup v implementaci}
-Častečná implementace zde navrhovaného systému není vhodná pro produkční
-nasazení zejména z výkonnostních důvodů.  V této části bude představeno několik
+Častečná implementace zde navrhovaného systému zatím není vhodná pro produkční
+nasazení zejména z výkonnostních důvodů. V této části bude představeno několik
 možností, jakými cestami by se mohla dosavadní implemtance tohoto sytému dále
-vyvíjet.
-
-Vyhledávač by mohl být přepsán ve výkonějším jazyce než Python a vyvíjen jako
-samostatný systém, nebo by mohl být integrován do existujících databázových
-nebo vyhledávacích systémů.
+vyvíjet. Vyhledávač by mohl být přepsán ve výkonějším jazyce než Python a
+vyvíjen jako samostatný systém, nebo by mohl být integrován do existujících
+databázových nebo vyhledávacích systémů.
 
 \subsubsection{Integrace do existujících systémů}
 Systém byl navržen tak, aby byl ideálně jazykově nezávislý, čehož dosahuje díky
 možnosti přibližného vyhledávání. To ho činí vhodným kandidátem pro integraci
-do open sourcových databázových systémů, které nejsou výhradně zaměřeny na
+do open source databázových systémů, které nejsou výhradně zaměřeny na
 zpracování textu. Díky jednoduchosti nasazení bez nutnosti žádné složité
-textové analýzy by mohl být tento systém implementován jako plugin podobně
-jako trigramový plugin do systému Postgres, který zde byl použit pro
-porovnání.
+textové analýzy před indexováním by mohl být tento systém implementován
+jako plugin podobně jako trigramový plugin do systému Postgres, který zde
+byl použit pro porovnání.
 
 Integrace do specializovaných vyhledávačů by paradoxně mohla být obtížnější,
 protože jsou silně specializované na některé specifické datové struktury.
