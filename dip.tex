@@ -88,7 +88,7 @@
 \vspace{4.2cm}
 \def\arraystretch{1.6}
 \begin{tabular}{rl}
-{\Large Student:} & {\Large Tomáš Maršálek \par} \\
+{\Large Student:} & {\Large Bc. Tomáš Maršálek \par} \\
 {\Large Vedoucí:} & {\Large RNDr. Helena Palovská, Ph.D. \par} \\
 {\Large Oponent:} & {\Large doc. RNDr. Petr Strossa, CSc. \par} \\
 \end{tabular}
@@ -112,12 +112,14 @@ všechny použité prameny a literaturu, ze které jsem čerpal.\par
 % CZ Abstrakt
 \newpage
 \chapter*{Abstrakt}
+Abstrakt
 \paragraph{Klíčová slova}
 Přibližné Vyhledávání v Textu, Prefixové Vyhledávání, Blízkost, Autocomplete, Search As You Type, Vyhledávání s Tolerancí Chyb, Poloinvertovaný index, Hybridní index, Invertovaný index
 
 % EN Abstract
 \newpage
 \chapter*{Abstract}
+Abstract
 \paragraph{Keywords}
 Approximate Text Search, Prefix Search, Proximity Search, Autocomplete, Search As You Type, Error Tolerant Text Search, Half-Inverted Index, Hybrid Index, Inverted Index
 
@@ -2550,6 +2552,41 @@ proto se indexuje větší množství dat, a jednak protože konkrétní impleme
 ngramy s n kratším než 3.  viz~\S\,\ref{sec:trigram_implementation}).
 
 \chapter{Závěr}
+Záměrem této práce je poukázat na alternativní techniky v oblasti vyhledávání a
+demonstrovat možný vyhledávací systém, který je implementuje. Tento systém by
+měl být vhodný pro potřeby jednotlivců i firem, které vyžadují od vyhledávacího
+systému robustnost proti malým textovým změnám v dotazu. Toho dosahuje
+zaměřením se na techniky pro prefixové a přibližné vyhledávání. Uplatnění by
+měl nalézt v menších datových sadách, než na které je dnes kladen důraz,
+protože díky omezené velikosti dat je možné přebytečný výpočetní výkon použít k
+těmto náročnějším technikám.
+
+% Některé z popisovaných technik byly dlouho opomíjené, protože jejich
+% implementace není jednoduchá, nebo dlouho nebyla výpočetně výhodná. Pokrok ve
+% výpočetním výkonu, nových počítačových architekturách, vyšších kapacitách
+% pamětí a obecně pokrok v hardwaru pro ně ale poskytuje novou příležitost.
+
+Navržený vyhledávací systém byl implementován jako prototyp obsahující popsané
+techniky a porovnán s několika dalšími vyhledávači, které byly vytvořeny jako
+různé konfigurace v některých populárních open source vyhledávacích systémech
+tak, aby odpovídaly podobným vlastnostem.
+
+Implementovaný prototyp byl vytvořen tak, aby byl schopný v první řadě
+demonstrovat popsané techniky a byl dostatečně flexibilní pro potřeby
+experimentování. Výkonově není reprezentativní kvůli implementaci v zvoleném
+dynamicky typovaném programovacím jazyce Python, ale byla použita stejná
+architektura, kterou by bylo možné v další fázi pouze přepsat do výkonnějšího
+jazyka. Bylo provedeno relativní porovnání výkonu mezi určitými typy dotazů s
+vyšší mírou tolerance pro běh dotazu, které ukázalo že pro běžný dotaz by
+vyhledávač měl splňovat kritéria pro vyhledávání v reálném čase.
+
+Analýza nejhorších případů ukázala na typ dotazů, které by mohly být zneužity
+proti vyhledávači. Pro tento případ byl nastíněn způsob, jak ho řešit, přestože
+by mohl zkomplikoval původně jednoduchou architekturu.
+
+V porovnání s alternativami založených na ngramové podobnosti není navržený
+systém robustní v případech oddělených slov nebo naopak kompozitních slov.
+Možným dalším rozšířením by byla kombinace navržené architektury s ngramy.
 
 \section{Další postup v implementaci}
 Častečná implementace zde navrhovaného systému zatím není vhodná pro produkční
@@ -2730,44 +2767,6 @@ a~Tastier~\cite{Ji:2009:EIF:1526709.1526760}.
 %častěji využívají bitově-paralelní instrukce moderních procesorů. I z tohoto
 %důvodu by měl být zvolen takový jazyk, ve kterém není velkou překážkou tyto
 %moderní schopnosti procesorů využívat. (cite completesearch C++).
-
-
-\section{Shrnutí}
-Záměrem této práce je poukázat na alternativní techniky v oblasti vyhledávání a
-demonstrovat možný vyhledávací systém, který je implementuje. Tento systém by
-měl být vhodný pro potřeby jednotlivců i firem, které vyžadují od vyhledávacího
-systému robustnost proti malým textovým změnám v dotazu. Toho dosahuje
-zaměřením se na techniky pro prefixové a přibližné vyhledávání. Uplatnění by
-měl nalézt v menších datových sadách, než na které je dnes kladen důraz,
-protože díky omezené velikosti dat je možné přebytečný výpočetní výkon použít k
-těmto náročnějším technikám.
-
-% Některé z popisovaných technik byly dlouho opomíjené, protože jejich
-% implementace není jednoduchá, nebo dlouho nebyla výpočetně výhodná. Pokrok ve
-% výpočetním výkonu, nových počítačových architekturách, vyšších kapacitách
-% pamětí a obecně pokrok v hardwaru pro ně ale poskytuje novou příležitost.
-
-Navržený vyhledávací systém byl implementován jako prototyp obsahující popsané
-techniky a porovnán s několika dalšími vyhledávači, které byly vytvořeny jako
-různé konfigurace v některých populárních open source vyhledávacích systémech
-tak, aby odpovídaly podobným vlastnostem.
-
-Implementovaný prototyp byl vytvořen tak, aby byl schopný v první řadě
-demonstrovat popsané techniky a byl dostatečně flexibilní pro potřeby
-experimentování. Výkonově není reprezentativní kvůli implementaci v zvoleném
-dynamicky typovaném programovacím jazyce Python, ale byla použita stejná
-architektura, kterou by bylo možné v další fázi pouze přepsat do výkonnějšího
-jazyka. Bylo provedeno relativní porovnání výkonu mezi určitými typy dotazů s
-vyšší mírou tolerance pro běh dotazu, které ukázalo že pro běžný dotaz by
-vyhledávač měl splňovat kritéria pro vyhledávání v reálném čase.
-
-Analýza nejhorších případů ukázala na typ dotazů, které by mohly být zneužity
-proti vyhledávači. Pro tento případ byl nastíněn způsob, jak ho řešit, přestože
-by mohl zkomplikoval původně jednoduchou architekturu.
-
-V porovnání s alternativami založených na ngramové podobnosti není navržený
-systém robustní v případech oddělených slov nebo naopak kompozitních slov.
-Možným dalším rozšířením by byla kombinace navržené architektury s ngramy.
 
 %\medskip
 % prevent page breaks in bibitems
