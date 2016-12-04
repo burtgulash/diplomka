@@ -128,9 +128,9 @@ dnešní době. Dle výsledků porovnání lze usoudit proveditelnost navrhovan�
 představeno několik možností pro budoucí vývoj systému.
 
 \paragraph{Klíčová slova}
-Přibližné Vyhledávání v Textu, Prefixové Vyhledávání, Blízkost, Autocomplete,
-Search As You Type, Vyhledávání s Tolerancí Chyb, Poloinvertovaný index,
-Hybridní index, Invertovaný index
+Přibližné vyhledávání v textu, prefixové vyhledávání, blízkost, autocomplete,
+search-as-you-type, vyhledávání s tolerancí chyb, poloinvertovaný index,
+hybridní index, invertovaný index
 
 % EN Abstract
 \newpage
@@ -150,9 +150,9 @@ expectations and performance. Several options of future direction of the system
 are proposed.
 
 \paragraph{Keywords}
-Approximate Text Search, Prefix Search, Proximity Search, Autocomplete, Search
-As You Type, Error Tolerant Text Search, Half-Inverted Index, Hybrid Index,
-Inverted Index
+Approximate text search, prefix search, proximity search, autocomplete,
+search-as-you-type, error tolerant text search, half-inverted index, hybrid
+index, inverted index
 
 
 % TOC section
@@ -574,11 +574,12 @@ překvapivými pravidly, které je dobré znát před vstupem do oblasti, která
 zpracováním těchto dat zabývá.
 
 \paragraph{Zipfův zákon} říká, že kdybychom seřadili slova nějaké větší textové
-sady podle počtu výskytů, pak pořadí jednoho takového slova $\bftt{i}$ vzhledem
-k jeho frekvenci $f_i$ bude nepřímo úměrné podle vztahu \[i \propto \frac{k}{f_i}\]
+sady podle počtu výskytů, pak pořadí jednoho takového slova ($i$) vzhledem k
+jeho frekvenci ($f_i$) bude nepřímo úměrné podle vztahu \[i \propto
+\frac{k}{f_i}\]
 
 Zipfův zákon charakterizuje danou textovou sadou konstantou
-\bftt{k}. Např. pro jednu datovou sadu, se kterou zde budeme pracovat (databáze
+$k$. Např. pro jednu datovou sadu, se kterou zde budeme pracovat (databáze
 filmů) jsou pěti nejfrekventovanějšími slovy \bftt{the} ($80\,999\times$),
 \bftt{of} ($31\,026\times$), \bftt{a} ($24\,499\times$), \bftt{in} ($12\,226
 \times$) a \bftt{la} ($11\,417\times$). Na první pohled je patrná exponenciálně
@@ -590,13 +591,14 @@ Zipf-Mandelbrotův, nebo také Zipf-Paretův zákon~\cite{neumann_zipf}.
 přirozeného jazyka, se kterým musí algoritmy počítat. Ten empiricky vyjadřuje
 počet slov dané textové kolekce v závislosti na její velikosti. Tedy kolik
 unikátních slov bude text obsahovat, pokud obsahuje celkově 1\,000, 100\,000,
-10\,000\,000, ... slov. Heapsův zákon stanovuje závislost \[k \times n^b\] s
-klíčovou konstantou \bftt{b}, která je sice závislá na textové kolekci, ale
-prakticky má hodnotu kolem $0.5$. Tedy počet unikátních slov roste jako druhá
-odmocnina celkového počtu slov. Zajímavé je pozorování, že počet slov neustále
-roste, přestože by se mohlo zdát, že jazyk má omezený počet slov. Čím více dat
-ale máme, tím větší je šance, že se v něm budou objevovat různá jména, smyšlená
-slova a překlepy, které se ale také počítají jako unikátní slova.
+10\,000\,000, ... slov. Heapsův zákon pro počet unikátních slov $S$ stanovuje
+závislost \[S \propto k \times n^b\] s klíčovou konstantou $b$, která je sice
+závislá na textové kolekci, ale prakticky má hodnotu kolem $0.5$.  Tedy počet
+unikátních slov roste, až na konstantu $k$, jako druhá odmocnina celkového
+počtu slov.  Zajímavé je pozorování, že počet slov neustále roste, přestože by
+se mohlo zdát, že jazyk má omezený počet slov. Čím více dat ale máme, tím větší
+je šance, že se v něm budou objevovat různá jména, smyšlená slova a překlepy,
+které se ale také počítají jako unikátní slova.
 
 \section{Uživatelské rozhraní} \label{sec:uzivatelske_rozhrani}
 Základním uživatelským rozhraní pro textové vyhledávání je obyčejný řádek, do
@@ -705,7 +707,7 @@ pouze na znalosti kompletního slovníku datové kolekce.
 
 \subsection{Filtrované vyhledávání} \label{sec:faceted_search}
 Textové vyhledávání může být kombinováno s různými filtry pro vlastnosti, které
-výsledky obsahují. Dokonce ještě přes započetím vkládání dotazu může být
+výsledky obsahují. Dokonce ještě před započetím vkládání dotazu může být
 uživateli prezentována omezená množina celé kolekce, seřazená např. podle
 popularity v poslední době. Vedle této množiny mohou být uživateli představeny
 různé filtry nebo všechny (nebo alespoň nejpopulárnější) kategorie, kterými lze
@@ -858,7 +860,7 @@ vyhledávání se provede identická konverze dotazovaných slov. Vyhledávač b
 původní výraz \bftt{motorová pila} nejprve převedl na kmenový tvar \bftt{motor
 pil} a vykonal dotaz s tímto modifikovaným výrazem. Co se považuje za kmen
 slova je určeno vybraným algoritmem. Kromě stematizace existuje ještě technika
-lemmatizace, která místo kmene slova hledá jeho základní (slovníkový) tvar.
+lematizace, která místo kmene slova hledá jeho základní (slovníkový) tvar.
 
 V jazykové analýze existuje mnoho problémů. Především je závislá na konkrétním
 jazyce. Některé datové kolekce navíc obsahují záznamy ve více jazycích. Pokud
@@ -869,7 +871,7 @@ jazyce, ale jednotlivá slova mohou být v jiném. Pak jednoduchá frekvenční
 analýza nebude dostačovat a museli bychom zvolit složitější techniky pro
 jazykový rozbor, které jsou ale mimo rozsah této práce.
 
-Problém se stematizací a lemmatizací je navíc nejednoznačnost základního tvaru.
+Problém se stematizací a lematizací je navíc nejednoznačnost základního tvaru.
 Například slovo \bftt{tancích} může mít základní tvar \bftt{tank} nebo
 \bftt{tanec} podle významu slova, který by člověk určil z kontextu věty.
 
@@ -1920,7 +1922,7 @@ dynamicky adaptovatelnou variantu (systém \bftt{edit\_dyn}), viz
 \S\,\ref{sec:trie}.
 
 \subsubsection{ElasticSearch - základní řešení}
-Jako základní řešení sloužící pro porovnání jsem nakonfiguroval Elasticsearch
+Jako základní řešení sloužící pro porovnání jsem nakonfiguroval ElasticSearch
 tak, jak by se měl doporučeně nastavit pro full-textové vyhledávání ve větších
 textových dokumentech. Text je stematizován zabudovaným stematizérem pro
 češtinu. Cílem je ukázat, že tohle nastavení bude mít potíže s vícejazykovou
@@ -1928,7 +1930,7 @@ datovou sadou, jmény a s některými případy morfologie v češtině.
 
 \subsubsection{ElasticSearch - trigramový vyhledávač} \label{sec:trigram_implementation}
 Pro ukázku fuzzy vyhledávání pomocí n-gramů byla vytvořena další konfiguraci
-pro Elasticsearch, která používá n-gramy o minimální a maximální velikosti 3.
+pro ElasticSearch, která používá n-gramy o minimální a maximální velikosti 3.
 Dále bude vystupovat pod názvem \bftt{trig\_ES}.
 
 Pokud se v konfiguraci použije n-gramový filtr, pak není podporováno n-gramové
@@ -1947,7 +1949,7 @@ nesouvisejících záznamů.
 Zvýrazňovač pro n-gramy funguje, pouze pokud se použije tzv. \textit{Fast
 Vector Highlighter}. Přestože je zvýrazňování nastaveno doporučeným způsobem
 pro tento typ dotazu, dochází k chybám, když se n-gramy ve výsledku překrývají.
-Je možné, že je chyba pouze ve verzi Elasticsearch, která byla použita. Jako
+Je možné, že je chyba pouze ve verzi ElasticSearch, která byla použita. Jako
 řešení byl v Pythonu vytvořen dodatečný zvýrazňovač, aby zde prezentované
 výsledky byly vizuálně srovnatelné s ostatními systémy.
 
