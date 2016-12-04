@@ -812,7 +812,7 @@ protože může místo instantních kódů používat efektivnější blokové k
 metody, které drasticky sníží velikost invertovaných seznamů odpovídajících
 často se opakujícím slovům. Má však horší kompresní vlastnosti pro záznamy o
 pozicích výskytu, protože se v tomhle schématu nevyskytují striktně za sebou.
-Komprese bude detailněji popsána dále v \S\,\ref{sec:compression}.
+Komprese bude detailněji popsána dále v~\S\,\ref{sec:compression}.
 
 
 \subsection{Prefixové vyhledávání} \label{sec:prefix_search}
@@ -835,7 +835,7 @@ disjunkcí. Např. dotaz \bftt{motor* pil*} by byl přepsán do tvaru
 podle všech odpovídajících slov ve slovníku. Problém nastane u krátkých
 prefixů, protože odpovídají velkému počtu slov. Dotaz s disjunkcí tisíců
 invertovaných seznamů může být i méně výkonný než prostý průchod celou datovou
-kolekcí. Řešením velké disjunkce je poloinvertovaný index popsaný v sekci
+kolekcí. Řešením velké disjunkce je poloinvertovaný index popsaný v
 \S\,\ref{sec:half_inverted}.
 
 \section{Algoritmy pro přibližné vyhledávání}
@@ -2767,7 +2767,7 @@ a zkusit stejným způsobem najít, jestli jejich sloučení produkuje smyslupln
 slovo.
 
 \subsubsection{Ukládání inkrementálních mezivýsledků}
-Tento problém byl krátce naznačen v \S\,\ref{sec:inkrementalni_vyhledavani}.
+Tento problém byl krátce naznačen v~\S\,\ref{sec:inkrementalni_vyhledavani}.
 Vyhledávač s podporou search-as-you-type dotazů může využít výsledku hledání
 kratšího prefixu pro výpočet výsledků delšího prefixu. Pro příklad mějme dotaz
 \bftt{já jsem doma} a předpokládejme, že ho uživatel vkládá postupně po
