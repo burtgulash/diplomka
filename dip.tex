@@ -761,7 +761,7 @@ datové struktuře, kterou označíme jako slovník (lexikon).
 
 Výhodou uchování datové sady v indexovaném formátu bude její menší velikost,
 čehož dosáhneme navíc díky kompresi, která může využít nerovnoměrné povahy
-textových dat (podle zipfova zákona). Často se vyskytujícím slovům mohou být
+textových dat (podle Zipfova zákona). Často se vyskytujícím slovům mohou být
 přiřazena malá čísla a naopak unikátnějším slovům větší čísla. Menší velikost
 datové struktury bude znamenat, že se jí více vejde do paměti, což umožňuje
 vyhnout se pomalým dotazům na externí perzistentní úložiště.
@@ -1298,7 +1298,7 @@ rozsahu neodpovídají.
 Tím, že jsou některé seznamy sloučeny do většího, budou dotazy, které by těchto
 seznamů využily, penalizovány. Naopak komplexní disjunktivní dotazy budou
 efektivnější než bez materializace. V klasickém invertovaném indexu je kvůli
-zipfově zákonu velký nepoměr náročnosti při zpracování krátkých a dlouhých
+Zipfově zákonu velký nepoměr náročnosti při zpracování krátkých a dlouhých
 seznamů. Hybridní index tenhle rozdíl srovnává za cenu, že původně efektivní
 dotazy budou běžet zhruba stejně dlouho, jako ty původně náročné.
 
@@ -1324,7 +1324,7 @@ procesorů.
 
 Tato reprezentace množiny poskytuje vysokou kompresi pro množiny s vysokou
 hustotou. Velikost reprezentace je přesně $\bftt{n}\ /\ 8$ bytů, kde \bftt{n}
-je počet dokumentů. Bohužel kvůli zipfově distribuci slov je většina
+je počet dokumentů. Bohužel kvůli Zipfově distribuci slov je většina
 invertovaných seznamů velmi řídká, a proto nejsou bitmapy pro invertované
 indexy používány.
 
@@ -1375,7 +1375,7 @@ obdoba waveletového stromu s aplikací pro prefixové dotazy.
 \section{Algoritmy pro sloučení invertových seznamů}
 První část vykonání dotazu, prohledání slovníku, a poslední část, ohodnocení a
 seřazení výsledků, by měly být relativně rychlé. Slovník odpovídá pro lidské
-jazyky heapsově zákonu, a proto je jeho velikost oproti velikosti všech dat
+jazyky Heapsově zákonu, a proto je jeho velikost oproti velikosti všech dat
 relativně malá.  Stejně tak počet výsledků by v průměrném případě měl být
 poměrně malý. Získání a sloučení invertovaných seznamů by proto mělo dominovat
 celkovému času doby vykonání dotazu.
@@ -1677,7 +1677,7 @@ několik vzorků, aby s vysokou pravděpodobností určili velikost skupin.
 
 Hybridní index se od klasického liší v počtu invertovaných seznamů. Klasický má
 jeden seznam, byť potenciálně velmi krátký, pro každé vyskytující se slovo v
-kolekci. Počet slov se odvíjí od heapsova zákona - tedy roste přibližně s
+kolekci. Počet slov se odvíjí od Heapsova zákona - tedy roste přibližně s
 odmocninou velikosti kolekce - a pro velké kolekce je následně velký počet slov
 důvodem indexačních technik pracujících s externí pamětí. Kvůli
 charakteristikám pevných disků (pomalé posunutí čtecí hlavice při nesekvenčním
@@ -2053,8 +2053,8 @@ sadách měly odpovídat jen několika shodujícím se záznamům.
 Tab.~\ref{tab:result:smrt_krasneho_srnce} ukazuje schopnost vyhledávačů
 vypořádat se s dotazem v jiném mluvnickém pádu a číslu, než je zamýšlený film.
 K povšimnutí stojí rozdíl mezi vyhledávačem \bftt{edit} a jeho dynamickou
-variantou \bftt{edit\_dyn}. Dynamická editovací vzdálenost má větší toleranci
-pro odlišnosti na koncích slov, proto se dokázala vypořádat s editovací
+variantou \bftt{edit\_dyn}. Dynamická editační vzdálenost má větší toleranci
+pro odlišnosti na koncích slov, proto se dokázala vypořádat s editační
 vzdáleností $3$ u rozdílu mezi \bftt{krásného} a \bftt{krásných}.  \bftt{edit}
 používá vzdálenost $3$ až od délky slova $9$, jinak by došlo k obrovskému
 nárůstu podobných slov.
@@ -2067,7 +2067,7 @@ nedostatečný základní stematizér v ElasticSearch.
 
 \mbox{}\input{hits/sindleruv_seznam.tex}\mbox{}
 
-Protože dynamická editovací vzdálenost upřednostňuje odlišnosti na
+Protože dynamická editační vzdálenost upřednostňuje odlišnosti na
 koncích slov oproti těm na začátcích, nenajde \bftt{edit\_dyn} shodu
 filmu \bftt{Schindlerův seznam} při zkomoleném dotazu \bftt{Šindlerův
 seznam}, který odpovídá fonetické reprezentaci - \bftt{Schi}, je
@@ -2122,7 +2122,7 @@ pro velmi zkomolený dotaz (tab.~\ref{tab:result:preletela_kukajda}).
 
 Pokud chceme najít film s anglickým názvem \bftt{The Godfather} a nemůžeme si
 vzpomenout, jak se to vlastně píše (př. \bftt{Gottfather}), vyhledávače
-využívající editovací vzdálenost mohou napovědět. Trigramový vyhledávač
+využívající editační vzdálenost mohou napovědět. Trigramový vyhledávač
 \bftt{trigram\_ES} nenašel shodu, kterou jsme hledali, ale několik textově
 správných výsledků také našel.  (tab.~\ref{tab:result:gottfather}).
 
@@ -2511,15 +2511,15 @@ $\log n$ oproti ostatním, které procházejí disjunktivní seznam lineárně.
     \end{minipage}}
 \mbox{}\\
 
-Jedním z důvodů, proč je dynamicky prořezávaná editovací vzdálenost výhodná je
+Jedním z důvodů, proč je dynamicky prořezávaná editační vzdálenost výhodná je
 její časová náročnost, protože se, narozdíl od běžné, vyhýbá drahému průchodu
 podstromy u počátečních znaků.
 Obr.~\ref{fig:trie_edit_pypy}~a~\ref{fig:trie_edit_cpython} znázorňují
-závislost tří variant editovací vzdálenosti při průchodu prefixovým stromem a
+závislost tří variant editační vzdálenosti při průchodu prefixovým stromem a
 nalezením všech podobných slov. \bftt{edit} je klasická Levenshteinova
 vzdálenost, \bftt{edit-dyn} je dynamicky prořezávaná varianta a
 \bftt{edit-dyn-prefix} je předchozí varianta, která vyhledává prefixově.
-Vertikální čáry znázorňují zvýšení práhu editovací vzdálenosti. Ta začíná na
+Vertikální čáry znázorňují zvýšení práhu editační vzdálenosti. Ta začíná na
 nule - tedy nejkratší slova se hledají přesně, a na délkách 2, 4, 6, 8 se
 zvedne o jeden bod (slova o délce 3 se hledají s práhem 1, o délce 5 s práhem
 2, ...). Dlouhé vykonání u krátkých slov u \bftt{edit-dyn-prefix} je způsobeno
@@ -2662,7 +2662,7 @@ právě díky obdobné architektuře používaných systémů. Invertované sezn
 být ve sloupcové databázi uloženy v sekvenčním pořadí. Vytvoření jednoho
 sloupce pro jeden invertovaný seznam není prakticky proveditelné, protože počet
 slov typické textové kolekce významně překračuje povolené počty sloupců v
-současných systémech. Kvůli zipfově zákonu je většina invertovaných seznamů
+současných systémech. Kvůli Zipfově zákonu je většina invertovaných seznamů
 velmi krátká a tím, že sloupcové databáze uchovávají data v blocích o nějaké
 minimální velikosti, došlo by k velkému plýtvání~\cite{Bjorklund_aconfluence}.
 
