@@ -2808,6 +2808,24 @@ a~Tastier~\cite{Ji:2009:EIF:1526709.1526760}.
 
 %\medskip
 % prevent page breaks in bibitems
+\backmatter
+\chapter*{Terminologický slovník}
+\begin{tabulary}{\textwidth}{R|L}
+\textbf{Invertovaný index} (Inverted index) & Datová struktura pro rychlé vyhledávání v textu \\
+\textbf{Invertovaný seznam} (Inverted list) & Součást invertovaného indexu. Seznam všech dokumentových identifikátorů k jednomu slovu \\
+\textbf{Dopředný index} (Forward index) & Mezifáze před vytvořením invertovaného indexu \\
+\textbf{Hybridní index} (Hybrid index) & Kombinace mezi dopředným a invertovaným indexem. Sloučuje více invertovaných seznamů do jednoho. \\
+\textbf{HYB} & Konkrétní schéma hybridního indexu \\
+\textbf{Editační vzdálenost} (edit distance) & Míra odlišnosti dvou textových řetězců \\
+\textbf{Lematizace} (Lemmatization) & Transformace slov na jejich kmenový tvar \\
+\textbf{Stematizace} (Stemming) & Aproximace lematizace \\
+\textbf{Sloupcová databáze} (Columnar store) & Způsob uložení dat po sloupcích oproti tradičnímu po řádkách \\
+\textbf{Sloučení} (Merge) & Sloučení invertovaných indexů formou AND (konjunktivní) nebo OR (disjunktivní) \\
+\textbf{Konjunkce disjunkcí} (Conjuction of disjunctions) & Sloučení typu AND podseznamů vzniklých sloučením typu OR \\
+\textbf{Kompozitní slovo} (Compound word) & Slovo vzniklé sloučením kratších slov (např. zemětřesení) \\
+\textbf{N-gram} (N-gram) & Posloupnost několika po sobě jdoucích znaků o fixní velikosti $N$ \\
+\textbf{Trigramový index} (Trigram index) & Invertovaný index operující ne na slovech, ale na N-gramech o velikosti 3 \\
+\end{tabulary}
 \interlinepenalty=10000
 
 \bibliographystyle{myplainnat}
@@ -2859,7 +2877,6 @@ a~Tastier~\cite{Ji:2009:EIF:1526709.1526760}.
 %\input{appendix/es_settings/trigram_search.tex}
 
 
-\backmatter
 
 
 \end{document}
