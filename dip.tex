@@ -231,7 +231,7 @@ ne v takové formě, aby se lidem nevyplatilo fragmentovat data do více systém
 
 \subsection{Jeden systém pro všechny případy}
 V oblasti databázových systémů bylo v posledních několika desetiletích cílem
-vytvořit systémy, který by byly přizpůsobitelné pro každou situaci. Podle M.
+vytvořit systémy, které by byly přizpůsobitelné pro každou situaci. Podle M.
 Stonebrakera je tomuto úsilí konec, protože se ukazuje, že specializovaná
 architektura může být řádově výkonnější než tradiční všeobecná
 architektura~\cite{Stonebraker:2005:OSF:1053724.1054024}. Příkladem jsou datové
@@ -278,9 +278,9 @@ jmenoval Small Data, a znamená soustředit se na relativně malé objemy dat, a
 s použitím vlastností, které byly při minulých výpočetních kapacitách
 vyhodnoceny jako příliš náročné pro praktické použití. Pojem Small Data není
 tolik rozšířený jako Big Data a byl několikrát použit v různých významech. V
-jednom případě se ale shoduje s významem, v jakém je v této práci
-zamýšlen~\cite{small_data}. Autor navrhuje použití nadbytečného výkonu např.
-pro interaktivitu v publikovaných vědeckých článcích.
+jednom případě se ale shoduje s významem, v jakém je v této práci zamýšlen - v
+něm autor navrhuje použití nadbytečného výkonu např. pro interaktivitu v pdf
+dokumentech vědeckých článků~\cite{small_data}.
 
 \subsection{Přibližné vyhledávání}
 Motivaci této práce charakterizuje pojem Small Data, protože hlavní myšlenkou
@@ -333,7 +333,7 @@ textech zaznamenaných z audio nebo video souborů.
 Cílem práce je navrhnout praktický vyhledávací systém zaměřený pro
 specializované datové sady jako názvy produktů, jména a obecně text obtížně
 zpracovatelný jazykovou analýzou. Techniky, které by měl navrhovaný vyhledávač
-používat nejsou v populární literatuře ještě velmi známé. Jsou výpočetně
+používat, nejsou v populární literatuře ještě velmi známé. Jsou výpočetně
 náročnější než dosavadní algoritmy, ale na druhou stranu umožňují efektivnější
 vykonávání některých uživatelských rozhraní a pokročilých typů dotazu.
 
@@ -347,7 +347,7 @@ Důraz je kladen především na prefixové a přibližné vyhledávání, kter�
 považována za výpočetně velmi náročná. Další navrhovanou technikou je
 ohodnocení podle blízkosti (proximity) slov ve výsledcích.
 
-Systém, který je v této práci navrhován se nesnaží být nejlepším řešením pro
+Systém, který je v této práci navrhován, se nesnaží být nejlepším řešením pro
 všechny případy a explicitně se zaměřuje na specifičtější případy, ve kterých
 by přibližné vyhledávání mohlo přinést velkou hodnotu. Z důvodu vyšší výpočetní
 náročnosti se navrhovaný systém nesnaží jít stejnou cestou velkých dat (Big
@@ -368,7 +368,7 @@ reprezentují nejpoužívanější open source systémy s porovnatelnými schopn
 \subsection{Relevance}
 Vyhodnocení toho, který systém je lepší nebo horší, je z velké míry subjektivní
 záležitost. Existují způsoby, jak hodnotit míru relevance vyhledávače pomocí
-metrik přesnost (precision) a výtěžnost (recall), pokud se výsledky vyhledávání
+metrik přesnost (precision) a úplnost (recall), pokud se výsledky vyhledávání
 uvažují pouze jako množiny. Pro srovnání výsledků vyhledávačů nás bude více
 zajímat pořadí, ve kterém se relevantní výsledky vyskytnou a robustnost
 vyhledávače při změnách dotazu. Pro uživatele je frustrující, pokud má
@@ -556,7 +556,7 @@ rozhraní pro vyhledávací systémy, algoritmy pro vyhledávání v textu a
 rozšiřující algoritmy pro techniky, na které se práce zaměřuje.
 
 \section{Definice problému vyhledávání}
-Problém vyhledávání, kterým se zde budeme zabývat spočívá v existenci velké
+Problém vyhledávání, kterým se zde budeme zabývat, spočívá v existenci velké
 datové sady (kolekce) jednotlivých položek obsahujících text, které nazveme
 záznamy nebo také dokumenty. Samotné vyhledávání přichází ve chvíli, kdy
 uživatel vyšle požadavek na vyhledávací systém (dotaz) sestávající z několika
@@ -611,11 +611,11 @@ reagují už během jeho vkládání dotazu a nečekají na potvrzení.
 % techniku AJAX - tedy komunikace webové stránky se serverem bez toho, aniž by
 % uživatel explicitně vyslal požadavek.
 
-Vyhledávače interpretují dotaz nejčastěji tak, že text rozdělí na slova a
-naleznou všechny dokumenty, které obsahují všechna tato slova zároveň.
-Kdybychom si chtěli dotaz představit v explicitní formě, v jaké ji vidí
-vyhledávač, pak by např. dotaz \bftt{forrest gump} vypadal jako \bftt{forrest
-AND gump}, kde operátor \bftt{AND} označuje konjunkci.
+Vyhledávače interpretují dotaz v základní formě nejčastěji tak, že text rozdělí
+na slova a naleznou všechny dokumenty, které obsahují všechna tato slova
+zároveň.  Kdybychom si chtěli dotaz představit v explicitní formě, v jaké ji
+vidí vyhledávač, pak by např. dotaz \bftt{forrest gump} vypadal jako
+\bftt{forrest AND gump}, kde operátor \bftt{AND} označuje konjunkci.
 
 Záleží na vyhledávačích, jaké další funkce uživateli poskytnou. Mezi populární
 patří operátory \bftt{NOT} a frázové vyhledávání. Operátor \bftt{NOT} se
@@ -858,7 +858,7 @@ vyhledávání se provede identická konverze dotazovaných slov. Vyhledávač b
 původní výraz \bftt{motorová pila} nejprve převedl na kmenový tvar \bftt{motor
 pil} a vykonal dotaz s tímto modifikovaným výrazem. Co se považuje za kmen
 slova je určeno vybraným algoritmem. Kromě stematizace existuje ještě technika
-lemmatizace, která místo kmenu slova hledá jeho základní (slovníkový) tvar.
+lemmatizace, která místo kmene slova hledá jeho základní (slovníkový) tvar.
 
 V jazykové analýze existuje mnoho problémů. Především je závislá na konkrétním
 jazyce. Některé datové kolekce navíc obsahují záznamy ve více jazycích. Pokud
@@ -888,7 +888,7 @@ podřetězec textů $x$ a $y$ a $|x|$ znamená délku textu $x$. Tato metrika se
 proto také označuje jako vzdálenost nejdelších společných podřetězců.
 
 \paragraph{Levenshteinova vzdálenost} je rozšířením~\cite{Levenshtein66}, které
-kromě odebrání a přidání uvažuje navíc záměnu písmen (substituce) za jednu
+kromě odebrání a přidání, uvažuje navíc záměnu písmen (substituce) za jednu
 operaci s váhou 1.  Prakticky se liší pouze tím, že záměnu písmen penalizuje
 vahou 1, zatímco základní editační vzdálenost bere záměnu jako jedno přidání a
 jedno odebrání, tedy s penalizací 2. Pokud se běžně hovoří o editační
@@ -961,8 +961,8 @@ překrývají, a proto hovoříme o překrývajících se trigramech.
 
 Podobnost dvou řetězců pomocí n-gramů můžeme efektivně zjistit pomocí
 Jaccardovy podobnosti množin (coherence). Tu zjistíme jako poměr velikosti
-průniku ku velikosti sjednocení obou množin \[\bftt{jacc}(X, Y) = |X \cap Y|\
-/\ |X \cup Y|\]
+průniku ku velikosti sjednocení obou množin~\cite{Rajaraman:2011:MMD:2124405}
+\[\bftt{jacc}(X, Y) = |X \cap Y|\ /\ |X \cup Y|\]
 
 Pokud porovnávané texty reprezentujeme jako dvě množiny jejich n-gramů,
 vypočteme jejich podobnost jako podobnost těchto množin. Jaccardova podobnost
@@ -1000,7 +1000,7 @@ můžeme použít reprezentaci slovníku seřazeným seznamem
 slov~\citep[kap.~4]{buttcher2010information}. V něm nalezneme první a poslední
 slovo, která odpovídají prefixu. Všechna slova mezi nimi jsou výsledkem
 hledání. Tuto reprezentaci můžeme efektivně komprimovat technikou front-coding,
-která rozdělí seřazený seznam na bloky o konstantní velikosti (např. 8) a pro
+která rozdělí seřazený seznam na bloky o konstantní velikosti (např. 8), a pro
 každý blok uloží nejdelší prefix, který sdílí všechna slova bloku. Technika
 dobře funguje pro slova přirozeného jazyka, protože díky tendenci výskytu
 morfologie ke konci slov se ve slovníku bude objevovat značné množství silně
@@ -1052,7 +1052,7 @@ zaindexujeme tak, že do hashovací tabulky vložíme všechny jejich odvozené 
 podřetězce. Ty pro každé slovo získáme odstraněním všech podmnožin písmen do
 požadované velikosti. Např. pokud slovník omezíme pro vyhledávání do
 vzdálenosti 2, pak do tabulky vložíme jako klíč všechna odvozená slova, která
-vzniknou odstraněním všech $n$ písmen a všech jejich ${n \choose 2}$ párů. Jaho
+vzniknou odstraněním všech $n$ písmen, a všech jejich ${n \choose 2}$ párů. Jako
 hodnotu klíče v tabulce použijeme původní slovo. Např. slovo \bftt{ruka}
 zaindexujeme odvozenými podřetězci \bftt{uka}, \bftt{rka}, \bftt{rua},
 \bftt{ruk}, \bftt{ka}, \bftt{ua}, \bftt{uk}, \bftt{ra}, \bftt{rk}, \bftt{ru}.
@@ -1077,7 +1077,7 @@ kompaktnější verzi s názvem DeleteMatch, která řeší problém s velikost�
 
 \subsubsection{Trie} \label{sec:trie}
 Populární datovou strukturou, do které lze relativně kompaktně uložit sadu slov
-a která podporuje rychlé vyhledávání je trie, také známá jako prefixový strom.
+a která podporuje rychlé vyhledávání, je trie - také známá jako prefixový strom.
 Jedno slovo do trie uložíme tak, že ho rozdělíme na písmena a každé z nich
 vložíme jako jeden uzel cesty ve stromu. Např. slovo \bftt{ruka} a \bftt{ruda}
 se uloží jako \bftt{/r/u/k/a} a \bftt{/r/u/d/a}, pokud použijeme notaci pro
@@ -1095,7 +1095,7 @@ velmi rychle vrátit všechny potomky.
 
 Výpočet editační vzdálenosti mezi dvěma slovy proběhne standardně tabulkovou
 metodou. U vyhledání všech podobných slov ale proběhne pouze jednou pro řádky
-tabulky u všech slov, které odpovídají sdílenému prefixu mezi těmito slovy.
+tabulky u všech slov, která odpovídají sdílenému prefixu mezi těmito slovy.
 Např. pokud v trii z předchozího příkladu hledáme slovo \bftt{luka}, pak můžeme
 vyhodnotit editační vzdálenost mezi prefixy \bftt{lu} a \bftt{ru} pro obě slova
 \bftt{ruka} a \bftt{ruda} a dokonat zbytek výpočtu pro obě slova zvlášť.
@@ -1170,7 +1170,7 @@ občas nutné provést změnu celého souboru.
 
 Index může být rozdělen na dva podindexy. Hlavní statický, rychlý pro čtení,
 ale neefektivní pro jednotlivé úpravy a vedlejší dynamický, který přijímá změny
-v reálném čase a postupně je dávkově slučuje s hlavním. Hlavní index je
+v reálném čase, a postupně je dávkově slučuje s hlavním. Hlavní index je
 přizpůsobem pro vysoký výkon a kompaktnost a vedlejší je přizpůsobem pro zápis.
 Efektivní způsob, jak zabránit nákladné rekonstrukci hlavního indexu je použít
 množství menších indexů ve vzrůstající velikosti a změny z dynamického indexu
@@ -1292,7 +1292,7 @@ tedy první invertovaný seznam by obsahoval slova začínající na \bftt{A} a�
 během vykonání dotazu za běhu sloučí pouze malé množství sousedících
 materializovaných seznamů. Ke každému záznamu ve sloučeném seznamu musí být
 poznamenáno, ke kterému slovu patří. Dotazy, které nevyužijí celý rozsah
-seznamu se díky této dodatečné informaci vyfiltrují od slov, které zúženému
+seznamu, se díky této dodatečné informaci vyfiltrují od slov, které zúženému
 rozsahu neodpovídají.
 
 Tím, že jsou některé seznamy sloučeny do většího, budou dotazy, které by těchto
@@ -1302,14 +1302,14 @@ zipfově zákonu velký nepoměr náročnosti při zpracování krátkých a dlo
 seznamů. Hybridní index tenhle rozdíl srovnává za cenu, že původně efektivní
 dotazy budou běžet zhruba stejně dlouho, jako ty původně náročné.
 
-Bylo by možné materializovat všechny prefixy, které se ve slovníku budou
-nacházet a prefixové dotazy by díky odpadnutí disjunkcí až při dotazování byly
-velmi efektivní, ale u fuzzy dotazů nelze dopředu předpovědět, které
-invertované seznamy v nich budou figurovat, protože závisí na konkrétním slovu
-dotazu. Tohle schéma by navíc bylo velmi paměťově náročné (na druhou stranu by
-mělo být vysoce kompresibilní). HYB oproti tomu, až na nutnost uložení
-identifikátoru slova ke každému výskytu dokumentu, zabírá v paměti stejně místa
-jako obyčejný invertovaný index
+Bylo by možné materializovat invertované seznamy všech prefixů, které se ve
+slovníku budou nacházet a prefixové dotazy by díky odpadnutí disjunkcí až při
+dotazování, byly velmi efektivní, ale u fuzzy dotazů nelze dopředu předpovědět,
+které invertované seznamy v nich budou figurovat, protože závisí na konkrétním
+slovu dotazu. Tohle schéma by navíc bylo velmi paměťově náročné (na druhou
+stranu by mělo být vysoce kompresibilní). HYB oproti tomu, až na nutnost
+uložení identifikátoru slova ke každému výskytu dokumentu, zabírá v paměti
+stejně místa jako obyčejný invertovaný index
 
 \subsubsection{Bitmapy}
 Protože představuje jeden invertovaný seznam množinu všech dokumentů, ve
@@ -1349,12 +1349,12 @@ množiny.
 
 \subsubsection{Jiné přístupy}
 Invertované indexy jsou použitelné zejména pro lidský jazyk, který odpovídá
-vlastnostem zipfova a heapsova zákona. Text je modifikován odstraněním
+vlastnostem Zipfova a Heapsova zákona. Text je modifikován odstraněním
 neabecedních znaků a rozdělením na slova. V důsledku odstranění některých částí
 textu není možné text z indexu zpětně rekonstruovat.
 
 Jiné přístupy, které jsou vhodné i pro text neodpovídající lidské řeči (např.
-biologické sekvence) jsou založené na suffixových stromech, suffixových polích
+biologické sekvence), jsou založené na suffixových stromech, suffixových polích
 nebo waveletových stromech.
 
 Kromě invertovaného indexu existují i alternativní datové struktury umožňující
@@ -1571,7 +1571,7 @@ mohl nalezený dokument obsahovat více výskytů druhého slova (\texttt{Krásn
 \bftt{dobrý den} .... sobota je \bftt{den} volna}) a v tomto případě by druhý
 výskyt znehodnotil přesnou shodu nalezenou dříve.
 
-Velká vzdálenost tohoto slova od fráze, ke které nepřispívá zapříčiní nárůst
+Velká vzdálenost tohoto slova od fráze, ke které nepřispívá, zapříčiní nárůst
 téhle naivní metriky. To naznačuje, že musíme uvažovat minimální vzdálenost
 výskytů - tedy délku minimálního intervalu, který obsahuje všechna slova
 dotazu.
@@ -1633,7 +1633,7 @@ invertovaného indexu pomocí hashovací tabulky. Při průchodu textem si v
 hashovací tabulce zaznamenáváme pro každé slovo seznam dokumentů, ve kterých se
 nachází. Tím, že procházíme dokumenty od prvního k poslednímu, budou tyto
 seznamy rovnou seřazeny a posléze je můžeme použít přímo pro vyhledávání. Běžně
-se používají hashovací tabulky s optimalizací vzhledem k zipfově zákonu, které
+se používají hashovací tabulky s optimalizací vzhledem k Zipfově zákonu, které
 zvýhodňují frekventovaná slova při hledání v tabulce (např. techniky
 move-at-back nebo move-to-front)~\cite{ZOBEL2001271}. Experimentální měření
 technik pro konstrukci indexu čistě v paměti bylo provedeno
@@ -1759,16 +1759,17 @@ rozložení u struktury HYB se snaží zajistit, aby byly abecední hranice
 respektovány co nejvíce. Výsledkem by měly být skupiny, jejichž hraniční slova
 sdílejí co nejdelší prefixy.
 
-\subsubsection{Rozdělení skupin respektující abecední hranice} \label{sec:hybrid_algorithm}
-\paragraph{Algoritmus.} Zařazení slova do slučující skupiny lze provést při
-prohledání trie obsahující celý slovník do hloubky. Začínáme na kořenovém uzlu
-s tím, že uvažujeme prozatím jedinou skupinu, do které jsou zpočátku všechna
-slova zařazena.  Pokud při rekurzivním průchodu součet délek invertovaných
-seznamů poduzlů jednoho uzlu překročí stanovenou hranici, pak je dosavadní
-přiřazená skupina uzlu nahrazena skupinou novou. Rekurzivní aplikací pro
-všechny uzly se původně jedna skupina rozpadne na více skupin. Jediným
-parametrem je hranice určující rozpadnutí skupiny, která může být staticky
-daná, nebo být odvozená od dat. Zatím jsem ideální způsob, jak ji stanovit.
+\subsubsection{Rozdělení skupin respektující abecední hranice}
+\label{sec:hybrid_algorithm} \paragraph{Algoritmus.} Zařazení slova do
+slučující skupiny lze provést při prohledání trie obsahující celý slovník do
+hloubky. Začínáme na kořenovém uzlu s tím, že uvažujeme prozatím jedinou
+skupinu, do které jsou zpočátku všechna slova zařazena.  Pokud při rekurzivním
+průchodu součet délek invertovaných seznamů poduzlů jednoho uzlu překročí
+stanovenou hranici, pak je dosavadní přiřazená skupina uzlu nahrazena skupinou
+novou. Rekurzivní aplikací pro všechny uzly se původně jedna skupina rozpadne
+na více skupin. Jediným parametrem je hranice určující rozpadnutí skupiny,
+která může být staticky daná, nebo být odvozená od dat. Zatím jsem nenašel
+ideální způsob, jak ji stanovit.
 
 \subsection{Ohodnocování}
 Prozatím je v prototypové verzi implementováno ohodnocení jednoduchým nalezením
@@ -1835,7 +1836,7 @@ je slov v dotazu (zde 2), bude těmto primitivním případům zabráněno.
 % TASTIER
 Navarro a spol. představili online vyhledávací
 systém~\cite{Navarro:2003:MFA:638683.638685}, který pravidelně zpracovává nové
-přicházející články z právní oblasti a vyhledává v nich jména právníků a názvy
+přicházející články z právní oblasti, a vyhledává v nich jména právníků a názvy
 firem dle předchozího nastavení. Vstupem je sada textových dokumentů a seznam
 názvů k prohledání a výstupem je seznam všech přibližných výskytů těchto názvů
 ve vstupních datech. Systém tedy provede všechny dotazy najednou. Systém je
@@ -1870,7 +1871,7 @@ použita kombinace hashovací metody (viz~\ref{sec:hash_fuzzy}) pro krátká slo
 (DeleteMatch) a~metody založené na permutovaném lexikonu (PermuteScan) pro
 delší slova a trie. Ve výsledku autoři konstatují, že jejich navržené řešení se
 přibližuje optimálnímu uspořádání, které lze dosáhnout u indexu operujícím
-čistě v paměti RAM a jejich úzké hrdlo spočívá v získávání invertovaných
+čistě v paměti RAM, a jejich úzké hrdlo spočívá v získávání invertovaných
 seznamů z disku. Přiznávají, že přibližné vyhledávání je (překvapivě) velmi
 náročný problém pro rozsáhlé datové sady.
 
@@ -1910,7 +1911,7 @@ přednostní pořadí. V první řadě upřednostňuje shodu dotazu s výsledkem
 editační vzdálenosti - pro každé slovo zvlášť. Dále pozitivně hodnotí ty
 výsledky, které obsahují shodu s minimální poziční vzdáleností. Přesné shody
 výsledků se stejným ohodnocením jsou pak rozbity několika minoritními hodnotami
-s nízkou váhou. Shoda, která je více na začátku záznamu má přednost a shoda,
+s nízkou váhou. Shoda, která je více na začátku záznamu, má přednost a shoda,
 která obsahuje více shodujících se slov má přednost - obdobně jako u modelu
 tf.idf, pouze zde má velmi malou váhu a neuvažuje relativní důležitost slova ve
 shodě (idf). Pro porovnání byly vytvořeny dvě varianty. První používá
@@ -2069,7 +2070,7 @@ nedostatečný základní stematizér v ElasticSearch.
 Protože dynamická editovací vzdálenost upřednostňuje odlišnosti na
 koncích slov oproti těm na začátcích, nenajde \bftt{edit\_dyn} shodu
 filmu \bftt{Schindlerův seznam} při zkomoleném dotazu \bftt{Šindlerův
-seznam}, který odpovídá fonetické reprezentaci - \bftt{Schi} je
+seznam}, který odpovídá fonetické reprezentaci - \bftt{Schi}, je
 nahrazeno českým \bftt{Ši} (tab.~\ref{tab:result:sindleruv_seznam}).
 
 \mbox{}\input{hits/veznice_showsank.tex}\mbox{}
@@ -2077,7 +2078,7 @@ nahrazeno českým \bftt{Ši} (tab.~\ref{tab:result:sindleruv_seznam}).
 Na jiný zkomolený dotaz \bftt{Věznice Showsank}
 (tab.~\ref{tab:result:veznice_showsank}, který by měl nalézt \bftt{Vykoupení z
 věznice Shawshank}, kladně reagují pouze vyhledávače \bftt{edit} a
-\bftt{edit\_dyn} , protože cizí a specifický název \bftt{Shawshank} neprojde
+\bftt{edit\_dyn}, protože cizí a specifický název \bftt{Shawshank} neprojde
 jazykovou analýzou a trigramový systém selže, protože zasáhne pouze jeden
 trigram \bftt{ank}.
 
@@ -2611,16 +2612,8 @@ experimentování. Výkonově není reprezentativní kvůli implementaci v zvole
 dynamicky typovaném programovacím jazyce Python, ale byla použita stejná
 architektura, kterou by bylo možné v další fázi pouze přepsat do výkonnějšího
 jazyka. Bylo provedeno relativní porovnání výkonu mezi určitými typy dotazů s
-vyšší mírou tolerance pro běh dotazu, které ukázalo že pro běžný dotaz by
+vyšší mírou tolerance pro běh dotazu, které ukázalo, že pro běžný dotaz by
 vyhledávač měl splňovat kritéria pro vyhledávání v reálném čase.
-
-Analýza nejhorších případů ukázala na typ dotazů, které by mohly být zneužity
-proti vyhledávači. Pro tento případ byl nastíněn způsob, jak ho řešit, přestože
-by mohl zkomplikoval původně jednoduchou architekturu.
-
-V porovnání s alternativami založených na ngramové podobnosti není navržený
-systém robustní v případech oddělených slov nebo naopak kompozitních slov.
-Možným dalším rozšířením by byla kombinace navržené architektury s ngramy.
 
 \section{Další postup v implementaci}
 Častečná implementace zde navrhovaného systému zatím není vhodná pro produkční
@@ -2629,6 +2622,15 @@ možností, jakými cestami by se mohla dosavadní implemtance tohoto sytému d�
 vyvíjet. Vyhledávač by mohl být přepsán ve výkonějším jazyce než Python a
 vyvíjen jako samostatný systém, nebo by mohl být integrován do existujících
 databázových nebo vyhledávacích systémů.
+
+Analýza nejhorších případů ukázala na typ dotazů, které by mohly být zneužity
+proti vyhledávači. Pro tento případ je v \S\,\ref{sec:correlated_solution}
+nastíněn způsob, jak ho řešit, přestože by mohl zkomplikoval původně
+jednoduchou architekturu.
+
+V porovnání s alternativami založených na ngramové podobnosti není navržený
+systém robustní v případech oddělených slov nebo naopak kompozitních slov.
+Možným dalším rozšířením by byla kombinace navržené architektury s ngramy.
 
 \subsubsection{Integrace do existujících systémů}
 Systém byl navržen tak, aby byl ideálně jazykově nezávislý, čehož dosahuje díky
@@ -2714,7 +2716,7 @@ mohli bychom implementovat slučování invertovaných systémů typu Top-K (viz
 \S\,\ref{sec:ohodnoceni_vysledku}) a jednoduše omezit počet vrácených výsledků
 na prvních $k$ nejvýše ohodnocených.
 
-\subsubsection{Korelovaná slova}
+\subsubsection{Korelovaná slova} \label{sec:correlated_solution}
 V \S\,\ref{sec:correlated_words} byl naznačen problém, který poukazuje na možný
 útok proti vyhledávači tím, že ho zahltí spoustou pomalých dotazů. Nejhorší
 případ pomalých dotazů lze vytvořit nějakého slova s malými změnami, jejichž
